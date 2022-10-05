@@ -1,36 +1,36 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/constants.dart';
 
-class Login extends StatelessWidget {
+class RegistrationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Login/Logout',
+      title: 'Flutter SignUp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: RegistrationPage_Helper(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class RegistrationPage_Helper extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _RegistrationPage_HelperState createState() => _RegistrationPage_HelperState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
-  bool isLoggedIn = false;
+  final controllerEmail = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Login/Logout'),
+          title: const Text('Flutter SignUp'),
         ),
         body: Center(
           child: SingleChildScrollView(
@@ -46,13 +46,13 @@ class _HomePageState extends State<HomePage> {
                 Center(
                   child: const Text('Flutter on Back4App',
                       style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 SizedBox(
                   height: 16,
                 ),
                 Center(
-                  child: const Text('User Login/Logout',
+                  child: const Text('User registration',
                       style: TextStyle(fontSize: 16)),
                 ),
                 SizedBox(
@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextField(
                   controller: controllerUsername,
-                  enabled: !isLoggedIn,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
@@ -73,8 +72,20 @@ class _HomePageState extends State<HomePage> {
                   height: 8,
                 ),
                 TextField(
+                  controller: controllerEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  textCapitalization: TextCapitalization.none,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)),
+                      labelText: 'E-mail'),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                TextField(
                   controller: controllerPassword,
-                  enabled: !isLoggedIn,
                   obscureText: true,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
@@ -85,36 +96,13 @@ class _HomePageState extends State<HomePage> {
                       labelText: 'Password'),
                 ),
                 SizedBox(
-                  height: 16,
+                  height: 8,
                 ),
                 Container(
                   height: 50,
                   child: TextButton(
-                    child: const Text('Login'),
-                    onPressed: isLoggedIn ? null : () => doUserLogin(),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  height: 50,
-                  child: TextButton(
-                    child: const Text('Logout'),
-                    onPressed: !isLoggedIn ? null : () => doUserLogout(),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  height: 50,
-                  child: TextButton(
-                    child: Text(
-                      "Don't have an account?",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: !isLoggedIn ? null : () => doUserLogout(),
+                    child: const Text('Sign Up'),
+                    onPressed: () => doUserRegistration(),
                   ),
                 )
               ],
@@ -123,13 +111,13 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  void showSuccess(String message) {
+  void showSuccess() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Success!"),
-          content: Text(message),
+          content: const Text("User was successfully created!"),
           actions: <Widget>[
             new TextButton(
               child: const Text("OK"),
@@ -163,30 +151,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void doUserLogin() async {
+  void doUserRegistration() async {
     final username = controllerUsername.text.trim();
+    final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
-    final user = ParseUser(username, password, null);
-    var response = await user.login();
-    if (response.success) {
-      showSuccess("User was successfully login!");
-      setState(() {
-        isLoggedIn = true;
-      });
-    } else {
-      showError(response.error!.message);
-    }
-  }
 
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
+    final user = ParseUser.createUser(username, password, email);
+
+    var response = await user.signUp();
 
     if (response.success) {
-      showSuccess("User was successfully logout!");
-      setState(() {
-        isLoggedIn = false;
-      });
+      showSuccess();
     } else {
       showError(response.error!.message);
     }
