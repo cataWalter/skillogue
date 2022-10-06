@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class RegistrationPage extends StatelessWidget {
+  const RegistrationPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,8 +18,11 @@ class RegistrationPage extends StatelessWidget {
 }
 
 class RegistrationPage_Helper extends StatefulWidget {
+  const RegistrationPage_Helper({super.key});
+
   @override
-  _RegistrationPage_HelperState createState() => _RegistrationPage_HelperState();
+  _RegistrationPage_HelperState createState() =>
+      _RegistrationPage_HelperState();
 }
 
 class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
@@ -30,7 +34,7 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter SignUp'),
+          title: const Text('Sign Up'),
         ),
         body: Center(
           child: SingleChildScrollView(
@@ -40,13 +44,9 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
               children: [
                 Container(
                   height: 200,
-                  child: Image.network(
-                      'http://blog.back4app.com/wp-content/uploads/2017/11/logo-b4a-1-768x175-1.png'),
-                ),
-                Center(
-                  child: const Text('Flutter on Back4App',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                  ),
                 ),
                 SizedBox(
                   height: 16,

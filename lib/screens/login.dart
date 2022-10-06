@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/screens/home_page.dart';
 import 'registration.dart';
 
 class Login extends StatelessWidget {
+  Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,6 +20,8 @@ class Login extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -30,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Login/Logout'),
+        title: const Text('Sign In'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -40,22 +45,14 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Container(
                 height: 200,
-                child: Image.network(
-                    'http://blog.back4app.com/wp-content/uploads/2017/11/logo-b4a-1-768x175-1.png'),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                ),
               ),
-              Center(
-                child: const Text('Flutter on Back4App',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Center(
-                child: const Text('User Login/Logout',
-                    style: TextStyle(fontSize: 16)),
-              ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               TextField(
@@ -65,9 +62,14 @@ class _LoginPageState extends State<LoginPage> {
                 textCapitalization: TextCapitalization.none,
                 autocorrect: false,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)),
-                    labelText: 'Username'),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)),
+                  labelText: 'Username',
+                  hintText: 'Username',
+                  hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                  filled: true,
+                  fillColor: Colors.grey[850],
+                ),
               ),
               SizedBox(
                 height: 8,
@@ -75,14 +77,18 @@ class _LoginPageState extends State<LoginPage> {
               TextField(
                 controller: controllerPassword,
                 enabled: !isLoggedIn,
-                obscureText: true,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.none,
                 autocorrect: false,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)),
-                    labelText: 'Password'),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)),
+                  labelText: 'Password',
+                  hintText: 'Password',
+                  hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                  filled: true,
+                  fillColor: Colors.grey[850],
+                ),
               ),
               SizedBox(
                 height: 16,
@@ -90,7 +96,10 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 height: 50,
                 child: TextButton(
-                  child: const Text('Login'),
+                  child: const Text('Login',
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
                   onPressed: isLoggedIn ? null : () => doUserLogin(),
                 ),
               ),
@@ -100,7 +109,10 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 height: 50,
                 child: TextButton(
-                  child: const Text('Logout'),
+                  child: const Text('Logout',
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
                   onPressed: !isLoggedIn ? null : () => doUserLogout(),
                 ),
               ),
@@ -110,7 +122,10 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 height: 50,
                 child: TextButton(
-                  child: const Text("Don't have an account?"),
+                  child: const Text("Don't have an account?",
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -181,6 +196,13 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         isLoggedIn = true;
       });
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
     } else {
       showError(response.error!.message);
     }
