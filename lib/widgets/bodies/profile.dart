@@ -17,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
 
   int ninjaLevel = 0;
-  // String username = ;
+  String username = 'username';
   // String fullname = ;
   // String country = ;
   // String city = ;
@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('username'),
+        title: Text('$username'),
         // en vez de meter profile que sea el nombre del user
         centerTitle: true,
         backgroundColor: Colors.black,
@@ -73,85 +73,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            Divider(
-              height: 90.0,
-              color: Colors.white,
-              endIndent: 20.0,
-              indent: 20.0,
-            ),
+            linea(),
 
             // GENDER + FULL NAME + AGE
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(width: 20.0),
-                getIcon(Icons.face),
-                SizedBox(width: 10.0,),
-                Text(
-                  'full name + AGE',
-                  style: TextStyle(
-                    color: Colors.white,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-              ],
-            ),
+            caracteristics(Icons.face, 'full name + age'),
 
             SizedBox(height: 30.0),
 
             // CITY, REGION, COUNTRY
-            Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                getIcon(Icons.location_city),
-                SizedBox(width: 10.0,),
-                Text(
-                  'City, region, country',
-                  style: TextStyle(
-                    color: Colors.white,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-              ],
-            ),
+            caracteristics(Icons.location_city, 'city, region, country'),
 
             SizedBox(height: 30.0),
 
             // LANGUAGE
-            Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                getIcon(Icons.spatial_audio_off),
-                SizedBox(width: 10.0,),
-                Text(
-                  'Language',
-                    style: TextStyle(
-                      color: Colors.white,
-                      letterSpacing: 2.0,
-                  ),
-                ),
-              ],
-            ),
+            caracteristics(Icons.spatial_audio_off, 'language'),
 
             SizedBox(height: 30.0),
 
             // LAST LOGIN
+            caracteristics(Icons.update, 'last_login'),
+
+            linea(),
+
+            // skill - categoria - nivel
             Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                getIcon(Icons.update),
-                SizedBox(width: 10.0,),
-                Text(
-                  'last login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    letterSpacing: 2.0,
-                  ),
+                Column(
+                  // skill
+                  children: [
+                    Text('SKILLS',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 12.0),
+                    skills('swim'),
+                    SizedBox(height: 12.0),
+                    skills('draw'),
+
+                  ],
                 ),
+
+                SizedBox(width: 20.0,),
+
+                Column(
+                  // categoria
+                  children: [
+                    Text('CATEGORY',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 12.0),
+                    skills('Sport'),
+                    SizedBox(height: 12.0),
+                    skills('Creativity'),
+
+                  ],
+                ),
+                SizedBox(width: 20.0,),
+                Column(
+                  // categoria
+                  children: [
+                    Text('NIVEL',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    getThirdText(4),
+                    SizedBox(height: 10.0),
+                    getThirdText(0),
+
+                  ],
+                ),
+                SizedBox(width: 20.0,),
+
               ],
             ),
-
-            SizedBox(height: 30.0),
 
           ],
         ),
@@ -159,11 +159,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+
   getIcon(IconData icono) {
     return Icon(
       icono,
       color: Colors.blueGrey[400],
     );}
+
+  caracteristics(IconData icono, String dato_en_cuestion) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(width: 20.0),
+        getIcon(icono),
+        SizedBox(width: 10.0,),
+        Text(
+          dato_en_cuestion,
+          style: TextStyle(
+            color: Colors.white,
+            letterSpacing: 2.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  linea(){
+    return Divider(
+      height: 60.0,
+      color: Colors.blueGrey[400],
+      endIndent: 20.0,
+      indent: 20.0,
+      thickness:1,
+    );
+  }
+
+  skills(String skill){
+    return Text(
+      skill,
+      style: TextStyle(
+        color: Colors.blueGrey[400],
+        letterSpacing: 2.0,
+      ),
+    );
+  }
+
+  Text getThirdText(int n) {
+    if (n == 0)
+      return Text(
+        "",
+
+        style:
+        TextStyle(color: Colors.greenAccent),
+      );
+    String res = '★';
+    while (n != 1) {
+      res = '$res★';
+      n--;
+    }
+    return Text(
+      res,
+      style: TextStyle(color: Colors.greenAccent),
+    );
+  }
+
 
 }
 
