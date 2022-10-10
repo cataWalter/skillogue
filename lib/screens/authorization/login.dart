@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/screens/home_page.dart';
+import 'package:skillogue/screens/main/main_screen.dart';
 import 'registration.dart';
 
 class Login extends StatelessWidget {
@@ -129,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      new MaterialPageRoute(
-                        builder: (context) => new RegistrationPage(),
+                      MaterialPageRoute(
+                        builder: (context) => RegistrationPage(),
                       ),
                     );
                   },
@@ -151,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
           title: const Text("Success!"),
           content: Text(message),
           actions: <Widget>[
-            new TextButton(
+            TextButton(
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -200,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (context) => MainScreen(),
         ),
       );
     } else {

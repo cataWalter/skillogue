@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skillogue/screens/login.dart';
-import 'package:skillogue/screens/registration.dart';
+import 'package:skillogue/screens/authorization/login.dart';
+import 'package:skillogue/screens/authorization/registration.dart';
 
 class PreLogin extends StatefulWidget {
   const PreLogin({Key? key}) : super(key: key);
@@ -23,51 +23,6 @@ class _PreLoginState extends State<PreLogin> {
               Image.asset(
                 'assets/images/logo.png',
               ),
-              /*Icon(Icons.phone_android),
-              SizedBox(height: 10),
-              Text("Hello",
-                  style: GoogleFonts.bebasNeue(
-                    fontSize: 54,
-                  )
-                  //style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
-              SizedBox(height: 10),
-              Text(
-                "Hello",
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        border: InputBorder.none, hintText: "email"),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "password",
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),*/
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Container(

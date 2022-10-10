@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:skillogue/screens/prelogin.dart';
+import 'package:skillogue/screens/authorization/prelogin.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
