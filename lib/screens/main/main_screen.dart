@@ -101,7 +101,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
       case SEARCH:
         return SearchWidget();
       case PROFILE:
-        return ProfileWidget();
+        return ProfileScreen();
       case EVENTS:
         return EventWidget();
       case MESSAGES:

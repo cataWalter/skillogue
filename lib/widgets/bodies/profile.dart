@@ -1,105 +1,169 @@
 import 'package:flutter/material.dart';
+// import 'package:skillogue/utils/colors.dart';
 
-class ProfileWidget extends StatelessWidget {
-  ProfileWidget({Key? key}) : super(key: key);
+void main() {
+  runApp(const MaterialApp(
+    home: ProfileScreen(),
+  ));
+}
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  int ninjaLevel = 0;
+  // String username = ;
+  // String fullname = ;
+  // String country = ;
+  // String city = ;
+  // String region = ;
+  // String gender = ;
+  // int age = ;
+  // date lastLogin = ;
+  // int points =
+  // List skills
+  // should take everything from the token
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 50,
-          ),
-          Text(
-            "Tom Smith",
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: Text('username'),
+        // en vez de meter profile que sea el nombre del user
+        centerTitle: true,
+        backgroundColor: Colors.black,
+        elevation: 0.0,
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          setState((){
+            ninjaLevel+=1;
+          });
+        },
+        child: Icon(Icons.settings),
+        backgroundColor: Colors.blueGrey[400],
+      ),
+      body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child:
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  getIcon(Icons.rowing),
+                  SizedBox(width: 10.0,),
+
+                  getIcon(Icons.pedal_bike),
+                  SizedBox(width: 10.0,),
+
+                  getIcon(Icons.draw),
+                  SizedBox(width: 10.0,),
+
+                  getIcon(Icons.hiking),
+                  SizedBox(width: 10.0,),
+
+                ],
+              ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.all(10),
-            child: Table(
-              border: TableBorder.all(color: Colors.black),
+            Divider(
+              height: 90.0,
+              color: Colors.white,
+              endIndent: 20.0,
+              indent: 20.0,
+            ),
+
+            // GENDER + FULL NAME + AGE
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                getSpacing(),
-                getRow("f1", "f2", 0),
-                getSpacing(),
-                getRowSameCategory(),
-                getSpacing(),
-                getRowSameCategory(),
-                getSpacing(),
-                getRowSameCategory(),
-                getSpacing(),
-                getRow("f1", "f2", 0),
+                SizedBox(width: 20.0),
+                getIcon(Icons.face),
+                SizedBox(width: 10.0,),
+                Text(
+                  'full name + AGE',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
+
+            SizedBox(height: 30.0),
+
+            // CITY, REGION, COUNTRY
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                getIcon(Icons.location_city),
+                SizedBox(width: 10.0,),
+                Text(
+                  'City, region, country',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 30.0),
+
+            // LANGUAGE
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                getIcon(Icons.spatial_audio_off),
+                SizedBox(width: 10.0,),
+                Text(
+                  'Language',
+                    style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 2.0,
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 30.0),
+
+            // LAST LOGIN
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                getIcon(Icons.update),
+                SizedBox(width: 10.0,),
+                Text(
+                  'last login',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 30.0),
+
+          ],
+        ),
+
     );
   }
 
-  TableRow getSpacing() {
-    return TableRow(children: [
-      SizedBox(height: 15), //SizeBox Widget
-      SizedBox(height: 15), //SizeBox Widget
-      SizedBox(height: 15), //SizeBox Widget
-    ]);
-  }
+  getIcon(IconData icono) {
+    return Icon(
+      icono,
+      color: Colors.blueGrey[400],
+    );}
 
-  TableRow getRow(String first, String second, int n) {
-    return TableRow(
-      children: [
-        getFirstText(first),
-        getSecondText(second),
-        getThirdText(n),
-      ],
-    );
-  }
-
-  Text getThirdText(int n) {
-    if (n == 0)
-      return Text(
-        "",
-        textAlign: TextAlign.center,
-        style:
-            TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent),
-      );
-    String res = '★';
-    while (n != 1) {
-      res = '$res★';
-      n--;
-    }
-    return Text(
-      res,
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent),
-    );
-  }
-
-  TableRow getRowSameCategory() {
-    return TableRow(
-      children: [
-        getFirstText(""),
-        getSecondText("Total Players"),
-        getThirdText(3),
-      ],
-    );
-  }
-
-  Text getFirstText(String text) {
-    return Text(text,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue));
-  }
-
-  Text getSecondText(String text) {
-    return Text(text,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white));
-  }
 }
+
