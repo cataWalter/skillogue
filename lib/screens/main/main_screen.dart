@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/bodies/home.dart';
 import 'package:skillogue/widgets/bodies/search.dart';
 import 'package:skillogue/widgets/bodies/message.dart';
-import 'package:skillogue/widgets/bodies/profile.dart';
+import 'package:skillogue/widgets/bodies/profilePage.dart';
 import 'package:skillogue/widgets/bodies/event.dart';
 
 class MainScreen extends StatelessWidget {
+  Profile profile;
+
+  MainScreen(this.profile, {super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainScreenHelper(),
+      home: MainScreenHelper(profile),
       theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
   }
@@ -19,11 +25,18 @@ class MainScreen extends StatelessWidget {
 
 class MainScreenHelper extends StatefulWidget {
   @override
-  _MainScreenHelperState createState() => _MainScreenHelperState();
+  Profile profile;
+
+  MainScreenHelper(this.profile, {super.key});
+
+  _MainScreenHelperState createState() => _MainScreenHelperState(profile);
 }
 
 class _MainScreenHelperState extends State<MainScreenHelper> {
   int _selectedItemIndex = 0;
+  Profile profile;
+
+  _MainScreenHelperState(this.profile);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +48,29 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
           backgroundColor: Colors.black,
           automaticallyImplyLeading: false,
           elevation: 0,
-          title: Text(APP_NAME),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    APP_NAME,
+                    style: GoogleFonts.bebasNeue(fontSize: 28),
+                  ),
+                  Container(
+                    height: 40,
+                    child: Image.asset(
+                      'assets/images/logo - reduced.png',
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                profile.username,
+                style: GoogleFonts.bebasNeue(fontSize: 14),
+              ),
+            ],
+          ),
         ),
       ),
       body: Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/main/main_screen.dart';
 import 'registration.dart';
 
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
+              SizedBox(
                 height: 200,
                 child: Image.asset(
                   'assets/images/logo.png',
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 textCapitalization: TextCapitalization.none,
                 autocorrect: false,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white)),
                   labelText: 'Username',
                   hintText: 'Username',
@@ -71,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   fillColor: Colors.grey[850],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               TextField(
@@ -81,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                 textCapitalization: TextCapitalization.none,
                 autocorrect: false,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white)),
                   labelText: 'Password',
                   hintText: 'Password',
@@ -90,33 +91,33 @@ class _LoginPageState extends State<LoginPage> {
                   fillColor: Colors.grey[850],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Container(
+              SizedBox(
                 height: 50,
                 child: TextButton(
+                  onPressed: isLoggedIn ? null : () => doUserLogin(),
                   child: const Text('Login',
                       style: TextStyle(
                         color: Colors.white,
                       )),
-                  onPressed: isLoggedIn ? null : () => doUserLogin(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Container(
+              SizedBox(
                 height: 50,
                 child: TextButton(
+                  onPressed: !isLoggedIn ? null : () => doUserLogout(),
                   child: const Text('Logout',
                       style: TextStyle(
                         color: Colors.white,
                       )),
-                  onPressed: !isLoggedIn ? null : () => doUserLogout(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Container(
@@ -171,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
           title: const Text("Error!"),
           content: Text(errorMessage),
           actions: <Widget>[
-            new TextButton(
+            TextButton(
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -190,7 +191,8 @@ class _LoginPageState extends State<LoginPage> {
     final user = ParseUser(username, password, null);
 
     var response = await user.login();
-
+    var x = Profile("dasdsa", "dasdsa", "dasdsa", "dasdsa", "dasdsa", 1, 1, 1,
+        1, DateTime.now());
     if (response.success) {
       showSuccess("User was successfully login!");
       setState(() {
@@ -200,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MainScreen(),
+          builder: (context) => MainScreen(x),
         ),
       );
     } else {
