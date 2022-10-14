@@ -187,14 +187,11 @@ class _LoginPageState extends State<LoginPage> {
   void doUserLogin() async {
     final username = controllerUsername.text.trim();
     final password = controllerPassword.text.trim();
-
     final user = ParseUser(username, password, null);
-
     var response = await user.login();
-    var x = Profile("dasdsa", "dasdsa", "dasdsa", "dasdsa", "dasdsa", 1, 1, 1,
-        1, DateTime.now());
     if (response.success) {
       showSuccess("User was successfully login!");
+      Profile loggedProfile = await queryByUsername(username);
       setState(() {
         isLoggedIn = true;
       });
@@ -202,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MainScreen(x),
+          builder: (context) => MainScreen(loggedProfile),
         ),
       );
     } else {
