@@ -55,7 +55,8 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
                 children: [
                   Text(
                     APP_NAME,
-                    style: GoogleFonts.bebasNeue(fontSize: 28),
+                    style: GoogleFonts.bebasNeue(
+                        fontSize: 28, fontWeight: FontWeight.w300),
                   ),
                   Container(
                     height: 40,
@@ -65,10 +66,21 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
                   ),
                 ],
               ),
-              Text(
-                profile.username,
-                style: GoogleFonts.bebasNeue(fontSize: 14),
-              ),
+              Row(
+                children: [
+                  /*
+                  Text(
+                  "Welcome back                ",
+                  style: GoogleFonts.bebasNeue(fontSize: 14),
+                ),
+                */
+                  Text(
+                    profile.username,
+                    style: GoogleFonts.bebasNeue(
+                        fontSize: 24,),
+                  ),
+                ],
+              )
             ],
           ),
         ),

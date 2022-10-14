@@ -51,7 +51,7 @@ class Profile {
   }
 }
 
-Future<List<Profile>> queryByUsername(String username) async {
+Future<Profile> queryByUsername(String username) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
       QueryBuilder<ParseObject>(ParseObject('Profile'));
@@ -62,7 +62,7 @@ Future<List<Profile>> queryByUsername(String username) async {
   } else {
     results = [];
   }
-  return profilesFromResults(results);
+  return profilesFromResults(results)[0];
 }
 
 Future<List<Profile>> queryAllProfiles() async {
