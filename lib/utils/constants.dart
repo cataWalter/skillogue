@@ -308,16 +308,13 @@ List<String> languages = [
   'Welsh',
   'Xhosa'
 ];
-List<List<String>> skills = [
-  ["Maths", "Science"],
-  ["Guitar", "Music"],
-  ["Piano", "Music"],
-  ["Hiking", "Sport"],
-  ["Football", "Sport"],
-  ["Computer Science", "Science"],
-  ["Hiking", "Sport"],
-  ["Hiking", "Sport"],
-  ["Hiking", "Sport"],
-  ["Hiking", "Sport"],
-
+List<String> skills = [
+  'Computer Science',
+  'Football',
+  'Guitar',
+  'Hiking',
+  'Hiking',
+  'Maths',
+  'Piano'
 ];
+

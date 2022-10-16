@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/entities/search_entity.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/bodies/home.dart';
-import 'package:skillogue/widgets/bodies/search.dart';
-import 'package:skillogue/widgets/bodies/message.dart';
-import 'package:skillogue/widgets/bodies/profilePage.dart';
-import 'package:skillogue/widgets/bodies/event.dart';
+import 'package:skillogue/widgets/home.dart';
+import 'package:skillogue/widgets/search.dart';
+import 'package:skillogue/widgets/message.dart';
+import 'package:skillogue/widgets/profile_widget.dart';
+import 'package:skillogue/widgets/event.dart';
 
 class MainScreen extends StatelessWidget {
   Profile profile;
@@ -24,26 +25,30 @@ class MainScreen extends StatelessWidget {
 }
 
 class MainScreenHelper extends StatefulWidget {
-  @override
   Profile profile;
+  Search search = Search();
 
   MainScreenHelper(this.profile, {super.key});
 
-  _MainScreenHelperState createState() => _MainScreenHelperState(profile);
+  @override
+  _MainScreenHelperState createState() => _MainScreenHelperState();
 }
 
 class _MainScreenHelperState extends State<MainScreenHelper> {
   int _selectedItemIndex = 0;
-  Profile profile;
 
-  _MainScreenHelperState(this.profile);
+  @override
+  void initState() {
+    super.initState();
+    widget.search = Search();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(47),
+        preferredSize: const Size.fromHeight(47),
         child: AppBar(
           backgroundColor: Colors.black,
           automaticallyImplyLeading: false,
@@ -58,7 +63,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
                     style: GoogleFonts.bebasNeue(
                         fontSize: 28, fontWeight: FontWeight.w300),
                   ),
-                  Container(
+                  SizedBox(
                     height: 40,
                     child: Image.asset(
                       'assets/images/logo - reduced.png',
@@ -75,9 +80,10 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
                 ),
                 */
                   Text(
-                    profile.username,
+                    widget.profile.username,
                     style: GoogleFonts.bebasNeue(
-                        fontSize: 24,),
+                      fontSize: 24,
+                    ),
                   ),
                 ],
               )
@@ -120,7 +126,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
           _selectedItemIndex = index;
         });
       },
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width / 5,
         height: 45,
         child: Column(
@@ -133,7 +139,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
             ),
             Text(
               text,
-              style: TextStyle(fontSize: 10, color: Colors.white),
+              style: const TextStyle(fontSize: 10, color: Colors.white),
             ),
           ],
         ),
@@ -146,13 +152,13 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
       case HOME:
         return HomeWidget();
       case SEARCH:
-        return SearchWidget();
+        return SearchWidget(widget.profile, widget.search);
       case PROFILE:
-        return ProfileScreen();
+        return const ProfileScreen();
       case EVENTS:
-        return EventWidget();
+        return const EventWidget();
       case MESSAGES:
-        return MessageWidget();
+        return const MessageWidget();
       default:
         return Container();
     }
