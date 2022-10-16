@@ -12,6 +12,8 @@ class Profile {
   int? points;
   DateTime? lastLogin;
 
+  List<String> skills = [];
+
   Profile(this.username, this.fullName, this.country, this.city, this.region,
       this.sex, this.age, this.timezone, this.points, this.lastLogin);
 
@@ -48,6 +50,18 @@ class Profile {
     myTable.set("points", points);
     myTable.set("lastLogin", lastLogin);
     await myTable.save();
+  }
+
+  void addSkill(String text) {
+    if (!skills.contains(text)) {
+      skills.add(text);
+    }
+  }
+
+  void delSkill(String text) {
+    if (skills.contains(text)) {
+      skills.remove(text);
+    }
   }
 }
 
