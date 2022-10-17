@@ -5,7 +5,7 @@ import 'package:skillogue/entities/search_entity.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/home.dart';
 import 'package:skillogue/widgets/search.dart';
-import 'package:skillogue/widgets/message.dart';
+import 'package:skillogue/widgets/message_widget.dart';
 import 'package:skillogue/widgets/profile_widget.dart';
 import 'package:skillogue/widgets/event.dart';
 
