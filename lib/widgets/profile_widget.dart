@@ -210,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "",
 
         style:
-        TextStyle(color: Colors.greenAccent),
+        TextStyle(color: Colors.blueGrey[400]),
       );
     String res = '★';
     while (n != 1) {
@@ -219,7 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     return Text(
       res,
-      style: TextStyle(color: Colors.greenAccent),
+      style: TextStyle(color: Colors.blueGrey[400]),
     );
   }
 

@@ -17,6 +17,7 @@ class _MessageWidgetState extends State<MessageWidget> {
   Widget messageTemplate(message){
     return Card(
       margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+      color: Colors.blueGrey[400],
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -26,7 +27,7 @@ class _MessageWidgetState extends State<MessageWidget> {
               message.user,
               style: TextStyle(
                 fontSize: 14.0,
-                color: Colors.blue,
+                color: Colors.black,
               ),
             ),
             SizedBox(height:6.0),
@@ -37,7 +38,7 @@ class _MessageWidgetState extends State<MessageWidget> {
                   message.last_message,
                   style: TextStyle(
                     fontSize: 18.0,
-                    color: Colors.blue[400],
+                    color: Colors.black,
                   ),
                 ),
                 SizedBox(width:8.0),
@@ -45,7 +46,7 @@ class _MessageWidgetState extends State<MessageWidget> {
                   message.date_last_message.hour.toString() + ' h',
                   style: TextStyle(
                     fontSize: 18.0,
-                    color: Colors.blue[400],
+                    color: Colors.black,
                   ),
                 ),
               ],
@@ -61,11 +62,11 @@ class _MessageWidgetState extends State<MessageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[200],
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text('message'),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
       ),
       body: Column(
         children: messages.map((message) => messageTemplate(message)).toList(),
