@@ -43,7 +43,7 @@ class _PreLoginState extends State<PreLogin> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          new MaterialPageRoute(
+                          MaterialPageRoute(
                             builder: (context) => new LoginPage(),
                           ),
                         );
@@ -52,11 +52,11 @@ class _PreLoginState extends State<PreLogin> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                       color: Colors.teal.shade300,
                       borderRadius: BorderRadius.circular(40)),

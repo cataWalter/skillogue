@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_entity.dart';
+import 'package:skillogue/screens/home/event.dart';
+import 'package:skillogue/screens/home/home.dart';
+import 'package:skillogue/screens/home/message.dart';
+import 'package:skillogue/screens/home/profile_widget.dart';
+import 'package:skillogue/screens/home/search.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/home.dart';
-import 'package:skillogue/widgets/search.dart';
-import 'package:skillogue/widgets/message_widget.dart';
-import 'package:skillogue/widgets/profile_widget.dart';
-import 'package:skillogue/widgets/event.dart';
 
 class MainScreen extends StatelessWidget {
   Profile profile;
@@ -16,10 +16,21 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainScreenHelper(profile),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainScreen(profile),
+          ),
+        );
+        return false;
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MainScreenHelper(profile),
+        theme: ThemeData(scaffoldBackgroundColor: Colors.black),
+      ),
     );
   }
 }
@@ -74,11 +85,11 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
               Row(
                 children: [
                   /*
-                  Text(
-                  "Welcome back                ",
-                  style: GoogleFonts.bebasNeue(fontSize: 14),
-                ),
-                */
+                    Text(
+                    "Welcome back                ",
+                    style: GoogleFonts.bebasNeue(fontSize: 14),
+                  ),
+                  */
                   Text(
                     widget.profile.username,
                     style: GoogleFonts.bebasNeue(
@@ -133,9 +144,9 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
           children: [
             Icon(
               icon,
-              size: 25,
+              size: 30,
               color:
-                  index == _selectedItemIndex ? Colors.black : Colors.grey[700],
+                  index == _selectedItemIndex ? Colors.black : Colors.grey[600],
             ),
             Text(
               text,
@@ -154,7 +165,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
       case SEARCH:
         return SearchWidget(widget.profile, widget.search);
       case PROFILE:
-        return const ProfileScreen();
+        return ProfileScreen(widget.profile);
       case EVENTS:
         return const EventWidget();
       case MESSAGES:

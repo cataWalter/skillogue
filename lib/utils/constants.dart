@@ -313,8 +313,8 @@ List<String> skills = [
   'Football',
   'Guitar',
   'Hiking',
-  'Hiking',
   'Maths',
   'Piano'
 ];
+List<String> genders = ["Male", "Female", "Other"];
 

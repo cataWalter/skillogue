@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/screens/authorization/login.dart';
 
 class RegistrationPage extends StatelessWidget {
   const RegistrationPage({super.key});
@@ -111,7 +113,7 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
         ));
   }
 
-  void showSuccess() {
+  void showSuccess(String username) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -119,10 +121,15 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
           title: const Text("Success!"),
           content: const Text("User was successfully created!"),
           actions: <Widget>[
-            new TextButton(
+            TextButton(
               child: const Text("OK"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ),
+                );
               },
             ),
           ],
@@ -139,7 +146,7 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
           title: const Text("Error!"),
           content: Text(errorMessage),
           actions: <Widget>[
-            new TextButton(
+            TextButton(
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -155,13 +162,11 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
     final username = controllerUsername.text.trim();
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
-
     final user = ParseUser.createUser(username, password, email);
-
+    newProfileUpload(username);
     var response = await user.signUp();
-
     if (response.success) {
-      showSuccess();
+      showSuccess(username);
     } else {
       showError(response.error!.message);
     }
