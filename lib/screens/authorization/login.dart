@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
   bool isLoggedIn = false;
+  late Profile loggedProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
     var response = await user.login();
     if (response.success) {
       showSuccess("User was successfully login!");
-      Profile loggedProfile = await queryByUsername(username);
+      loggedProfile = await queryByUsername(username);
       setState(() {
         isLoggedIn = true;
       });

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/authorization/login.dart';
 
-class RegistrationPage extends StatelessWidget {
-  const RegistrationPage({super.key});
+class AccountFinalization extends StatelessWidget {
+  const AccountFinalization({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,20 +12,20 @@ class RegistrationPage extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: RegistrationPage_Helper(),
+      home: AccountFinalization_Helper(),
     );
   }
 }
 
-class RegistrationPage_Helper extends StatefulWidget {
-  const RegistrationPage_Helper({super.key});
+class AccountFinalization_Helper extends StatefulWidget {
+  const AccountFinalization_Helper({super.key});
 
   @override
-  _RegistrationPage_HelperState createState() =>
-      _RegistrationPage_HelperState();
+  _AccountFinalization_HelperState createState() =>
+      _AccountFinalization_HelperState();
 }
 
-class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
+class _AccountFinalization_HelperState extends State<AccountFinalization_Helper> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
   final controllerEmail = TextEditingController();
@@ -113,7 +111,7 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
         ));
   }
 
-  void showSuccess(String username) {
+  void showSuccess() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -121,15 +119,10 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
           title: const Text("Success!"),
           content: const Text("User was successfully created!"),
           actions: <Widget>[
-            TextButton(
+            new TextButton(
               child: const Text("OK"),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Login(),
-                  ),
-                );
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -146,7 +139,7 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
           title: const Text("Error!"),
           content: Text(errorMessage),
           actions: <Widget>[
-            TextButton(
+            new TextButton(
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -162,11 +155,13 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
     final username = controllerUsername.text.trim();
     final email = controllerEmail.text.trim();
     final password = controllerPassword.text.trim();
+
     final user = ParseUser.createUser(username, password, email);
-    newProfileUpload(username);
+
     var response = await user.signUp();
+
     if (response.success) {
-      showSuccess(username);
+      showSuccess();
     } else {
       showError(response.error!.message);
     }

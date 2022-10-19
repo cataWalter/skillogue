@@ -1,9 +1,12 @@
 
+import 'package:skillogue/entities/profile.dart';
+
 class Search {
   String? username;
   List<String> skills = [];
   List<String> countries = [];
   List<String> languages = [];
+  List<String> genders = [];
   String? city;
   String? region;
   int? sex;
@@ -31,7 +34,49 @@ class Search {
     }
   }
 
+  void addCountry(String text) {
+    if (!countries.contains(text)) {
+      countries.add(text);
+    }
+  }
 
+  void delCountry(String text) {
+    if (countries.contains(text)) {
+      countries.remove(text);
+    }
+  }
+
+  void addLanguage(String text) {
+    if (!languages.contains(text)) {
+      languages.add(text);
+    }
+  }
+
+  void delLanguage(String text) {
+    if (languages.contains(text)) {
+      languages.remove(text);
+    }
+  }
+
+  void addGender(String text) {
+    if (!genders.contains(text)) {
+      genders.add(text);
+    }
+  }
+
+  void delGender(String text) {
+    if (genders.contains(text)) {
+      genders.remove(text);
+    }
+  }
+
+
+}
+
+List<Profile> doUserSearch() {
+  List<Profile> results = [];
+
+  return results;
 }
 
 /*

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/search_entity.dart';
 
-class MyCheckBox extends StatefulWidget {
+class SearchSkillCheckbox extends StatefulWidget {
   String text;
   Search curSearch;
 
 
-  MyCheckBox(this.text, this.curSearch, {super.key});
+  SearchSkillCheckbox(this.text, this.curSearch, {super.key});
 
   @override
-  State<MyCheckBox> createState() => _MyCheckBoxState();
+  State<SearchSkillCheckbox> createState() => _SearchSkillCheckboxState();
 }
 
-class _MyCheckBoxState extends State<MyCheckBox> {
+class _SearchSkillCheckboxState extends State<SearchSkillCheckbox> {
   bool value = false;
 
   @override
