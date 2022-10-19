@@ -361,7 +361,6 @@ class _SettingsHelperState extends State<SettingsHelper> {
     Profile loggedProfile = await queryByUsername(widget.profile.username);
     var oldProfile = ParseObject('Profile')
       ..objectId = loggedProfile.objectId
-      ..set('username', loggedProfile.username)
       ..set('fullName', loggedProfile.fullName)
       ..set('country', loggedProfile.country)
       ..set('city', loggedProfile.city)
