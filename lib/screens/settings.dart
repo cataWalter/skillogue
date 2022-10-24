@@ -5,6 +5,7 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_entity.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_country_checkbox.dart';
+import 'package:skillogue/widgets/checkboxes/profile/profile_gender_checkbox.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_language_checkbox.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_skill_checkbox.dart';
 
@@ -34,10 +35,10 @@ class SettingsHelper extends StatefulWidget {
 }
 
 class _SettingsHelperState extends State<SettingsHelper> {
+  final controllerFullName = TextEditingController();
+  final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
-  final controllerPassword = TextEditingController();
-  final controllerMinAge = TextEditingController();
-  final controllerMaxAge = TextEditingController();
+  final controllerRegion = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +154,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                         child: TextButton(
                           onPressed: putCountryDialog,
                           child: Text(
-                            'my country',
+                            'my country', //CHANGE WITH CHOOSEBAR or RADIOLIST TILE
                             //style: TextStyle(color: Colors.white, fontSize: 30),
                             style: GoogleFonts.bebasNeue(
                                 fontSize: 18,
@@ -164,43 +165,6 @@ class _SettingsHelperState extends State<SettingsHelper> {
                       ),
                     ),
                   ),
-
-                  /*SizedBox(
-                    height: 50,
-                    child: TextButton(
-                      onPressed: putDialog,
-                      child: const Text(
-                        'Skills',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Languages',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Countries',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
               spacer(),
@@ -209,7 +173,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                    controller: controllerCity,
+                    controller: controllerFullName,
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.none,
                     autocorrect: false,
@@ -227,12 +191,13 @@ class _SettingsHelperState extends State<SettingsHelper> {
               ),
               const SizedBox(
                 height: 10,
-              ),              Align(
+              ),
+              Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                    controller: controllerCity,
+                    controller: controllerAge,
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.none,
                     autocorrect: false,
@@ -250,7 +215,8 @@ class _SettingsHelperState extends State<SettingsHelper> {
               ),
               const SizedBox(
                 height: 10,
-              ),              Align(
+              ),
+              Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
                   width: double.maxFinite,
@@ -279,7 +245,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: TextField(
-                    controller: controllerCity,
+                    controller: controllerRegion,
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.none,
                     autocorrect: false,
@@ -361,12 +327,14 @@ class _SettingsHelperState extends State<SettingsHelper> {
     Profile loggedProfile = await queryByUsername(widget.profile.username);
     var oldProfile = ParseObject('Profile')
       ..objectId = loggedProfile.objectId
-      ..set('fullName', loggedProfile.fullName)
-      ..set('country', loggedProfile.country)
-      ..set('city', loggedProfile.city)
-      ..set('region', loggedProfile.region)
-      ..set('gender', loggedProfile.gender)
-      ..set('age', loggedProfile.age);
+      ..set('fullName', controllerFullName.text)
+      ..set('country', widget.profile.country)
+      ..set('city', controllerCity.text)
+      ..set('region', controllerRegion.text)
+      ..set('gender', widget.profile.gender)
+      ..set('skills', widget.profile.skills)
+      ..set('languages', widget.profile.languages)
+      ..set('age', controllerAge.text);
     await oldProfile.save();
   }
 
@@ -454,7 +422,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
               itemCount: genders.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: ProfileCountryCheckbox(genders[index], widget.profile),
+                  title: ProfileGenderCheckbox(genders[index], widget.profile),
                 );
               },
             ),
@@ -462,12 +430,5 @@ class _SettingsHelperState extends State<SettingsHelper> {
         );
       },
     );
-  }
-
-  List<Profile> doUserSearch() {
-    List<Profile> results = [];
-    List<String> skills = [];
-    // @TODO
-    return results;
   }
 }

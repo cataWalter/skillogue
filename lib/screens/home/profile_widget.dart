@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search_entity.dart';
-import 'package:skillogue/screens/home/search.dart';
+import 'package:skillogue/screens/authorization/prelogin.dart';
 import 'package:skillogue/screens/settings.dart';
-// import 'package:skillogue/utils/colors.dart';
+import 'package:skillogue/utils/colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   Profile profile;
@@ -15,90 +17,53 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int ninjaLevel = 0;
-  String username = 'username';
-  bool _settingsEnabled = false;
+  @override
+  void initState() {
+    super.initState();
+    username = widget.profile.username;
+  }
 
-  // String fullname = ;
-  // String country = ;
-  // String city = ;
-  // String region = ;
-  // String gender = ;
-  // int age = ;
-  // date lastLogin = ;
-  // int points =
-  // List skills
-  // should take everything from the token
+  late String username;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('$username'),
-        // en vez de meter profile que sea el nombre del user
-        centerTitle: true,
-        backgroundColor: Colors.black,
-        elevation: 0.0,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Settings(widget.profile),
-            ),
-          );
-
-        },
-        backgroundColor: Colors.blueGrey[400],
-        child: Icon(Icons.settings),
-      ),
-      body: Column(
+    return Padding(
+      padding: const EdgeInsets.all(14.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 50,),
           Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                getIcon(Icons.rowing),
-                SizedBox(
-                  width: 10.0,
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: getRandomDarkColor(),
+              child: Text(
+                "NC",
+                style: const TextStyle(
+                  color: Colors.white,
                 ),
-                getIcon(Icons.pedal_bike),
-                SizedBox(
-                  width: 10.0,
-                ),
-                getIcon(Icons.draw),
-                SizedBox(
-                  width: 10.0,
-                ),
-                getIcon(Icons.hiking),
-                SizedBox(
-                  width: 10.0,
-                ),
-              ],
+              ),
             ),
           ),
           linea(),
 
           // GENDER + FULL NAME + AGE
-          caracteristics(Icons.face, 'full name + age'),
+          characteristics(Icons.face, 'full name + age'),
 
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
 
           // CITY, REGION, COUNTRY
-          caracteristics(Icons.location_city, 'city, region, country'),
+          characteristics(Icons.location_city, 'city, region, country'),
 
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
 
           // LANGUAGE
-          caracteristics(Icons.spatial_audio_off, 'language'),
+          characteristics(Icons.spatial_audio_off, 'language'),
 
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
 
           // LAST LOGIN
-          caracteristics(Icons.update, 'last_login'),
+          characteristics(Icons.update, 'last_login'),
 
           linea(),
 
@@ -109,56 +74,119 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Column(
                 // skill
                 children: [
-                  Text(
+                  const Text(
                     'SKILLS',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 12.0),
+                  const SizedBox(height: 12.0),
                   skills('swim'),
-                  SizedBox(height: 12.0),
+                  const SizedBox(height: 12.0),
                   skills('draw'),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20.0,
               ),
               Column(
                 // categoria
                 children: [
-                  Text(
+                  const Text(
                     'CATEGORY',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 12.0),
+                  const SizedBox(height: 12.0),
                   skills('Sport'),
-                  SizedBox(height: 12.0),
+                  const SizedBox(height: 12.0),
                   skills('Creativity'),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20.0,
               ),
               Column(
                 // categoria
                 children: [
-                  Text(
+                  const Text(
                     'NIVEL',
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   getThirdText(4),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   getThirdText(0),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20.0,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 100,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Settings(widget.profile)));
+                      },
+                      child: Text(
+                        'Settings',
+                        //style: TextStyle(color: Colors.white, fontSize: 30),
+                        style: GoogleFonts.bebasNeue(
+                            fontSize: 18,
+                            color: Colors
+                                .white), //GoogleFonts.openSans(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PreLogin()));
+                      },
+                      child: Text(
+                        'Log Out',
+                        //style: TextStyle(color: Colors.white, fontSize: 30),
+                        style: GoogleFonts.bebasNeue(
+                            fontSize: 18,
+                            color: Colors
+                                .white), //GoogleFonts.openSans(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -174,18 +202,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  caracteristics(IconData icono, String dato_en_cuestion) {
+  characteristics(IconData myIcon, String datoEnCuestion) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(width: 20.0),
-        getIcon(icono),
-        SizedBox(
+        const SizedBox(width: 20.0),
+        getIcon(myIcon),
+        const SizedBox(
           width: 10.0,
         ),
         Text(
-          dato_en_cuestion,
-          style: TextStyle(
+          datoEnCuestion,
+          style: const TextStyle(
             color: Colors.white,
             letterSpacing: 2.0,
           ),
@@ -215,11 +243,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Text getThirdText(int n) {
-    if (n == 0)
-      return Text(
+    if (n == 0) {
+      return const Text(
         "",
         style: TextStyle(color: Colors.greenAccent),
       );
+    }
     String res = '★';
     while (n != 1) {
       res = '$res★';
@@ -227,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     return Text(
       res,
-      style: TextStyle(color: Colors.greenAccent),
+      style: const TextStyle(color: Colors.greenAccent),
     );
   }
 }

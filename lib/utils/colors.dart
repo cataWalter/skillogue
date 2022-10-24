@@ -1,14 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-class IconUtils {
 
-  getIcon(IconData icono) {
-    return Icon(
-      icono,
-      color: Colors.blueGrey[400],
-    );
+
+Color getRandomDarkColor() {
+  Color randomColor =
+  Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+  if (randomColor.computeLuminance() < 0.250) {
+    return randomColor;
+  } else {
+    return getRandomDarkColor();
   }
-
-
-
 }

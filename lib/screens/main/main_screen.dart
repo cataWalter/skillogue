@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_entity.dart';
 import 'package:skillogue/screens/home/event.dart';
 import 'package:skillogue/screens/home/home.dart';
-import 'package:skillogue/screens/home/message.dart';
+import 'package:skillogue/screens/home/message_widget.dart';
 import 'package:skillogue/screens/home/profile_widget.dart';
 import 'package:skillogue/screens/home/search.dart';
 import 'package:skillogue/utils/constants.dart';
@@ -46,12 +48,18 @@ class MainScreenHelper extends StatefulWidget {
 }
 
 class _MainScreenHelperState extends State<MainScreenHelper> {
-  int _selectedItemIndex = 0;
+  int _selectedItemIndex = SEARCH;
+  List<Conversation> c = [];
 
   @override
   void initState() {
     super.initState();
     widget.search = Search();
+    updateConversations();
+  }
+
+  void updateConversations() async {
+    c = await getConversationsFromMessages(widget.profile.username);
   }
 
   @override
@@ -91,7 +99,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
                   ),
                   */
                   Text(
-                    widget.profile.username,
+                    widget.profile.fullName,
                     style: GoogleFonts.bebasNeue(
                       fontSize: 24,
                     ),
@@ -121,7 +129,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
           children: [
             buildNavBarItem(Icons.person, PROFILE, "Profile"),
             //buildNavBarItem(Icons.event, EVENTS, "Events"),
-            buildNavBarItem(Icons.home, HOME, "Home"),
+            //buildNavBarItem(Icons.home, HOME, "Home"),
             buildNavBarItem(Icons.search, SEARCH, "Search"),
             buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
           ],
@@ -169,7 +177,10 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
       case EVENTS:
         return const EventWidget();
       case MESSAGES:
-        return const MessageWidget();
+        {
+          updateConversations();
+          return MessageWidget(widget.profile, c);
+        }
       default:
         return Container();
     }

@@ -1,11 +1,12 @@
 import 'dart:core';
 
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/entities/message.dart';
 
 class Profile {
   String objectId;
   String username;
-  String? fullName;
+  String fullName;
   String? country;
   String? city;
   String? region;
@@ -13,12 +14,12 @@ class Profile {
   int? age;
   int? points;
   DateTime? lastLogin;
-
   List<String> skills = [];
   List<String> languages = [];
+  List<Message> messages = [];
 
-  Profile(this.objectId, this.username, this.fullName, this.country, this.city, this.region,
-      this.gender, this.age, this.points);
+  Profile(this.objectId, this.username, this.fullName, this.country, this.city,
+      this.region, this.gender, this.age, this.points);
 
   void addSkill(String text) {
     if (!skills.contains(text)) {
@@ -112,12 +113,6 @@ Profile profileFromJson(dynamic t) {
 }
 
 void newProfileUpload(String username) async {
-  /*final book = ParseObject('Book')
-    ..set('title', controllerTitle.text.trim())
-    ..set('year', int.parse(controllerYear.text.trim()))
-    ..set('genre', ParseObject('Genre')..objectId = genre.objectId)
-    ..set('publisher',
-        (ParseObject('Publisher')..objectId = publisher.objectId).toPointer());*/
   final profile = ParseObject('Profile')
     ..set('username', username)
     ..set('fullName', "")
@@ -127,5 +122,12 @@ void newProfileUpload(String username) async {
     ..set('gender', "")
     ..set('age', 0)
     ..set('points', 0);
+  await profile.save();
+}
+
+void updateContacted(String source, String dest) async {
+  final profile = ParseObject('Contacted')
+      ..set('sender', source)
+      ..set('receiver', dest);
   await profile.save();
 }
