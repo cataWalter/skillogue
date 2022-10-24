@@ -12,20 +12,20 @@ class AccountFinalization extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AccountFinalization_Helper(),
+      home: const AccountFinalizationHelper(),
     );
   }
 }
 
-class AccountFinalization_Helper extends StatefulWidget {
-  const AccountFinalization_Helper({super.key});
+class AccountFinalizationHelper extends StatefulWidget {
+  const AccountFinalizationHelper({super.key});
 
   @override
-  _AccountFinalization_HelperState createState() =>
-      _AccountFinalization_HelperState();
+  AccountFinalizationHelperState createState() =>
+      AccountFinalizationHelperState();
 }
 
-class _AccountFinalization_HelperState extends State<AccountFinalization_Helper> {
+class AccountFinalizationHelperState extends State<AccountFinalizationHelper> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
   final controllerEmail = TextEditingController();
@@ -42,20 +42,20 @@ class _AccountFinalization_HelperState extends State<AccountFinalization_Helper>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
+                SizedBox(
                   height: 200,
                   child: Image.asset(
                     'assets/images/logo.png',
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
-                Center(
-                  child: const Text('User registration',
+                const Center(
+                  child: Text('User registration',
                       style: TextStyle(fontSize: 16)),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 TextField(
@@ -63,12 +63,12 @@ class _AccountFinalization_HelperState extends State<AccountFinalization_Helper>
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
                       labelText: 'Username'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 TextField(
@@ -76,12 +76,12 @@ class _AccountFinalization_HelperState extends State<AccountFinalization_Helper>
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
                       labelText: 'E-mail'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 TextField(
@@ -90,15 +90,15 @@ class _AccountFinalization_HelperState extends State<AccountFinalization_Helper>
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
                       labelText: 'Password'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
-                Container(
+                SizedBox(
                   height: 50,
                   child: TextButton(
                     child: const Text('Sign Up'),
@@ -119,7 +119,7 @@ class _AccountFinalization_HelperState extends State<AccountFinalization_Helper>
           title: const Text("Success!"),
           content: const Text("User was successfully created!"),
           actions: <Widget>[
-            new TextButton(
+            TextButton(
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -139,7 +139,7 @@ class _AccountFinalization_HelperState extends State<AccountFinalization_Helper>
           title: const Text("Error!"),
           content: Text(errorMessage),
           actions: <Widget>[
-            new TextButton(
+            TextButton(
               child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();

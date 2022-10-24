@@ -34,6 +34,12 @@ class _LoginPageState extends State<LoginPage> {
   late Profile loggedProfile;
 
   @override
+  void initState() {
+    super.initState();
+    doUserLogin("1", "1");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -98,7 +104,10 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 50,
                 child: TextButton(
-                  onPressed: isLoggedIn ? null : () => doUserLogin(),
+                  onPressed: isLoggedIn
+                      ? null
+                      : () => doUserLogin(controllerUsername.text.trim(),
+                          controllerPassword.text.trim()),
                   child: const Text('Login',
                       style: TextStyle(
                         color: Colors.white,
@@ -185,14 +194,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void doUserLogin() async {
-    final username = controllerUsername.text.trim();
-    final password = controllerPassword.text.trim();
+  void doUserLogin(String username, String password) async {
     final user = ParseUser(username, password, null);
     var response = await user.login();
     if (response.success) {
       showSuccess("User was successfully login!");
       loggedProfile = await queryByUsername(username);
+      var oldProfile = ParseObject('Profile')
+        ..objectId = loggedProfile.objectId
+        ..set('lastLogin', DateTime.now());
+      await oldProfile.save();
       setState(() {
         isLoggedIn = true;
       });
@@ -211,7 +222,6 @@ class _LoginPageState extends State<LoginPage> {
   void doUserLogout() async {
     final user = await ParseUser.currentUser() as ParseUser;
     var response = await user.logout();
-
     if (response.success) {
       showSuccess("User was successfully logout!");
       setState(() {

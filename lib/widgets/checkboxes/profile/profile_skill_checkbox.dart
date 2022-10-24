@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search_entity.dart';
 
 class ProfileSkillCheckbox extends StatefulWidget {
   String text;
   Profile curProfile;
-
 
   ProfileSkillCheckbox(this.text, this.curProfile, {super.key});
 

@@ -1,5 +1,6 @@
-
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/entities/search_result.dart';
 
 class Search {
   String? username;
@@ -9,7 +10,6 @@ class Search {
   List<String> genders = [];
   String? city;
   String? region;
-  int? sex;
   int? minAge;
   int? maxAge;
   int? minTimezone;
@@ -19,7 +19,8 @@ class Search {
 
   @override
   String toString() {
-    return 'Search{username: $username, skills: $skills, countries: $countries, languages: $languages, city: $city, region: $region, sex: $sex, minAge: $minAge, maxAge: $maxAge, minTimezone: $minTimezone, maxTimezone: $maxTimezone}';
+    return 'Search{username: $username, skills: $skills, countries: $countries, languages: $languages, '
+        'city: $city, region: $region, minAge: $minAge, maxAge: $maxAge, minTimezone: $minTimezone, maxTimezone: $maxTimezone}';
   }
 
   void addSkill(String text) {
@@ -69,28 +70,74 @@ class Search {
       genders.remove(text);
     }
   }
-
-
 }
 
-List<Profile> doUserSearch() {
-  List<Profile> results = [];
-
-  return results;
+Future<List<SearchResult>> findUsers(String username) async {
+  List<ParseObject> results = <ParseObject>[];
+  final QueryBuilder<ParseObject> parseQuery =
+      QueryBuilder<ParseObject>(ParseObject('Profile'));
+  //parseQuery.whereContains('att1', 'Walter');
+  final ParseResponse apiResponse = await parseQuery.query();
+  if (apiResponse.success && apiResponse.results != null) {
+    results = apiResponse.results as List<ParseObject>;
+  } else {
+    results = [];
+  }
+  return filterUser(username, searchResults(results));
 }
 
-/*
-Table Search {
-  username varchar
-  skillName varchar //list
-  country varchar //list
-  language varchar //list
-  city varchar
-  region varchar
-  sex int
-  minAge int
-  maxAge int
-  minTimezone int
-  maxTimezone int
+Future<List<SearchResult>> filterUser(
+    String username, List<SearchResult> s) async {
+  for (SearchResult x in s) {
+    if (username == x.username) {
+      s.remove(x);
+    }
+  }
+  List<String> s1 = getContactedSender(username) as List<String>;
+  return s;
 }
- */
+
+List<SearchResult> searchResults(List<ParseObject> results) {
+  List<SearchResult> newResults = <SearchResult>[];
+  for (var t in results) {
+    newResults.add(searchResultFromJson(t));
+  }
+  return newResults;
+}
+
+SearchResult searchResultFromJson(dynamic t) {
+  return SearchResult(
+    t['username'] as String,
+    t['fullName'] as String,
+    (t['skills'] as List).map((e) => e as String).toList(),
+    t['country'] as String,
+    t['gender'] as String,
+    (t['languages'] as List).map((e) => e as String).toList(),
+    t['city'] as String,
+    t['region'] as String,
+    t['age'] as int,
+    t['updatedAt'] as DateTime,
+  );
+}
+
+Future<List<String>> getContactedSender(String username) async {
+  List<ParseObject> results = <ParseObject>[];
+  final QueryBuilder<ParseObject> parseQuery =
+      QueryBuilder<ParseObject>(ParseObject('Contacted'));
+  parseQuery.whereContains('sender', username);
+  final ParseResponse apiResponse = await parseQuery.query();
+  if (apiResponse.success && apiResponse.results != null) {
+    results = apiResponse.results as List<ParseObject>;
+  } else {
+    results = [];
+  }
+  return listContacted(results);
+}
+
+List<String> listContacted(List<ParseObject> results) {
+  List<String> newResults = <String>[];
+  for (var t in results) {
+    newResults.add(t['receiver']);
+  }
+  return newResults;
+}
