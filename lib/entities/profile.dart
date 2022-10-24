@@ -7,12 +7,12 @@ class Profile {
   String objectId;
   String username;
   String fullName;
-  String? country;
-  String? city;
-  String? region;
-  String? gender;
-  int? age;
-  int? points;
+  String country;
+  String city;
+  String region;
+  String gender;
+  int age;
+  int points;
   DateTime? lastLogin;
   List<String> skills = [];
   List<String> languages = [];

@@ -21,9 +21,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     username = widget.profile.username;
+    fullName = widget.profile.fullName;
+    country = widget.profile.country;
+    city = widget.profile.city;
+    region = widget.profile.region;
+    age = widget.profile.age;
+    //lastLogin = widget.profile.lastLogin;
+    languages = widget.profile.languages;
+    skills = widget.profile.skills;
+    gender = widget.profile.gender;
   }
 
   late String username;
+  late String fullName;
+  late String country;
+  late String city;
+  late String region;
+  late int age;
+  late String gender;
+  // late DateTime lastLogin;
+  late List<String> languages;
+  late List<String> skills;
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +66,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
           linea(),
 
           // GENDER + FULL NAME + AGE
-          characteristics(Icons.face, 'full name + age'),
+          characteristics(Icons.face, '$fullName'),
+
+          const SizedBox(height: 30.0),
+
+          // AGE + gender
+          // GENDER + FULL NAME + AGE
+          characteristics(Icons.info_outline, '$gender, $age years'),
 
           const SizedBox(height: 30.0),
 
           // CITY, REGION, COUNTRY
-          characteristics(Icons.location_city, 'city, region, country'),
+          characteristics(Icons.location_city, '$city, $region, $country'),
 
           const SizedBox(height: 30.0),
 
           // LANGUAGE
-          characteristics(Icons.spatial_audio_off, 'language'),
+          characteristics2(Icons.spatial_audio_off, languages),
 
           const SizedBox(height: 30.0),
 
@@ -81,9 +105,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 12.0),
-                  skills('swim'),
+                  ToSkills('swim'),
                   const SizedBox(height: 12.0),
-                  skills('draw'),
+                  ToSkills('draw'),
                 ],
               ),
               const SizedBox(
@@ -99,9 +123,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 12.0),
-                  skills('Sport'),
+                  ToSkills('Sport'),
                   const SizedBox(height: 12.0),
-                  skills('Creativity'),
+                  ToSkills('Creativity'),
                 ],
               ),
               const SizedBox(
@@ -128,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           const SizedBox(
-            height: 100,
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,6 +246,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  characteristics2(IconData myIcon, List<String> datoEnCuestion) {
+    String list_join = datoEnCuestion.join(" ,");
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(width: 20.0),
+        getIcon(myIcon),
+        const SizedBox(
+          width: 10.0,
+        ),
+        Text(
+          list_join,
+          style: const TextStyle(
+            color: Colors.white,
+            letterSpacing: 2.0,
+          ),
+        ),
+      ],
+    );
+  }
+
   linea() {
     return Divider(
       height: 60.0,
@@ -232,7 +278,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  skills(String skill) {
+  ToSkills(String skill) {
     return Text(
       skill,
       style: TextStyle(
