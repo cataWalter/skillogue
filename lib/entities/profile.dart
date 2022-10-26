@@ -59,6 +59,7 @@ class Profile {
 
   void delGender(String text) {
     gender = "Genderless Wanderer";
+
   }
 }
 

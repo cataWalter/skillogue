@@ -4,6 +4,7 @@ import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_entity.dart';
+import 'package:skillogue/entities/knowledge.dart';
 import 'package:skillogue/screens/home/event.dart';
 import 'package:skillogue/screens/home/home.dart';
 import 'package:skillogue/screens/home/message_widget.dart';
