@@ -75,8 +75,10 @@ class Search {
 Future<List<SearchResult>> findUsers(String username) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
-      QueryBuilder<ParseObject>(ParseObject('Profile'));
+  QueryBuilder<ParseObject>(ParseObject('Profile'));
   //parseQuery.whereContains('att1', 'Walter');
+  parseQuery.whereNotEqualTo('username', username);
+
   final ParseResponse apiResponse = await parseQuery.query();
   if (apiResponse.success && apiResponse.results != null) {
     results = apiResponse.results as List<ParseObject>;
@@ -86,14 +88,21 @@ Future<List<SearchResult>> findUsers(String username) async {
   return filterUser(username, searchResults(results));
 }
 
-Future<List<SearchResult>> filterUser(
-    String username, List<SearchResult> s) async {
-  for (SearchResult x in s) {
-    if (username == x.username) {
-      s.remove(x);
+Future<List<SearchResult>> filterUser(String username,
+    List<SearchResult> s) async {
+  try {
+    for (var x in s) {
+      if (username == x.username) {
+        s.remove(x);
+      }
     }
   }
-  List<String> s1 = getContactedSender(username) as List<String>;
+  catch (e){
+    return s;
+  }
+  List<String> s1 = await getContactedSender(username);
+  print("s1 = ");
+  print(s1);
   return s;
 }
 
@@ -123,7 +132,7 @@ SearchResult searchResultFromJson(dynamic t) {
 Future<List<String>> getContactedSender(String username) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
-      QueryBuilder<ParseObject>(ParseObject('Contacted'));
+  QueryBuilder<ParseObject>(ParseObject('Contacted'));
   parseQuery.whereContains('sender', username);
   final ParseResponse apiResponse = await parseQuery.query();
   if (apiResponse.success && apiResponse.results != null) {

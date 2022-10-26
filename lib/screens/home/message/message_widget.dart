@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skillogue/entities/chatCard.dart';
+import 'package:skillogue/entities/chatCard_widget.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 
