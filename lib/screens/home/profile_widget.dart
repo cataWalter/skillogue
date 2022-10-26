@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Text(
                 //"NC",
                 iniciales(fullName),
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                 ),
               ),

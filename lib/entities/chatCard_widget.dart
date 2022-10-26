@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/screens/home/message/conversation_widget.dart';
 import 'package:skillogue/utils/colors.dart';
 
 class ChatCard extends StatelessWidget {
@@ -13,7 +14,15 @@ class ChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConversationWidget(c),
+          ),
+        );
+
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Row(
@@ -88,7 +97,8 @@ class ChatCard extends StatelessWidget {
         opacity: 0.95,
         child: Text(
           c.messages[0].text,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
