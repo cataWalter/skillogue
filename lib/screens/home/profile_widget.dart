@@ -6,11 +6,12 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
 import 'package:skillogue/screens/settings.dart';
 import 'package:skillogue/utils/colors.dart';
+import 'package:skillogue/entities/knowledge.dart';
 
 class ProfileScreen extends StatefulWidget {
   Profile profile;
 
-  ProfileScreen(this.profile, {super.key});
+  ProfileScreen(this.profile,{super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -56,7 +57,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               radius: 24,
               backgroundColor: getRandomDarkColor(),
               child: Text(
-                "NC",
+                //"NC",
+                iniciales(fullName),
                 style: const TextStyle(
                   color: Colors.white,
                 ),
@@ -113,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 width: 20.0,
               ),
-              Column(
+             /* Column(
                 // categoria
                 children: [
                   const Text(
@@ -130,9 +132,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(
                 width: 20.0,
-              ),
+              ),*/
               Column(
-                // categoria
+                // nivel
                 children: [
                   const Text(
                     'NIVEL',
@@ -305,4 +307,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       style: const TextStyle(color: Colors.greenAccent),
     );
   }
+}
+
+iniciales(String fname){
+  // It returns the first letter of your name and the first later of your surname
+  String f_name = fname.substring(0, 1).toUpperCase();
+  int index_space = fname.indexOf(" ");
+  if (index_space != -1){
+    String f_surname = fname.substring(index_space, index_space + 1).toUpperCase();
+    return f_name + f_surname;
+  }
+  else{
+    return f_name;
+  }
+
 }
