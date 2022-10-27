@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_entity.dart';
+import 'package:skillogue/screens/main/main_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_country_checkbox.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_gender_checkbox.dart';
@@ -70,12 +71,6 @@ class _SettingsHelperState extends State<SettingsHelper> {
               ),
               Row(
                 children: [
-                  /*
-                    Text(
-                    "Welcome back                ",
-                    style: GoogleFonts.bebasNeue(fontSize: 14),
-                  ),
-                  */
                   Text(
                     widget.profile.username,
                     style: GoogleFonts.bebasNeue(
@@ -111,11 +106,8 @@ class _SettingsHelperState extends State<SettingsHelper> {
                           onPressed: putSkillDialog,
                           child: Text(
                             'My Skills',
-                            //style: TextStyle(color: Colors.white, fontSize: 30),
                             style: GoogleFonts.bebasNeue(
-                                fontSize: 18,
-                                color: Colors
-                                    .white), //GoogleFonts.openSans(color: Colors.white),
+                                fontSize: 18, color: Colors.white),
                           ),
                         ),
                       ),
@@ -133,11 +125,8 @@ class _SettingsHelperState extends State<SettingsHelper> {
                           onPressed: putLanguageDialog,
                           child: Text(
                             'my Languages',
-                            //style: TextStyle(color: Colors.white, fontSize: 30),
                             style: GoogleFonts.bebasNeue(
-                                fontSize: 18,
-                                color: Colors
-                                    .white), //GoogleFonts.openSans(color: Colors.white),
+                                fontSize: 18, color: Colors.white),
                           ),
                         ),
                       ),
@@ -154,12 +143,9 @@ class _SettingsHelperState extends State<SettingsHelper> {
                         child: TextButton(
                           onPressed: putCountryDialog,
                           child: Text(
-                            'my country', //CHANGE WITH CHOOSEBAR or RADIOLIST TILE
-                            //style: TextStyle(color: Colors.white, fontSize: 30),
+                            'my country',
                             style: GoogleFonts.bebasNeue(
-                                fontSize: 18,
-                                color: Colors
-                                    .white), //GoogleFonts.openSans(color: Colors.white),
+                                fontSize: 18, color: Colors.white),
                           ),
                         ),
                       ),
@@ -274,11 +260,8 @@ class _SettingsHelperState extends State<SettingsHelper> {
                       onPressed: putGenderDialog,
                       child: Text(
                         'Gender',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
                         style: GoogleFonts.bebasNeue(
-                            fontSize: 24,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
+                            fontSize: 24, color: Colors.white),
                       ),
                     ),
                   ),
@@ -297,14 +280,18 @@ class _SettingsHelperState extends State<SettingsHelper> {
                       borderRadius: BorderRadius.circular(40)),
                   child: Center(
                     child: TextButton(
-                      onPressed: updateProfileSettings,
+                      onPressed: () {
+                        updateProfileSettings();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MainScreen(widget.profile),
+                            ));
+                      },
                       child: Text(
                         'Save',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
                         style: GoogleFonts.bebasNeue(
-                            fontSize: 30,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
+                            fontSize: 30, color: Colors.white),
                       ),
                     ),
                   ),
@@ -334,7 +321,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
       ..set('gender', widget.profile.gender)
       ..set('skills', widget.profile.skills)
       ..set('languages', widget.profile.languages)
-      ..set('age', controllerAge.text);
+      ..set('age', int.parse(controllerAge.text));
     await oldProfile.save();
   }
 

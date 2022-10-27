@@ -2,21 +2,23 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 
 class Message {
+  String objectId;
   String sender;
   String receiver;
   String text;
   DateTime date;
   bool read;
 
-  Message(this.sender, this.receiver, this.text, this.date, this.read);
+  Message(this.objectId, this.sender, this.receiver, this.text, this.date,
+      this.read);
 }
 
-Future<void> sendMessage(Message m) async {
+Future<void> sendMessage(String source, String dest, String text) async {
   final message = ParseObject('Message')
-    ..set('sender', m.sender)
-    ..set('receiver', m.receiver)
-    ..set('text', m.text)
-    ..set('date', m.date);
+    ..set('sender', source)
+    ..set('receiver', dest)
+    ..set('text', text)
+    ..set('date', DateTime.now());
   await message.save();
 }
 
@@ -37,14 +39,14 @@ Future<List<Conversation>> getConversationsFromMessages(String username) async {
     }
     for (Conversation y in c) {
       if (y.username == newUsername) {
-        y.messages.add(SingleMessage(x.text, x.date, outgoing, x.read));
+        y.messages.add(SingleMessage(x.objectId, x.text, x.date, outgoing, x.read));
         added = true;
         break;
       }
     }
     if (added == false) {
-      c.add(
-          Conversation(newUsername, [SingleMessage(x.text, x.date, outgoing, x.read)]));
+      c.add(Conversation(
+          newUsername, [SingleMessage(x.objectId, x.text, x.date, outgoing, x.read)]));
     }
   }
   return c;
@@ -83,10 +85,18 @@ List<Message> messagesFromResults(List<ParseObject> results) {
 
 Message messageFromJson(dynamic t) {
   return Message(
-    t['sender'] as String,
-    t['receiver'] as String,
-    t['text'] as String,
-    t['date'] as DateTime,
-    t['read'] as bool
-   );
+      t['objectId'] as String,
+      t['sender'] as String,
+      t['receiver'] as String,
+      t['text'] as String,
+      t['date'] as DateTime,
+      t['read'] as bool);
+}
+
+void newMessage() async {
+
+}
+
+Future<void> setRead(String user1, String user2) async {
+
 }

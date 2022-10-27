@@ -1,116 +1,122 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/authorization/login.dart';
 
-class RegistrationPage extends StatelessWidget {
-  const RegistrationPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter SignUp',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: RegistrationPage_Helper(),
-    );
-  }
-}
-
-class RegistrationPage_Helper extends StatefulWidget {
-  const RegistrationPage_Helper({super.key});
+class Registration extends StatefulWidget {
+  const Registration({Key? key}) : super(key: key);
 
   @override
-  _RegistrationPage_HelperState createState() =>
-      _RegistrationPage_HelperState();
+  State<Registration> createState() => _RegistrationState();
 }
 
-class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
+class _RegistrationState extends State<Registration> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
   final controllerEmail = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Sign Up'),
-        ),
-        body: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  height: 200,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 50),
+                child: SizedBox(
+                  height: 300,
                   child: Image.asset(
                     'assets/images/logo.png',
                   ),
                 ),
-                SizedBox(
-                  height: 16,
-                ),
-                Center(
-                  child: const Text('User registration',
-                      style: TextStyle(fontSize: 16)),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: TextField(
                   controller: controllerUsername,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black)),
-                      labelText: 'Username'),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(color: Colors.white)),
+                    labelText: 'Username',
+                    hintText: 'Username',
+                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                    filled: true,
+                    fillColor: Colors.grey[850],
+                  ),
                 ),
-                SizedBox(
-                  height: 8,
-                ),
-                TextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: TextField(
                   controller: controllerEmail,
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black)),
-                      labelText: 'E-mail'),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(color: Colors.white)),
+                    labelText: 'Email',
+                    hintText: 'Email',
+                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                    filled: true,
+                    fillColor: Colors.grey[850],
+                  ),
                 ),
-                SizedBox(
-                  height: 8,
-                ),
-                TextField(
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: TextField(
                   controller: controllerPassword,
-                  obscureText: true,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black)),
-                      labelText: 'Password'),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Container(
-                  height: 50,
-                  child: TextButton(
-                    child: const Text('Sign Up'),
-                    onPressed: () => doUserRegistration(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(color: Colors.white)),
+                    labelText: 'Password',
+                    hintText: 'Password',
+                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                    filled: true,
+                    fillColor: Colors.grey[850],
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30, top: 150),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: Colors.blue[400],
+                      borderRadius: BorderRadius.circular(40)),
+                  child: Center(
+                    child: TextButton(
+                      child: Text(
+                        'Sign Up',
+                        //style: TextStyle(color: Colors.white, fontSize: 30),
+                        style: GoogleFonts.bebasNeue(
+                            fontSize: 30,
+                            color: Colors
+                                .white), //GoogleFonts.openSans(color: Colors.white),
+                      ),
+                      onPressed: () => doUserRegistration(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
+    );
   }
 
   void showSuccess(String username) {
@@ -127,7 +133,7 @@ class _RegistrationPage_HelperState extends State<RegistrationPage_Helper> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Login(),
+                    builder: (context) => Container(),
                   ),
                 );
               },

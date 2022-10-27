@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home/message/conversation_widget.dart';
 import 'package:skillogue/utils/colors.dart';
 
 class ChatCard extends StatelessWidget {
-  ChatCard({
-    Key? key,
-    required this.c,
-  }) : super(key: key);
 
-  final Conversation c;
+
+  Profile p;
+  Conversation c;
+
+  ChatCard(this.p, this.c, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class ChatCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ConversationWidget(c),
+            builder: (context) => ConversationWidget(c, p),
           ),
         );
 
@@ -92,7 +93,7 @@ class ChatCard extends StatelessWidget {
   }
 
   Opacity getLastMessage() {
-    if (c.messages[0].read == false) {
+    if (c.messages[0].read == false && c.messages[0].outgoing == false) {
       return Opacity(
         opacity: 0.95,
         child: Text(

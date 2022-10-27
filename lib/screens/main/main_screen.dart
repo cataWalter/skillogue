@@ -5,7 +5,6 @@ import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_entity.dart';
 import 'package:skillogue/screens/home/event.dart';
-import 'package:skillogue/screens/home/home.dart';
 import 'package:skillogue/screens/home/message/message_widget.dart';
 import 'package:skillogue/screens/home/profile_widget.dart';
 import 'package:skillogue/screens/home/search.dart';
@@ -76,6 +75,7 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     APP_NAME,
@@ -90,22 +90,12 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  /*
-                    Text(
-                    "Welcome back                ",
-                    style: GoogleFonts.bebasNeue(fontSize: 14),
-                  ),
-                  */
-                  Text(
-                    widget.profile.fullName,
-                    style: GoogleFonts.bebasNeue(
-                      fontSize: 24,
-                    ),
-                  ),
-                ],
-              )
+              Text(
+                widget.profile.username,
+                style: GoogleFonts.bebasNeue(
+                  fontSize: 24,
+                ),
+              ),
             ],
           ),
         ),
@@ -168,8 +158,6 @@ class _MainScreenHelperState extends State<MainScreenHelper> {
 
   Widget getScreen() {
     switch (_selectedItemIndex) {
-      case HOME:
-        return HomeWidget();
       case SEARCH:
         return SearchWidget(widget.profile, widget.search);
       case PROFILE:

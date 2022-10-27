@@ -6,10 +6,11 @@ class Conversation {
 }
 
 class SingleMessage {
+  String objectId;
   String text;
   DateTime date;
   bool outgoing;
   bool read;
 
-  SingleMessage(this.text, this.date, this.outgoing, this.read);
+  SingleMessage(this.objectId, this.text, this.date, this.outgoing, this.read);
 }

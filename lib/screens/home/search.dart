@@ -50,25 +50,142 @@ class _SearchWidgetState extends State<SearchWidget> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(
-              height: 80,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
               children: [
+                const SizedBox(
+                  height: 80,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: TextButton(
+                            onPressed: putSkillDialog,
+                            child: Text(
+                              'Skills',
+                              //style: TextStyle(color: Colors.white, fontSize: 30),
+                              style: GoogleFonts.bebasNeue(
+                                  fontSize: 24,
+                                  color: Colors
+                                      .white), //GoogleFonts.openSans(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: TextButton(
+                            onPressed: putLanguageDialog,
+                            child: Text(
+                              'Languages',
+                              //style: TextStyle(color: Colors.white, fontSize: 30),
+                              style: GoogleFonts.bebasNeue(
+                                  fontSize: 24,
+                                  color: Colors
+                                      .white), //GoogleFonts.openSans(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: TextButton(
+                            onPressed: putCountryDialog,
+                            child: Text(
+                              'Countries',
+                              style: GoogleFonts.bebasNeue(
+                                  fontSize: 24,
+                                  color: Colors
+                                      .white), //GoogleFonts.openSans(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                spacer(),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: TextField(
+                      controller: controllerCity,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.none,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'City',
+                        hintText: 'City',
+                        hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                        filled: true,
+                        fillColor: Colors.grey[850],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: TextField(
+                      controller: controllerRegion,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.none,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'Region',
+                        hintText: 'Region',
+                        hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                        filled: true,
+                        fillColor: Colors.grey[850],
+                      ),
+                    ),
+                  ),
+                ),
+                spacer(),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 140.0),
                   child: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(20)),
                     child: Center(
                       child: TextButton(
-                        onPressed: putSkillDialog,
+                        onPressed: putGenderDialog,
                         child: Text(
-                          'Skills',
+                          'Gender',
                           //style: TextStyle(color: Colors.white, fontSize: 30),
                           style: GoogleFonts.bebasNeue(
                               fontSize: 24,
@@ -79,225 +196,119 @@ class _SearchWidgetState extends State<SearchWidget> {
                     ),
                   ),
                 ),
+                spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      "From",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(
+                      width: 140,
+                      child: TextField(
+                        controller: controllerMinAge,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.none,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          labelText: 'Minimum Age',
+                          hintText: 'Minimum Age',
+                          hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                          filled: true,
+                          fillColor: Colors.grey[850],
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      "To",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 140,
+                      child: TextField(
+                        controller: controllerMaxAge,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.none,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: Colors.white,
+                          )),
+                          labelText: 'Maximum Age',
+                          hintText: 'Maximum Age',
+                          hintStyle: TextStyle(
+                            color: Colors.blueGrey[400],
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[850],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 180,
+                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20)),
+                        color: Colors.teal.shade300,
+                        borderRadius: BorderRadius.circular(40)),
                     child: Center(
                       child: TextButton(
-                        onPressed: putLanguageDialog,
                         child: Text(
-                          'Languages',
+                          'Search',
                           //style: TextStyle(color: Colors.white, fontSize: 30),
                           style: GoogleFonts.bebasNeue(
-                              fontSize: 24,
+                              fontSize: 30,
                               color: Colors
                                   .white), //GoogleFonts.openSans(color: Colors.white),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Center(
-                      child: TextButton(
-                        onPressed: putCountryDialog,
-                        child: Text(
-                          'Countries',
-                          style: GoogleFonts.bebasNeue(
-                              fontSize: 24,
-                              color: Colors
-                                  .white), //GoogleFonts.openSans(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            spacer(),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: SizedBox(
-                width: double.maxFinite,
-                child: TextField(
-                  controller: controllerCity,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)),
-                    labelText: 'City',
-                    hintText: 'City',
-                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                    filled: true,
-                    fillColor: Colors.grey[850],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: SizedBox(
-                width: double.maxFinite,
-                child: TextField(
-                  controller: controllerRegion,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)),
-                    labelText: 'Region',
-                    hintText: 'Region',
-                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                    filled: true,
-                    fillColor: Colors.grey[850],
-                  ),
-                ),
-              ),
-            ),
-            spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 140.0),
-              child: Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Center(
-                  child: TextButton(
-                    onPressed: putGenderDialog,
-                    child: Text(
-                      'Gender',
-                      //style: TextStyle(color: Colors.white, fontSize: 30),
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 24,
-                          color: Colors
-                              .white), //GoogleFonts.openSans(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Text(
-                  "From",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  width: 140,
-                  child: TextField(
-                    controller: controllerMinAge,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      labelText: 'Minimum Age',
-                      hintText: 'Minimum Age',
-                      hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                      filled: true,
-                      fillColor: Colors.grey[850],
-                    ),
-                  ),
-                ),
-                const Text(
-                  "To",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  width: 140,
-                  child: TextField(
-                    controller: controllerMaxAge,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      labelText: 'Maximum Age',
-                      hintText: 'Maximum Age',
-                      hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                      filled: true,
-                      fillColor: Colors.grey[850],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 220,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Colors.teal.shade300,
-                    borderRadius: BorderRadius.circular(40)),
-                child: Center(
-                  child: TextButton(
-                    child: Text(
-                      'Search',
-                      //style: TextStyle(color: Colors.white, fontSize: 30),
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 30,
-                          color: Colors
-                              .white), //GoogleFonts.openSans(color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      saveSearch();
-                      searchResults =
-                          await findUsers(widget.curProfile.username);
-                      Comparator<SearchResult> sortById =
-                          (a, b) => b.lastLogin.compareTo(a.lastLogin);
-                      searchResults.sort(sortById);
-                      if (searchResults.isNotEmpty) {
-                        setState(() {
-                          _searchResults = true;
-                        });
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("!No user found!"),
-                              content: const Text(
-                                  "Try to look for people outside your sphere."),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text("OK"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
+                        onPressed: () async {
+                          saveSearch();
+                          searchResults =
+                              await findUsers(widget.curProfile.username);
+                          Comparator<SearchResult> sortById =
+                              (a, b) => b.lastLogin.compareTo(a.lastLogin);
+                          searchResults.sort(sortById);
+                          if (searchResults.isNotEmpty) {
+                            setState(() {
+                              _searchResults = true;
+                            });
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("!No user found!"),
+                                  content: const Text(
+                                      "Try to look for people outside your sphere."),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
                             );
-                          },
-                        );
-                      }
-                    },
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -337,9 +348,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               subtitle: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  profileDescription(searchResults[index]) +
-                      "\nSkills: " +
-                      searchResultsSkills(searchResults[index]),
+                  "${profileDescription(searchResults[index])}\nSkills: ${searchResultsSkills(searchResults[index])}",
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -347,7 +356,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                 onPressed: () {
                   sendNewMessage(searchResults[index].username);
                 },
-                icon: Icon(Icons.message_outlined),
+                icon: const Icon(Icons.message_outlined),
               ),
             ),
           ),
@@ -357,18 +366,18 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   String searchResultsLanguages(SearchResult s) {
-    String res = s.languages[0] + " | ";
+    String res = "${s.languages[0]} | ";
     for (var i = 1; i < s.languages.length - 1; i++) {
-      res = res + s.languages[i] + " | ";
+      res = "$res${s.languages[i]} | ";
     }
     res = res + s.languages[s.languages.length - 1];
     return res;
   }
 
   String searchResultsSkills(SearchResult s) {
-    String res = s.skills[0] + " | ";
+    String res = "${s.skills[0]} | ";
     for (var i = 1; i < s.skills.length - 1; i++) {
-      res = res + s.skills[i] + " | ";
+      res = "$res${s.skills[i]} | ";
     }
     res = res + s.skills[s.skills.length - 1];
     return res;
@@ -572,13 +581,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                                       .white), //GoogleFonts.openSans(color: Colors.white),
                             ),
                             onPressed: () {
-                              Message m = Message(
-                                  widget.curProfile.username,
-                                  destUsername,
-                                  controllerNewMessage.text,
-                                  DateTime.now(),
-                                  false);
-                              sendMessage(m);
+                              sendMessage(widget.curProfile.username,
+                                  destUsername, controllerNewMessage.text);
                               updateContacted(
                                   widget.curProfile.username, destUsername);
                               Navigator.of(context).pop();
