@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/home/message/chat_card_widget.dart';
+import 'package:skillogue/widgets/chat_card_widget.dart';
 
 class MessageWidget extends StatefulWidget {
   Profile profile;

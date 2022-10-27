@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skillogue/entities/search_entity.dart';
+import 'package:skillogue/entities/search.dart';
 
 class SearchCountryCheckbox extends StatefulWidget {
   String text;

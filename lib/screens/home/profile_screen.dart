@@ -35,7 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late final String region;
   late final int age;
   late final String gender;
-
   late final List<String> languages;
   late final List<String> skills;
   String emptyField = "";
@@ -53,26 +52,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 50,
               ),
-              Center(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: getRandomDarkColor(),
-                      child: Text(
-                        initials(fullName),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 60,
-                        ),
+              Column(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: getRandomDarkColor(),
+                    child: Text(
+                      initials(fullName),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 60,
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    columnInfoType(widget.profile.fullName, "Full Name"),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      columnInfoType(widget.profile.fullName, "Full Name"),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 30,
@@ -154,7 +156,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Center(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  backgroundColor: Colors.blueGrey[800],
+                                  content: const SizedBox(
+                                    height: double.maxFinite,
+                                    width: double.maxFinite,
+                                    child: Text("ueueue"),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           child: Text(
                             'Suggestions',
                             style: GoogleFonts.bebasNeue(
@@ -213,73 +229,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return emptyField;
   }
 
-  getIcon(IconData icono) {
-    return Icon(
-      icono,
-      color: Colors.blueGrey[400],
-    );
-  }
-
-  characteristics(IconData myIcon, String datoEnCuestion) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(width: 20.0),
-        getIcon(myIcon),
-        const SizedBox(
-          width: 10.0,
-        ),
-        Text(
-          datoEnCuestion,
-          style: const TextStyle(
-            color: Colors.white,
-            letterSpacing: 2.0,
-          ),
-        ),
-      ],
-    );
-  }
-
-  characteristics2(IconData myIcon, List<String> datoEnCuestion) {
-    String listJoin = datoEnCuestion.join(" ,");
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(width: 20.0),
-        getIcon(myIcon),
-        const SizedBox(
-          width: 10.0,
-        ),
-        Text(
-          listJoin,
-          style: const TextStyle(
-            color: Colors.white,
-            letterSpacing: 2.0,
-          ),
-        ),
-      ],
-    );
-  }
-
   Column columnInfoType(String info, String type) {
     if (info.isEmpty) {
       info = emptyField;
     }
     return Column(
       children: [
-        Text(
-          type,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.35),
-            fontSize: 8,
-          ),
+        Row(
+          children: [
+            Text(
+              type,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.35),
+                fontSize: 12,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 6.0),
+              child: SizedBox(
+                height: 20,
+                width: 20,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.white,
+                  child: const Icon(
+                    Icons.edit,
+                    color: Colors.black,
+                    size: 10,
+                  ),
+                  onPressed: () {},
+                  //child: Icon(Icons.add),
+                ),
+              ),
+            ),
+          ],
         ),
         Text(
           info,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -297,7 +285,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           type,
           style: TextStyle(
             color: Colors.white.withOpacity(0.35),
-            fontSize: 8,
+            fontSize: 12,
           ),
         ),
         Text(
@@ -305,7 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           textAlign: a,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -313,46 +301,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  toSkills(String skill) {
-    return Text(
-      skill,
-      style: TextStyle(
-        color: Colors.blueGrey[400],
-        letterSpacing: 2.0,
-      ),
-    );
-  }
-
-  Text getThirdText(int n) {
-    if (n == 0) {
-      return const Text(
-        "",
-        style: TextStyle(color: Colors.greenAccent),
-      );
+  initials(String fullName) {
+    if (fullName.isEmpty) {
+      return "";
     }
-    String res = '★';
-    while (n != 1) {
-      res = '$res★';
-      n--;
+    String fName = fullName.substring(0, 1).toUpperCase();
+    int indexSpace = fullName.indexOf(" ");
+    if (indexSpace != -1) {
+      String fSurname =
+      fullName.substring(indexSpace, indexSpace + 1).toUpperCase();
+      return fName + fSurname;
+    } else {
+      return fName;
     }
-    return Text(
-      res,
-      style: const TextStyle(color: Colors.greenAccent),
-    );
-  }
-}
-
-initials(String fullName) {
-  if (fullName.isEmpty) {
-    return "";
-  }
-  String fName = fullName.substring(0, 1).toUpperCase();
-  int indexSpace = fullName.indexOf(" ");
-  if (indexSpace != -1) {
-    String fSurname =
-        fullName.substring(indexSpace, indexSpace + 1).toUpperCase();
-    return fName + fSurname;
-  } else {
-    return fName;
   }
 }

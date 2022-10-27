@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search_entity.dart';
-import 'package:skillogue/screens/main/main_screen.dart';
+import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/screens/home/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_country_checkbox.dart';
 import 'package:skillogue/widgets/checkboxes/profile/profile_gender_checkbox.dart';
@@ -285,7 +285,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainScreen(widget.profile),
+                              builder: (context) => Home(widget.profile),
                             ));
                       },
                       child: Text(

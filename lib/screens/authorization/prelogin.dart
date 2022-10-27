@@ -26,7 +26,7 @@ class _PreLoginState extends State<PreLogin> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                       color: Colors.blue[400],
                       borderRadius: BorderRadius.circular(40)),
@@ -44,7 +44,7 @@ class _PreLoginState extends State<PreLogin> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),
+                            builder: (context) => const Login(),
                           ),
                         );
                       },
@@ -74,7 +74,7 @@ class _PreLoginState extends State<PreLogin> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Registration(),
+                            builder: (context) => const Registration(),
                           ),
                         );
                       },

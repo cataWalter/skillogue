@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search_entity.dart';
+import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/entities/search_result.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/checkboxes/search/search_country_checkbox.dart';
