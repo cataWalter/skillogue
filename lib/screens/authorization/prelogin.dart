@@ -11,7 +11,6 @@ class PreLogin extends StatefulWidget {
 }
 
 class _PreLoginState extends State<PreLogin> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +44,7 @@ class _PreLoginState extends State<PreLogin> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) => Login(),
                           ),
                         );
                       },
@@ -75,7 +74,7 @@ class _PreLoginState extends State<PreLogin> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegistrationPage(),
+                            builder: (context) => Registration(),
                           ),
                         );
                       },
@@ -89,5 +88,4 @@ class _PreLoginState extends State<PreLogin> {
       ),
     );
   }
-
 }

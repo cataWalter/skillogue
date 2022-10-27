@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home/message/menu.dart';
 
 class ConversationWidget extends StatefulWidget {
   Conversation c;
+  Profile p;
 
-  ConversationWidget(this.c, {super.key});
+  ConversationWidget(this.c, this.p, {super.key});
 
   @override
   State<ConversationWidget> createState() => _ConversationWidgetState();
@@ -17,8 +20,8 @@ class _ConversationWidgetState extends State<ConversationWidget> {
   Widget build(BuildContext context) {
     final newMessageController = TextEditingController();
     return MaterialApp(
-      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+
       home: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
@@ -27,7 +30,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: const Text("Chat"),
+          title: Text(widget.c.username),
           actions: [
             PopupMenuButton(
               color: myGrey,
@@ -100,8 +103,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                                 hintText: "Write message...",
                                 hintStyle: TextStyle(color: Colors.grey[400]),
                                 border: InputBorder.none),
-                            style: TextStyle(
-                                color: Colors.grey[400]), //<-- SEE HERE
+                            style: TextStyle(color: Colors.grey[400]),
                           ),
                         ),
                       ),
@@ -115,9 +117,17 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: FloatingActionButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            final message = ParseObject('Message')
+                              ..set('sender', widget.p.username)
+                              ..set('receiver', widget.c.username)
+                              ..set('text', newMessageController.text)
+                              ..set('date', DateTime.now())
+                              ..set('read', false);
+                            await message.save();
                             setState(() {
                               widget.c.messages.add(SingleMessage(
+                                  "",
                                   newMessageController.text,
                                   DateTime.now(),
                                   true,
@@ -234,8 +244,5 @@ class _ConversationWidgetState extends State<ConversationWidget> {
   @override
   void initState() {
     super.initState();
-    for (SingleMessage x in widget.c.messages) {
-      x.read = true;
-    }
   }
 }

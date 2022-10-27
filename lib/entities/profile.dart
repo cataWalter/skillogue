@@ -9,7 +9,6 @@ class Profile {
   String fullName;
   String country;
   String city;
-  String region;
   String gender;
   int age;
   int points;
@@ -18,8 +17,7 @@ class Profile {
   List<String> languages = [];
   List<Message> messages = [];
 
-  Profile(this.objectId, this.username, this.fullName, this.country, this.city,
-      this.region, this.gender, this.age, this.points);
+  Profile(this.objectId, this.username, this.fullName, this.country, this.city, this.gender, this.age, this.points);
 
   void addSkill(String text) {
     if (!skills.contains(text)) {
@@ -106,7 +104,6 @@ Profile profileFromJson(dynamic t) {
     t['fullName'] as String,
     t['country'] as String,
     t['city'] as String,
-    t['region'] as String,
     t['gender'] as String,
     t['age'] as int,
     t['points'] as int,
@@ -119,7 +116,6 @@ void newProfileUpload(String username) async {
     ..set('fullName', "")
     ..set('country', "")
     ..set('city', "")
-    ..set('region', "")
     ..set('gender', "")
     ..set('age', 0)
     ..set('points', 0);

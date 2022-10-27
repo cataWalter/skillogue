@@ -1,17 +1,14 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
 import 'package:skillogue/screens/settings.dart';
 import 'package:skillogue/utils/colors.dart';
-import 'package:skillogue/entities/knowledge.dart';
 
 class ProfileScreen extends StatefulWidget {
-  Profile profile;
+  final Profile profile;
 
-  ProfileScreen(this.profile,{super.key});
+  const ProfileScreen(this.profile, {super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -25,201 +22,196 @@ class _ProfileScreenState extends State<ProfileScreen> {
     fullName = widget.profile.fullName;
     country = widget.profile.country;
     city = widget.profile.city;
-    region = widget.profile.region;
     age = widget.profile.age;
-    //lastLogin = widget.profile.lastLogin;
     languages = widget.profile.languages;
     skills = widget.profile.skills;
     gender = widget.profile.gender;
   }
 
-  late String username;
-  late String fullName;
-  late String country;
-  late String city;
-  late String region;
-  late int age;
-  late String gender;
-  // late DateTime lastLogin;
-  late List<String> languages;
-  late List<String> skills;
+  late final String username;
+  late final String fullName;
+  late final String country;
+  late final String city;
+  late final String region;
+  late final int age;
+  late final String gender;
+
+  late final List<String> languages;
+  late final List<String> skills;
+  String emptyField = "";
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(14.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 50,),
-          Center(
-            child: CircleAvatar(
-              radius: 24,
-              backgroundColor: getRandomDarkColor(),
-              child: Text(
-                //"NC",
-                iniciales(fullName),
-                style: TextStyle(
-                  color: Colors.white,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(14.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
+              Center(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: getRandomDarkColor(),
+                      child: Text(
+                        initials(fullName),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 60,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    columnInfoType(widget.profile.fullName, "Full Name"),
+                  ],
                 ),
               ),
-            ),
-          ),
-          linea(),
-
-          // GENDER + FULL NAME + AGE
-          characteristics(Icons.face, '$fullName'),
-
-          const SizedBox(height: 30.0),
-
-          // AGE + gender
-          // GENDER + FULL NAME + AGE
-          characteristics(Icons.info_outline, '$gender, $age years'),
-
-          const SizedBox(height: 30.0),
-
-          // CITY, REGION, COUNTRY
-          characteristics(Icons.location_city, '$city, $region, $country'),
-
-          const SizedBox(height: 30.0),
-
-          // LANGUAGE
-          characteristics2(Icons.spatial_audio_off, languages),
-
-          const SizedBox(height: 30.0),
-
-          // LAST LOGIN
-          characteristics(Icons.update, 'last_login'),
-
-          linea(),
-
-          // skill - categoria - nivel
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                // skill
+              const SizedBox(
+                height: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    columnInfoType(widget.profile.age.toString(), "Age"),
+                    columnInfoType(widget.profile.city, "City"),
+                    columnInfoType(widget.profile.country, "Country"),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'SKILLS',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                  columnAlignmentInfoType(
+                    formatList(widget.profile.skills),
+                    "Skills",
+                    TextAlign.start,
                   ),
-                  const SizedBox(height: 12.0),
-                  ToSkills('swim'),
-                  const SizedBox(height: 12.0),
-                  ToSkills('draw'),
+                  columnAlignmentInfoType(
+                    formatList(widget.profile.languages),
+                    "Languages",
+                    TextAlign.end,
+                  ),
                 ],
               ),
               const SizedBox(
-                width: 20.0,
-              ),
-             /* Column(
-                // categoria
-                children: [
-                  const Text(
-                    'CATEGORY',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  ToSkills('Sport'),
-                  const SizedBox(height: 12.0),
-                  ToSkills('Creativity'),
-                ],
-              ),
-              const SizedBox(
-                width: 20.0,
-              ),*/
-              Column(
-                // nivel
-                children: [
-                  const Text(
-                    'NIVEL',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  getThirdText(4),
-                  const SizedBox(height: 10.0),
-                  getThirdText(0),
-                ],
-              ),
-              const SizedBox(
-                width: 20.0,
+                height: 200,
               ),
             ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    Settings(widget.profile)));
-                      },
-                      child: Text(
-                        'Settings',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
-                        style: GoogleFonts.bebasNeue(
-                            fontSize: 18,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Settings(widget.profile)));
+                          },
+                          child: Text(
+                            'Settings',
+                            style: GoogleFonts.bebasNeue(
+                                fontSize: 18, color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'Suggestions',
+                            style: GoogleFonts.bebasNeue(
+                                fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const PreLogin()));
+                          },
+                          child: Text(
+                            'Log Out',
+                            style: GoogleFonts.bebasNeue(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PreLogin()));
-                      },
-                      child: Text(
-                        'Log Out',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
-                        style: GoogleFonts.bebasNeue(
-                            fontSize: 18,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
+              const SizedBox(
+                height: 30,
               ),
             ],
           ),
-        ],
-      ),
+        )
+      ],
     );
-  } //results
+  }
+
+  String formatList(List<String> l) {
+    if (l.isNotEmpty) {
+      String res = l[0];
+      for (int i = 1; i < l.length; i++) {
+        res = "$res\n${l[i]}";
+      }
+      return res;
+    }
+    return emptyField;
+  }
 
   getIcon(IconData icono) {
     return Icon(
@@ -249,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   characteristics2(IconData myIcon, List<String> datoEnCuestion) {
-    String list_join = datoEnCuestion.join(" ,");
+    String listJoin = datoEnCuestion.join(" ,");
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -260,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           width: 10.0,
         ),
         Text(
-          list_join,
+          listJoin,
           style: const TextStyle(
             color: Colors.white,
             letterSpacing: 2.0,
@@ -270,17 +262,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  linea() {
-    return Divider(
-      height: 60.0,
-      color: Colors.blueGrey[400],
-      endIndent: 20.0,
-      indent: 20.0,
-      thickness: 1,
+  Column columnInfoType(String info, String type) {
+    if (info.isEmpty) {
+      info = emptyField;
+    }
+    return Column(
+      children: [
+        Text(
+          type,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.35),
+            fontSize: 8,
+          ),
+        ),
+        Text(
+          info,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 
-  ToSkills(String skill) {
+  Column columnAlignmentInfoType(String info, String type, TextAlign a) {
+    if (info.isEmpty) {
+      info = emptyField;
+    }
+    return Column(
+      children: [
+        Text(
+          type,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.35),
+            fontSize: 8,
+          ),
+        ),
+        Text(
+          info,
+          textAlign: a,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  toSkills(String skill) {
     return Text(
       skill,
       style: TextStyle(
@@ -309,16 +342,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-iniciales(String fname){
-  // It returns the first letter of your name and the first later of your surname
-  String f_name = fname.substring(0, 1).toUpperCase();
-  int index_space = fname.indexOf(" ");
-  if (index_space != -1){
-    String f_surname = fname.substring(index_space, index_space + 1).toUpperCase();
-    return f_name + f_surname;
+initials(String fullName) {
+  if (fullName.isEmpty) {
+    return "";
   }
-  else{
-    return f_name;
+  String fName = fullName.substring(0, 1).toUpperCase();
+  int indexSpace = fullName.indexOf(" ");
+  if (indexSpace != -1) {
+    String fSurname =
+        fullName.substring(indexSpace, indexSpace + 1).toUpperCase();
+    return fName + fSurname;
+  } else {
+    return fName;
   }
-
 }

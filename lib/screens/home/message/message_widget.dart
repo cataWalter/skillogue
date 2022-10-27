@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skillogue/entities/chatCard_widget.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/screens/home/message/chat_card_widget.dart';
 
 class MessageWidget extends StatefulWidget {
   Profile profile;
@@ -18,9 +18,7 @@ class _MessageWidgetState extends State<MessageWidget> {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: widget.c.length,
-      itemBuilder: ((context, index) => ChatCard(
-            c: widget.c[index],
-          )),
+      itemBuilder: ((context, index) => ChatCard(widget.profile, widget.c[index])),
     );
   }
 }
