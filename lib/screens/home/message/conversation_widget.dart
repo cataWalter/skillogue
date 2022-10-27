@@ -3,7 +3,6 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/home/message/menu.dart';
 
 class ConversationWidget extends StatefulWidget {
   Conversation c;
@@ -34,12 +33,10 @@ class _ConversationWidgetState extends State<ConversationWidget> {
           actions: [
             PopupMenuButton(
               color: myGrey,
-              onSelected: (Menu item) {
-                print(item.name);
-              },
+
               itemBuilder: (BuildContext context) => [
                 const PopupMenuItem(
-                  value: Menu.itemOne,
+                  value: 0,
                   child: Text(
                     'Coming soon...',
                     style: TextStyle(color: Colors.white),
@@ -241,8 +238,4 @@ class _ConversationWidgetState extends State<ConversationWidget> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
 }

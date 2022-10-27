@@ -3,17 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search_entity.dart';
-import 'package:skillogue/screens/home/event.dart';
+import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/screens/home/event_screen.dart';
 import 'package:skillogue/screens/home/message/message_widget.dart';
-import 'package:skillogue/screens/home/profile_widget.dart';
-import 'package:skillogue/screens/home/search.dart';
+import 'package:skillogue/screens/home/profile_screen.dart';
+import 'package:skillogue/screens/home/search_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 
-class MainScreen extends StatelessWidget {
+class Home extends StatelessWidget {
   Profile profile;
 
-  MainScreen(this.profile, {super.key});
+  Home(this.profile, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,31 +22,31 @@ class MainScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MainScreen(profile),
+            builder: (context) => Home(profile),
           ),
         );
         return false;
       },
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MainScreenHelper(profile),
+        home: HomeHelper(profile),
         theme: ThemeData(scaffoldBackgroundColor: Colors.black),
       ),
     );
   }
 }
 
-class MainScreenHelper extends StatefulWidget {
+class HomeHelper extends StatefulWidget {
   Profile profile;
   Search search = Search();
 
-  MainScreenHelper(this.profile, {super.key});
+  HomeHelper(this.profile, {super.key});
 
   @override
-  _MainScreenHelperState createState() => _MainScreenHelperState();
+  _HomeHelperState createState() => _HomeHelperState();
 }
 
-class _MainScreenHelperState extends State<MainScreenHelper> {
+class _HomeHelperState extends State<HomeHelper> {
   int _selectedItemIndex = SEARCH;
   List<Conversation> c = [];
 

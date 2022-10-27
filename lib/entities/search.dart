@@ -1,5 +1,4 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search_result.dart';
 
 class Search {

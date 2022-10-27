@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search_entity.dart';
 
 class ProfileLanguageCheckbox extends StatefulWidget {
   String text;
