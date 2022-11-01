@@ -16,9 +16,20 @@ class MessageWidget extends StatefulWidget {
 class _MessageWidgetState extends State<MessageWidget> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.c.length,
-      itemBuilder: ((context, index) => ChatCard(widget.profile, widget.c[index])),
-    );
+    if (widget.c.isNotEmpty) {
+      return ListView.builder(
+        itemCount: widget.c.length,
+        itemBuilder: ((context, index) =>
+            ChatCard(widget.profile, widget.c[index])),
+      );
+    } else {
+      return const Padding(
+        padding: EdgeInsets.only(top: 80, left: 30, right: 30),
+        child: Text(
+          "No conversations here.\nStart making new friends now! :-)",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+      );
+    }
   }
 }

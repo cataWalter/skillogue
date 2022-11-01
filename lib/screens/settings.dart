@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/screens/home/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/checkboxes/profile/profile_country_checkbox.dart';
-import 'package:skillogue/widgets/checkboxes/profile/profile_gender_checkbox.dart';
-import 'package:skillogue/widgets/checkboxes/profile/profile_language_checkbox.dart';
-import 'package:skillogue/widgets/checkboxes/profile/profile_skill_checkbox.dart';
 
 class Settings extends StatelessWidget {
   Profile profile;
@@ -39,7 +39,13 @@ class _SettingsHelperState extends State<SettingsHelper> {
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
-  final controllerRegion = TextEditingController();
+  String dropdownCountryValue = "";
+  String dropdownGenderValue = "";
+  List<String> selectedLanguages = [];
+  List<String> selectedSkills = [];
+
+  bool changedCountry = false;
+  bool changedGender = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +70,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                   SizedBox(
                     height: 40,
                     child: Image.asset(
-                      'assets/images/logo - reduced.png',
+                      'assets/images/logo2.png',
                     ),
                   ),
                 ],
@@ -85,75 +91,12 @@ class _SettingsHelperState extends State<SettingsHelper> {
       ),
       body: Scaffold(
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(12),
           child: Column(
             children: [
               const SizedBox(
                 height: 80,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: putSkillDialog,
-                          child: Text(
-                            'My Skills',
-                            style: GoogleFonts.bebasNeue(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: putLanguageDialog,
-                          child: Text(
-                            'my Languages',
-                            style: GoogleFonts.bebasNeue(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: putCountryDialog,
-                          child: Text(
-                            'my country',
-                            style: GoogleFonts.bebasNeue(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              spacer(),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
@@ -165,8 +108,11 @@ class _SettingsHelperState extends State<SettingsHelper> {
                     autocorrect: false,
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      labelText: 'Full Name',
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      labelText: widget.profile.fullName.isNotEmpty
+                          ? widget.profile.fullName
+                          : "Full Name",
                       hintText: 'Full Name',
                       hintStyle: TextStyle(color: Colors.blueGrey[400]),
                       filled: true,
@@ -174,9 +120,6 @@ class _SettingsHelperState extends State<SettingsHelper> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
               ),
               Align(
                 alignment: Alignment.bottomLeft,
@@ -190,7 +133,9 @@ class _SettingsHelperState extends State<SettingsHelper> {
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white)),
-                      labelText: 'Age',
+                      labelText: widget.profile.age.toString().isNotEmpty
+                          ? widget.profile.age.toString()
+                          : "Age",
                       hintText: 'Age',
                       hintStyle: TextStyle(color: Colors.blueGrey[400]),
                       filled: true,
@@ -198,9 +143,6 @@ class _SettingsHelperState extends State<SettingsHelper> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
               ),
               Align(
                 alignment: Alignment.bottomLeft,
@@ -214,7 +156,9 @@ class _SettingsHelperState extends State<SettingsHelper> {
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white)),
-                      labelText: 'City',
+                      labelText: widget.profile.city.isNotEmpty
+                          ? widget.profile.city
+                          : "City",
                       hintText: 'City',
                       hintStyle: TextStyle(color: Colors.blueGrey[400]),
                       filled: true,
@@ -223,53 +167,166 @@ class _SettingsHelperState extends State<SettingsHelper> {
                   ),
                 ),
               ),
+              Row(
+                children: [
+                  Text(
+                    "Country:",
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(STANDARD_OPACITY)),
+                  ),
+                  const SizedBox(
+                    width: 27,
+                  ),
+                  DropdownButton<String>(
+                    value: widget.profile.country.isNotEmpty
+                        ? widget.profile.country
+                        : dropdownCountryValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.white),
+                    dropdownColor: Colors.blue[900],
+                    underline: Container(
+                      height: 3,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? value) {
+                      changedCountry = true;
+                      setState(() {
+                        dropdownCountryValue = value!;
+                      });
+                    },
+                    items:
+                        countries.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Gender:",
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(STANDARD_OPACITY)),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  DropdownButton<String>(
+                    value: widget.profile.gender.isNotEmpty
+                        ? widget.profile.gender
+                        : dropdownGenderValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.white),
+                    dropdownColor: Colors.blue[900],
+                    underline: Container(
+                      height: 3,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? value) {
+                      changedGender = true;
+                      setState(() {
+                        dropdownGenderValue = value!;
+                      });
+                    },
+                    items:
+                        genders.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(.4),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    MultiSelectBottomSheetField(
+                      initialChildSize: 0.4,
+                      initialValue: widget.profile.languages,
+                      listType: MultiSelectListType.CHIP,
+                      searchable: true,
+                      buttonText: const Text("Languages"),
+                      title: const Text("Languages"),
+                      buttonIcon: const Icon(
+                        Icons.flag,
+                      ),
+                      searchIcon: const Icon(
+                        Icons.search,
+                      ),
+                      items:
+                          languages.map((s) => MultiSelectItem(s, s)).toList(),
+                      onConfirm: (values) {
+                        selectedLanguages =
+                            values.map((e) => e.toString()).toList();
+                      },
+                      chipDisplay: MultiSelectChipDisplay(
+                        onTap: (value) {
+                          setState(() {
+                            selectedLanguages.remove(value.toString());
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 10,
               ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: TextField(
-                    controller: controllerRegion,
-                    keyboardType: TextInputType.text,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      labelText: 'Region',
-                      hintText: 'Region',
-                      hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                      filled: true,
-                      fillColor: Colors.grey[850],
-                    ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(.4),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 2,
                   ),
                 ),
-              ),
-              spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 140.0),
-                child: Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Center(
-                    child: TextButton(
-                      onPressed: putGenderDialog,
-                      child: Text(
-                        'Gender',
-                        style: GoogleFonts.bebasNeue(
-                            fontSize: 24, color: Colors.white),
+                child: Column(
+                  children: <Widget>[
+                    MultiSelectBottomSheetField(
+                      initialChildSize: 0.4,
+                      initialValue: widget.profile.skills,
+                      listType: MultiSelectListType.CHIP,
+                      searchable: true,
+                      buttonText: const Text("Skills"),
+                      title: const Text("Skills"),
+                      buttonIcon: const Icon(
+                        Icons.sports_tennis,
+                      ),
+                      searchIcon: const Icon(
+                        Icons.search,
+                      ),
+                      items: skills.map((s) => MultiSelectItem(s, s)).toList(),
+                      onConfirm: (values) {
+                        selectedSkills =
+                            values.map((e) => e.toString()).toList();
+                      },
+                      chipDisplay: MultiSelectChipDisplay(
+                        onTap: (value) {
+                          setState(() {
+                            selectedSkills.remove(value.toString());
+                          });
+                        },
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-              spacer(),
               const SizedBox(
-                height: 140,
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -281,11 +338,14 @@ class _SettingsHelperState extends State<SettingsHelper> {
                   child: Center(
                     child: TextButton(
                       onPressed: () {
-                        updateProfileSettings();
+                        updateLocalProfileSettings();
+                        updateDatabaseProfileSettings();
+
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Home(widget.profile),
+                              builder: (context) =>
+                                  Home(widget.profile, PROFILE),
                             ));
                       },
                       child: Text(
@@ -304,118 +364,76 @@ class _SettingsHelperState extends State<SettingsHelper> {
     );
   }
 
-  Widget spacer() {
-    return const SizedBox(
-      height: 30,
-    );
+  String? validateName(String s) {
+    if (s == "error") {
+      return "error1";
+    } else {
+      return null;
+    }
   }
 
-  void updateProfileSettings() async {
+  void updateLocalProfileSettings() {
+    if (changedCountry) {
+      widget.profile.country = dropdownCountryValue;
+    }
+    if (changedGender) {
+      widget.profile.gender = dropdownGenderValue;
+    }
+    if (controllerFullName.text.isNotEmpty) {
+      widget.profile.fullName = controllerFullName.text;
+    }
+    if (selectedLanguages.isNotEmpty) {
+      widget.profile.languages = selectedLanguages;
+    }
+    if (selectedSkills.isNotEmpty) {
+      widget.profile.skills = selectedSkills;
+    }
+
+    if (controllerAge.text.isNotEmpty) {
+      int newAge = int.parse(controllerAge.text);
+      if (newAge >= 18 && newAge <= 99) {
+        widget.profile.age = newAge;
+      }
+    }
+    if (controllerCity.text.isNotEmpty) {
+      widget.profile.city = controllerCity.text;
+    }
+  }
+
+  void updateDatabaseProfileSettings() async {
     Profile loggedProfile = await queryByUsername(widget.profile.username);
-    var oldProfile = ParseObject('Profile')
-      ..objectId = loggedProfile.objectId
-      ..set('fullName', controllerFullName.text)
-      ..set('country', widget.profile.country)
+    var oldProfile = ParseObject('Profile')..objectId = loggedProfile.objectId;
+    if (changedCountry) {
+      oldProfile.set('country', dropdownCountryValue);
+    }
+    if (changedGender) {
+      oldProfile.set('gender', dropdownGenderValue);
+    }
+    if (controllerFullName.text.isNotEmpty) {
+      oldProfile.set('fullName', controllerFullName.text);
+    }
+    if (selectedLanguages.isNotEmpty) {
+      oldProfile.set('languages', selectedLanguages);
+    }
+    if (selectedSkills.isNotEmpty) {
+      oldProfile.set('skills', selectedSkills);
+    }
+
+    if (controllerAge.text.isNotEmpty) {
+      int newAge = int.parse(controllerAge.text);
+      if (newAge >= 18 && newAge <= 99) {
+        oldProfile.set('age', newAge);
+      }
+    }
+    if (controllerCity.text.isNotEmpty) {
+      oldProfile.set('city', controllerCity.text);
+    }
+    /*..set('fullName', controllerFullName.text)
       ..set('city', controllerCity.text)
-      ..set('region', controllerRegion.text)
       ..set('gender', widget.profile.gender)
       ..set('skills', widget.profile.skills)
       ..set('languages', widget.profile.languages)
-      ..set('age', int.parse(controllerAge.text));
+      ..set('age', int.parse(controllerAge.text));*/
     await oldProfile.save();
-  }
-
-  void putSkillDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: skills.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: ProfileSkillCheckbox(skills[index], widget.profile),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void putLanguageDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: languages.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title:
-                      ProfileLanguageCheckbox(languages[index], widget.profile),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void putCountryDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: countries.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title:
-                      ProfileCountryCheckbox(countries[index], widget.profile),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void putGenderDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: genders.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: ProfileGenderCheckbox(genders[index], widget.profile),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
   }
 }

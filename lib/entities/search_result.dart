@@ -6,7 +6,6 @@ class SearchResult {
   String gender;
   List<String> languages = [];
   String city;
-  String region;
   int age;
   DateTime lastLogin;
 
@@ -18,7 +17,6 @@ class SearchResult {
       this.gender,
       this.languages,
       this.city,
-      this.region,
       this.age,
       this.lastLogin);
 }

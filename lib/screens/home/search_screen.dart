@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/entities/search_result.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/checkboxes/search/search_country_checkbox.dart';
-import 'package:skillogue/widgets/checkboxes/search/search_gender_checkbox.dart';
-import 'package:skillogue/widgets/checkboxes/search/search_language_checkbox.dart';
-import 'package:skillogue/widgets/checkboxes/search/search_skill_checkbox.dart';
 
 class SearchWidget extends StatefulWidget {
   Profile curProfile;
@@ -22,13 +22,32 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   bool _searchResults = false;
-  final controllerCity = TextEditingController();
-  final controllerRegion = TextEditingController();
-
-  final controllerPassword = TextEditingController();
-  final controllerMinAge = TextEditingController();
-  final controllerMaxAge = TextEditingController();
+  var controllerCity;
+  var controllerMinAge;
+  var controllerMaxAge;
   late List<SearchResult> searchResults;
+  List<String> selectedCountries = [];
+  List<String> selectedSkills = [];
+  List<String> selectedLanguages = [];
+  List<String> selectedGenders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    controllerCity = TextEditingController(text: widget.curSearch.city);
+    if (widget.curSearch.minAge == null) {
+      controllerMinAge = TextEditingController();
+    } else {
+      controllerMinAge =
+          TextEditingController(text: widget.curSearch.minAge.toString());
+    }
+    if (widget.curSearch.maxAge == null) {
+      controllerMaxAge = TextEditingController();
+    } else {
+      controllerMaxAge =
+          TextEditingController(text: widget.curSearch.maxAge.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,77 +74,172 @@ class _SearchWidgetState extends State<SearchWidget> {
             Column(
               children: [
                 const SizedBox(
-                  height: 80,
+                  height: 45,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Center(
-                          child: TextButton(
-                            onPressed: putSkillDialog,
-                            child: Text(
-                              'Skills',
-                              //style: TextStyle(color: Colors.white, fontSize: 30),
-                              style: GoogleFonts.bebasNeue(
-                                  fontSize: 24,
-                                  color: Colors
-                                      .white), //GoogleFonts.openSans(color: Colors.white),
-                            ),
-                          ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(.4),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      MultiSelectBottomSheetField(
+                        initialChildSize: 0.4,
+                        initialValue: widget.curSearch.countries,
+                        listType: MultiSelectListType.CHIP,
+                        searchable: true,
+                        buttonText: const Text("Countries"),
+                        title: const Text("Countries"),
+                        buttonIcon: const Icon(
+                          Icons.flag,
+                        ),
+                        searchIcon: const Icon(
+                          Icons.search,
+                        ),
+                        items: countries
+                            .map((s) => MultiSelectItem(s, s))
+                            .toList(),
+                        onConfirm: (values) {
+                          selectedCountries =
+                              values.map((e) => e.toString()).toList();
+                        },
+                        chipDisplay: MultiSelectChipDisplay(
+                          onTap: (value) {
+                            setState(() {
+                              selectedCountries.remove(value.toString());
+                            });
+                          },
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                spacer(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(.4),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Center(
-                          child: TextButton(
-                            onPressed: putLanguageDialog,
-                            child: Text(
-                              'Languages',
-                              //style: TextStyle(color: Colors.white, fontSize: 30),
-                              style: GoogleFonts.bebasNeue(
-                                  fontSize: 24,
-                                  color: Colors
-                                      .white), //GoogleFonts.openSans(color: Colors.white),
-                            ),
-                          ),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      MultiSelectBottomSheetField(
+                        initialChildSize: 0.4,
+                        initialValue: widget.curSearch.skills,
+                        listType: MultiSelectListType.CHIP,
+                        searchable: true,
+                        buttonText: const Text("Skills"),
+                        title: const Text("Skills"),
+                        buttonIcon: const Icon(
+                          Icons.sports_tennis,
+                        ),
+                        searchIcon: const Icon(
+                          Icons.search,
+                        ),
+                        items:
+                            skills.map((s) => MultiSelectItem(s, s)).toList(),
+                        onConfirm: (values) {
+                          selectedSkills =
+                              values.map((e) => e.toString()).toList();
+                        },
+                        chipDisplay: MultiSelectChipDisplay(
+                          onTap: (value) {
+                            setState(() {
+                              selectedSkills.remove(value.toString());
+                            });
+                          },
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                spacer(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(.4),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Center(
-                          child: TextButton(
-                            onPressed: putCountryDialog,
-                            child: Text(
-                              'Countries',
-                              style: GoogleFonts.bebasNeue(
-                                  fontSize: 24,
-                                  color: Colors
-                                      .white), //GoogleFonts.openSans(color: Colors.white),
-                            ),
-                          ),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      MultiSelectBottomSheetField(
+                        initialChildSize: 0.4,
+                        initialValue: widget.curSearch.languages,
+                        listType: MultiSelectListType.CHIP,
+                        searchable: true,
+                        buttonText: const Text("Languages"),
+                        title: const Text("Languages"),
+                        buttonIcon: const Icon(
+                          Icons.abc_outlined,
+                        ),
+                        searchIcon: const Icon(
+                          Icons.search,
+                        ),
+                        items: languages
+                            .map((s) => MultiSelectItem(s, s))
+                            .toList(),
+                        onConfirm: (values) {
+                          selectedLanguages =
+                              values.map((e) => e.toString()).toList();
+                        },
+                        chipDisplay: MultiSelectChipDisplay(
+                          onTap: (value) {
+                            setState(() {
+                              selectedLanguages.remove(value.toString());
+                            });
+                          },
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                spacer(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(.4),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
                     ),
-                  ],
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      MultiSelectBottomSheetField(
+                        initialChildSize: 0.4,
+                        initialValue: widget.curSearch.genders,
+                        listType: MultiSelectListType.CHIP,
+                        searchable: true,
+                        buttonText: const Text("Genders"),
+                        title: const Text("Genders"),
+                        buttonIcon: const Icon(
+                          Icons.person,
+                        ),
+                        searchIcon: const Icon(
+                          Icons.search,
+                        ),
+                        items:
+                            genders.map((s) => MultiSelectItem(s, s)).toList(),
+                        onConfirm: (values) {
+                          selectedGenders =
+                              values.map((e) => e.toString()).toList();
+                        },
+                        chipDisplay: MultiSelectChipDisplay(
+                          onTap: (value) {
+                            setState(() {
+                              selectedGenders.remove(value.toString());
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 spacer(),
                 Align(
@@ -151,50 +265,6 @@ class _SearchWidgetState extends State<SearchWidget> {
                 ),
                 const SizedBox(
                   height: 10,
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    child: TextField(
-                      controller: controllerRegion,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.none,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        labelText: 'Region',
-                        hintText: 'Region',
-                        hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                        filled: true,
-                        fillColor: Colors.grey[850],
-                      ),
-                    ),
-                  ),
-                ),
-                spacer(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 140.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Center(
-                      child: TextButton(
-                        onPressed: putGenderDialog,
-                        child: Text(
-                          'Gender',
-                          //style: TextStyle(color: Colors.white, fontSize: 30),
-                          style: GoogleFonts.bebasNeue(
-                              fontSize: 24,
-                              color: Colors
-                                  .white), //GoogleFonts.openSans(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
                 spacer(),
                 Row(
@@ -253,14 +323,14 @@ class _SearchWidgetState extends State<SearchWidget> {
                   ],
                 ),
                 const SizedBox(
-                  height: 180,
+                  height: 40,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: Colors.teal.shade300,
+                        color: Colors.blue,
                         borderRadius: BorderRadius.circular(40)),
                     child: Center(
                       child: TextButton(
@@ -273,24 +343,45 @@ class _SearchWidgetState extends State<SearchWidget> {
                                   .white), //GoogleFonts.openSans(color: Colors.white),
                         ),
                         onPressed: () async {
-                          saveSearch();
-                          searchResults =
-                              await findUsers(widget.curProfile.username);
-                          Comparator<SearchResult> sortById =
-                              (a, b) => b.lastLogin.compareTo(a.lastLogin);
-                          searchResults.sort(sortById);
-                          if (searchResults.isNotEmpty) {
-                            setState(() {
-                              _searchResults = true;
-                            });
+                          if (!widget.curProfile.isEmptyProfile()) {
+                            saveSearch();
+                            searchResults =
+                                await findUsers(widget.curProfile.username);
+                            Comparator<SearchResult> sortById =
+                                (a, b) => b.lastLogin.compareTo(a.lastLogin);
+                            searchResults.sort(sortById);
+                            if (searchResults.isNotEmpty) {
+                              setState(() {
+                                _searchResults = true;
+                              });
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("No users found!"),
+                                    content: const Text(":'("),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text("OK"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           } else {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: const Text("!No user found!"),
+                                  title: const Text(
+                                      "Some details about you are still missing!"),
                                   content: const Text(
-                                      "Try to look for people outside your sphere."),
+                                      "Please, set them before looking for others"),
                                   actions: <Widget>[
                                     TextButton(
                                       child: const Text("OK"),
@@ -391,9 +482,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     if (s.city.isNotEmpty) {
       res = "$res${s.city}, ";
     }
-    if (s.region.isNotEmpty) {
-      res = "$res${s.region}, ";
-    }
+
     if (s.age > 0) {
       res = "$res${s.age.toString()}, ";
     }
@@ -402,119 +491,34 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   Widget spacer() {
     return const SizedBox(
-      height: 30,
-    );
-  }
-
-  void putSkillDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: skills.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: SearchSkillCheckbox(skills[index], widget.curSearch),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void putLanguageDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: languages.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: SearchLanguageCheckbox(
-                      languages[index], widget.curSearch),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void putCountryDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: languages.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title:
-                      SearchCountryCheckbox(countries[index], widget.curSearch),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void putGenderDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: genders.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: SearchGenderCheckbox(genders[index], widget.curSearch),
-                );
-              },
-            ),
-          ),
-        );
-      },
+      height: 15,
     );
   }
 
   void saveSearch() {
+    if (selectedGenders.isNotEmpty) {
+      widget.curSearch.genders = selectedGenders;
+    }
+    if (selectedCountries.isNotEmpty) {
+      widget.curSearch.countries = selectedCountries;
+    }
+    if (selectedLanguages.isNotEmpty) {
+      widget.curSearch.languages = selectedLanguages;
+    }
+    if (selectedSkills.isNotEmpty) {
+      widget.curSearch.countries = selectedSkills;
+    }
     if (controllerCity.text.trim() != "") {
       widget.curSearch.city = controllerCity.text.trim();
     }
-    if (controllerRegion.text.trim() != "") {
-      widget.curSearch.region = controllerRegion.text.trim();
-    }
-    widget.curSearch.username = widget.curProfile.username;
     if (controllerMaxAge.text.trim() != "") {
-      widget.curSearch.maxAge = int.parse(controllerMaxAge.text.trim());
+      int maxAge = int.parse(controllerMaxAge.text.trim());
+      if (maxAge <= 99) widget.curSearch.maxAge = maxAge;
     }
     if (controllerMinAge.text.trim() != "") {
-      widget.curSearch.minAge = int.parse(controllerMinAge.text.trim());
+      int minAge = int.parse(controllerMinAge.text.trim());
+      if (minAge >= 18) widget.curSearch.minAge = minAge;
     }
-    return;
   }
 
   void sendNewMessage(String destUsername) {
@@ -592,7 +596,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

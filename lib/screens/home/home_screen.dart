@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
@@ -12,8 +14,9 @@ import 'package:skillogue/utils/constants.dart';
 
 class Home extends StatelessWidget {
   Profile profile;
+  int currentPage;
 
-  Home(this.profile, {super.key});
+  Home(this.profile, this.currentPage, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +25,14 @@ class Home extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Home(profile),
+            builder: (context) => Home(profile, currentPage),
           ),
         );
         return false;
       },
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomeHelper(profile),
+        home: HomeHelper(profile, currentPage),
         theme: ThemeData(scaffoldBackgroundColor: Colors.black),
       ),
     );
@@ -39,22 +42,23 @@ class Home extends StatelessWidget {
 class HomeHelper extends StatefulWidget {
   Profile profile;
   Search search = Search();
+  int currentPage;
 
-  HomeHelper(this.profile, {super.key});
+  HomeHelper(this.profile, this.currentPage, {super.key});
 
   @override
   _HomeHelperState createState() => _HomeHelperState();
 }
 
 class _HomeHelperState extends State<HomeHelper> {
-  int _selectedItemIndex = SEARCH;
   List<Conversation> c = [];
 
   @override
   void initState() {
     super.initState();
-    widget.search = Search();
+
     updateConversations();
+    sleep(const Duration(seconds: 1));
   }
 
   void updateConversations() async {
@@ -85,7 +89,7 @@ class _HomeHelperState extends State<HomeHelper> {
                   SizedBox(
                     height: 40,
                     child: Image.asset(
-                      'assets/images/logo - reduced.png',
+                      'assets/images/logo2.png',
                     ),
                   ),
                 ],
@@ -132,7 +136,7 @@ class _HomeHelperState extends State<HomeHelper> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedItemIndex = index;
+          widget.currentPage = index;
         });
       },
       child: SizedBox(
@@ -144,7 +148,7 @@ class _HomeHelperState extends State<HomeHelper> {
               icon,
               size: 30,
               color:
-                  index == _selectedItemIndex ? Colors.black : Colors.grey[600],
+                  index == widget.currentPage ? Colors.black : Colors.grey[600],
             ),
             Text(
               text,
@@ -157,13 +161,22 @@ class _HomeHelperState extends State<HomeHelper> {
   }
 
   Widget getScreen() {
-    switch (_selectedItemIndex) {
+    switch (widget.currentPage) {
       case SEARCH:
-        return SearchWidget(widget.profile, widget.search);
+        {
+          updateConversations();
+          return SearchWidget(widget.profile, widget.search);
+        }
       case PROFILE:
-        return ProfileScreen(widget.profile);
+        {
+          updateConversations();
+          return ProfileScreen(widget.profile);
+        }
       case EVENTS:
-        return const EventWidget();
+        {
+          updateConversations();
+          return const EventWidget();
+        }
       case MESSAGES:
         {
           updateConversations();

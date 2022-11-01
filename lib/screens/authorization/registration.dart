@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/screens/authorization/prelogin.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -133,7 +134,7 @@ class _RegistrationState extends State<Registration> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Container(),
+                    builder: (context) => const PreLogin(),
                   ),
                 );
               },

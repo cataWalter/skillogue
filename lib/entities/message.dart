@@ -18,7 +18,8 @@ Future<void> sendMessage(String source, String dest, String text) async {
     ..set('sender', source)
     ..set('receiver', dest)
     ..set('text', text)
-    ..set('date', DateTime.now());
+    ..set('date', DateTime.now())
+    ..set('read', false);
   await message.save();
 }
 
@@ -39,14 +40,15 @@ Future<List<Conversation>> getConversationsFromMessages(String username) async {
     }
     for (Conversation y in c) {
       if (y.username == newUsername) {
-        y.messages.add(SingleMessage(x.objectId, x.text, x.date, outgoing, x.read));
+        y.messages
+            .add(SingleMessage(x.objectId, x.text, x.date, outgoing, x.read));
         added = true;
         break;
       }
     }
     if (added == false) {
-      c.add(Conversation(
-          newUsername, [SingleMessage(x.objectId, x.text, x.date, outgoing, x.read)]));
+      c.add(Conversation(newUsername,
+          [SingleMessage(x.objectId, x.text, x.date, outgoing, x.read)]));
     }
   }
   return c;
@@ -91,12 +93,4 @@ Message messageFromJson(dynamic t) {
       t['text'] as String,
       t['date'] as DateTime,
       t['read'] as bool);
-}
-
-void newMessage() async {
-
-}
-
-Future<void> setRead(String user1, String user2) async {
-
 }
