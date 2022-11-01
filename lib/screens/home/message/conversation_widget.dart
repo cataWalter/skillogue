@@ -20,7 +20,6 @@ class _ConversationWidgetState extends State<ConversationWidget> {
     final newMessageController = TextEditingController();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       home: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
@@ -33,7 +32,6 @@ class _ConversationWidgetState extends State<ConversationWidget> {
           actions: [
             PopupMenuButton(
               color: myGrey,
-
               itemBuilder: (BuildContext context) => [
                 const PopupMenuItem(
                   value: 0,
@@ -52,7 +50,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
               child: GroupedListView(
                   padding: const EdgeInsets.all(8),
                   reverse: true,
-                  order: GroupedListOrder.DESC,
+                  order: GroupedListOrder.ASC,
                   useStickyGroupSeparators: true,
                   floatingHeader: true,
                   elements: widget.c.messages,
@@ -237,5 +235,4 @@ class _ConversationWidgetState extends State<ConversationWidget> {
       );
     }
   }
-
 }

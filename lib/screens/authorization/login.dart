@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home/home_screen.dart';
+import 'package:skillogue/utils/constants.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -20,7 +23,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    //doUserLogin("1", "1");
+    //doUserLogin("walter", "1");
   }
 
   void showSuccess(String message) {
@@ -77,10 +80,11 @@ class _LoginState extends State<Login> {
         isLoggedIn = true;
       });
       if (!mounted) return;
+      sleep(Duration(seconds: 1));
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile),
+          builder: (context) => Home(loggedProfile, SEARCH),
         ),
       );
     } else {

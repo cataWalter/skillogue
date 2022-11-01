@@ -32,7 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late final String fullName;
   late final String country;
   late final String city;
-  late final String region;
   late final int age;
   late final String gender;
   late final List<String> languages;
@@ -41,180 +40,161 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              Column(
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: getRandomDarkColor(),
-                    child: Text(
-                      initials(fullName),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 60,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: getRandomDarkColor(),
+                      child: Text(
+                        initials(fullName),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 40,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      columnInfoType(widget.profile.fullName, "Full Name"),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    columnInfoType(widget.profile.age.toString(), "Age"),
-                    columnInfoType(widget.profile.city, "City"),
-                    columnInfoType(widget.profile.country, "Country"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        columnInfoType(widget.profile.fullName, "Full Name"),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  columnAlignmentInfoType(
-                    formatList(widget.profile.skills),
-                    "Skills",
-                    TextAlign.start,
+                const SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      widget.profile.age >= 18 &&
+                              widget.profile.age <= 99
+                          ? columnInfoType(widget.profile.age.toString(), "Age")
+                          : columnInfoType("", "Age"),
+                      columnInfoType(widget.profile.gender, "Gender"),
+                    ],
                   ),
-                  columnAlignmentInfoType(
-                    formatList(widget.profile.languages),
-                    "Languages",
-                    TextAlign.end,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      columnInfoType(widget.profile.city, "City"),
+                      columnInfoType(widget.profile.country, "Country"),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 200,
-              ),
-            ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    columnAlignmentInfoType(
+                      formatList(widget.profile.skills),
+                      "Skills",
+                      TextAlign.start,
+                    ),
+                    columnAlignmentInfoType(
+                      formatList(widget.profile.languages),
+                      "Languages",
+                      TextAlign.end,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        Settings(widget.profile)));
-                          },
-                          child: Text(
-                            'Settings',
-                            style: GoogleFonts.bebasNeue(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  backgroundColor: Colors.blueGrey[800],
-                                  content: const SizedBox(
-                                    height: double.maxFinite,
-                                    width: double.maxFinite,
-                                    child: Text("ueueue"),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Text(
-                            'Suggestions',
-                            style: GoogleFonts.bebasNeue(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const PreLogin()));
-                          },
-                          child: Text(
-                            'Log Out',
-                            style: GoogleFonts.bebasNeue(
-                              fontSize: 18,
-                              color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Settings(widget.profile)));
+                            },
+                            child: Text(
+                              'Settings',
+                              style: GoogleFonts.bebasNeue(
+                                  fontSize: 18, color: Colors.white),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-            ],
-          ),
-        )
-      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const PreLogin()));
+                            },
+                            child: Text(
+                              'Log Out',
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -235,40 +215,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     return Column(
       children: [
-        Row(
-          children: [
-            Text(
-              type,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.35),
-                fontSize: 12,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 6.0),
-              child: SizedBox(
-                height: 20,
-                width: 20,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                    size: 10,
-                  ),
-                  onPressed: () {},
-                  //child: Icon(Icons.add),
-                ),
-              ),
-            ),
-          ],
-        ),
         Text(
-          info,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+          type,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.35),
+            fontSize: 12,
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: getLightBlue(),
+          ),
+          child: Text(
+            info,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],
@@ -301,18 +265,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  initials(String fullName) {
-    if (fullName.isEmpty) {
+  String initials(String fullName) {
+    if (fullName.length < 2) {
       return "";
     }
-    String fName = fullName.substring(0, 1).toUpperCase();
-    int indexSpace = fullName.indexOf(" ");
-    if (indexSpace != -1) {
-      String fSurname =
-      fullName.substring(indexSpace, indexSpace + 1).toUpperCase();
-      return fName + fSurname;
-    } else {
-      return fName;
-    }
+    return fullName[0].toUpperCase() + fullName[1].toUpperCase();
   }
 }

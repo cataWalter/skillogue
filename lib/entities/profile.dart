@@ -11,45 +11,13 @@ class Profile {
   String city;
   String gender;
   int age;
-  int points;
   DateTime? lastLogin;
   List<String> skills = [];
   List<String> languages = [];
   List<Message> messages = [];
 
-  Profile(this.objectId, this.username, this.fullName, this.country, this.city, this.gender, this.age, this.points);
-
-  void addSkill(String text) {
-    if (!skills.contains(text)) {
-      skills.add(text);
-    }
-  }
-
-  void delSkill(String text) {
-    if (skills.contains(text)) {
-      skills.remove(text);
-    }
-  }
-
-  void addCountry(String text) {
-    country = text;
-  }
-
-  void delCountry(String text) {
-    country = "Stateless Wanderer";
-  }
-
-  void addLanguage(String text) {
-    if (!languages.contains(text)) {
-      languages.add(text);
-    }
-  }
-
-  void delLanguage(String text) {
-    if (languages.contains(text)) {
-      languages.remove(text);
-    }
-  }
+  Profile(this.objectId, this.username, this.fullName, this.country, this.city,
+      this.gender, this.age, this.skills, this.languages);
 
   void addGender(String text) {
     gender = text;
@@ -57,7 +25,16 @@ class Profile {
 
   void delGender(String text) {
     gender = "Genderless Wanderer";
+  }
 
+  bool isEmptyProfile() {
+    return fullName.isEmpty ||
+        country.isEmpty ||
+        city.isEmpty ||
+        gender.isEmpty ||
+        age.toString().isEmpty ||
+        skills.isEmpty ||
+        languages.isEmpty;
   }
 }
 
@@ -98,6 +75,18 @@ List<Profile> profilesFromResults(List<ParseObject> results) {
 }
 
 Profile profileFromJson(dynamic t) {
+  List<String> skills = [];
+  for (var x in t['skills']) {
+    skills.add(x);
+  }
+  List<String> languages = [];
+  for (var x in t['languages']) {
+    languages.add(x);
+  }
+  int newAge = t['age'] as int;
+  if (newAge < 18 || newAge > 99) {
+    newAge = 42;
+  }
   return Profile(
     t['objectId'] as String,
     t['username'] as String,
@@ -105,8 +94,9 @@ Profile profileFromJson(dynamic t) {
     t['country'] as String,
     t['city'] as String,
     t['gender'] as String,
-    t['age'] as int,
-    t['points'] as int,
+    newAge,
+    skills,
+    languages,
   );
 }
 
@@ -118,13 +108,15 @@ void newProfileUpload(String username) async {
     ..set('city', "")
     ..set('gender', "")
     ..set('age', 0)
-    ..set('points', 0);
+    ..set('lastLogin', DateTime.now())
+    ..set('skills', [])
+    ..set('languages', []);
   await profile.save();
 }
 
 void updateContacted(String source, String dest) async {
   final profile = ParseObject('Contacted')
-      ..set('sender', source)
-      ..set('receiver', dest);
+    ..set('sender', source)
+    ..set('receiver', dest);
   await profile.save();
 }

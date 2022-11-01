@@ -2,25 +2,16 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/search_result.dart';
 
 class Search {
-  String? username;
   List<String> skills = [];
   List<String> countries = [];
   List<String> languages = [];
   List<String> genders = [];
   String? city;
-  String? region;
   int? minAge;
   int? maxAge;
-  int? minTimezone;
-  int? maxTimezone;
 
-  Search();
 
-  @override
-  String toString() {
-    return 'Search{username: $username, skills: $skills, countries: $countries, languages: $languages, '
-        'city: $city, region: $region, minAge: $minAge, maxAge: $maxAge, minTimezone: $minTimezone, maxTimezone: $maxTimezone}';
-  }
+
 
   void addSkill(String text) {
     if (!skills.contains(text)) {
@@ -100,8 +91,6 @@ Future<List<SearchResult>> filterUser(String username,
     return s;
   }
   List<String> s1 = await getContactedSender(username);
-  print("s1 = ");
-  print(s1);
   return s;
 }
 
@@ -122,7 +111,6 @@ SearchResult searchResultFromJson(dynamic t) {
     t['gender'] as String,
     (t['languages'] as List).map((e) => e as String).toList(),
     t['city'] as String,
-    t['region'] as String,
     t['age'] as int,
     t['updatedAt'] as DateTime,
   );
