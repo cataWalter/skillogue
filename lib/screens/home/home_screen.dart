@@ -6,8 +6,7 @@ import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
-import 'package:skillogue/screens/home/event_screen.dart';
-import 'package:skillogue/screens/home/message/message_widget.dart';
+import 'package:skillogue/screens/home/message_screen.dart';
 import 'package:skillogue/screens/home/profile_screen.dart';
 import 'package:skillogue/screens/home/search_screen.dart';
 import 'package:skillogue/utils/constants.dart';
@@ -165,17 +164,12 @@ class _HomeHelperState extends State<HomeHelper> {
       case SEARCH:
         {
           updateConversations();
-          return SearchWidget(widget.profile, widget.search);
+          return SearchWidget(widget.profile, widget.search, c);
         }
       case PROFILE:
         {
           updateConversations();
           return ProfileScreen(widget.profile);
-        }
-      case EVENTS:
-        {
-          updateConversations();
-          return const EventWidget();
         }
       case MESSAGES:
         {

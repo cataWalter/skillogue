@@ -4,6 +4,7 @@ import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_fiel
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
@@ -13,8 +14,10 @@ import 'package:skillogue/utils/constants.dart';
 class SearchWidget extends StatefulWidget {
   Profile curProfile;
   Search curSearch;
+  List<Conversation> curConversations;
 
-  SearchWidget(this.curProfile, this.curSearch, {super.key});
+  SearchWidget(this.curProfile, this.curSearch, this.curConversations,
+      {super.key});
 
   @override
   State<SearchWidget> createState() => _SearchWidgetState();
@@ -587,6 +590,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                             onPressed: () {
                               sendMessage(widget.curProfile.username,
                                   destUsername, controllerNewMessage.text);
+
                               updateContacted(
                                   widget.curProfile.username, destUsername);
                               Navigator.of(context).pop();
@@ -602,6 +606,45 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         );
       },
+    );
+  }
+
+  void sendMessageLocal(String source, String dest, String text) async {
+    for (Conversation x in widget.curConversations) {
+      if (x.username == dest) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("You have already contacted this user!"),
+              content: const Text("Embrace the unknown"),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+      return;
+    }
+    widget.curConversations.add(
+      Conversation(
+        dest,
+        [
+          SingleMessage(
+            "",
+            text,
+            DateTime.now(),
+            true,
+            false,
+          )
+        ],
+      ),
     );
   }
 }
