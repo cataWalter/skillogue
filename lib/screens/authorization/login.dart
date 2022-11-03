@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/home/home_screen.dart';
-import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/screens/home_screen.dart';
+import 'package:skillogue/constants.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -72,6 +72,7 @@ class _LoginState extends State<Login> {
     if (response.success) {
       //showSuccess("User was successfully login!");
       loggedProfile = await queryByUsername(username);
+      loggedProfile.logged = true;
       var oldProfile = ParseObject('Profile')
         ..objectId = loggedProfile.objectId
         ..set('lastLogin', DateTime.now());
@@ -80,7 +81,6 @@ class _LoginState extends State<Login> {
         isLoggedIn = true;
       });
       if (!mounted) return;
-      sleep(Duration(seconds: 1));
       Navigator.push(
         context,
         MaterialPageRoute(

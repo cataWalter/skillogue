@@ -1,5 +1,6 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/entities/message.dart';
 
 class Message {
   String objectId;
@@ -25,6 +26,7 @@ Future<void> sendMessage(String source, String dest, String text) async {
 
 Future<List<Conversation>> getConversationsFromMessages(String username) async {
   List<Message> l = await queryAllMessages(username);
+
   List<Conversation> c = [];
   bool added;
   String newUsername;
@@ -58,7 +60,7 @@ Future<List<Message>> queryAllMessages(String username) async {
   List<Message> l1 = await queryMessages(username, 'sender');
   List<Message> l2 = await queryMessages(username, 'receiver');
   l1.addAll(l2);
-  Comparator<Message> sortById = (a, b) => b.date.compareTo(a.date);
+  Comparator<Message> sortById = (a, b) => a.date.compareTo(b.date);
   l1.sort(sortById);
   return l1;
 }
@@ -93,4 +95,29 @@ Message messageFromJson(dynamic t) {
       t['text'] as String,
       t['date'] as DateTime,
       t['read'] as bool);
+}
+
+void setRead(String source, String dest) async {
+
+
+  List<ParseObject> results = <ParseObject>[];
+  final QueryBuilder<ParseObject> parseQuery =
+      QueryBuilder<ParseObject>(ParseObject('Message'));
+  parseQuery.whereEqualTo('sender', source);
+  parseQuery.whereEqualTo('receiver', dest);
+  parseQuery.whereEqualTo('read', false);
+  final ParseResponse apiResponse = await parseQuery.query();
+  if (apiResponse.success && apiResponse.results != null) {
+    results = apiResponse.results as List<ParseObject>;
+  } else {
+    results = [];
+  }
+  List<Message> m = messagesFromResults(results);
+  for (Message x in m) {
+    x.read = true;
+    final message = ParseObject('Message')
+      ..objectId = x.objectId
+      ..set('read', true);
+    message.save();
+  }
 }

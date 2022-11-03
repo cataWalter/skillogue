@@ -7,8 +7,8 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
-import 'package:skillogue/screens/home/home_screen.dart';
-import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/screens/home_screen.dart';
+import 'package:skillogue/constants.dart';
 
 class Settings extends StatelessWidget {
   Profile profile;
@@ -39,8 +39,8 @@ class _SettingsHelperState extends State<SettingsHelper> {
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
-  String dropdownCountryValue = "";
-  String dropdownGenderValue = "";
+  String dropdownCountryValue = countries[0];
+  String dropdownGenderValue = genders[0];
   List<String> selectedLanguages = [];
   List<String> selectedSkills = [];
 
@@ -435,5 +435,13 @@ class _SettingsHelperState extends State<SettingsHelper> {
       ..set('languages', widget.profile.languages)
       ..set('age', int.parse(controllerAge.text));*/
     await oldProfile.save();
+  }
+
+  String dropdownCountry() {
+    if (widget.profile.country.isNotEmpty) {
+      return widget.profile.country;
+    } else {
+      return "";
+    }
   }
 }

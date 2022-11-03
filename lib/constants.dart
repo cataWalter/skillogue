@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
 const keyApplicationId = 'KjZ8yf9Li4HJsa7ZyFECkCnd3E1r9FmZbnZYBMp2';
 const keyClientKey = 'O7ROa6lKUMkhsMCHQMbjvra2gm4YGK3APW8k1eqb';
 const keyParseServerUrl = 'https://parseapi.back4app.com';
@@ -10,35 +14,24 @@ const PROFILE = 4;
 
 const APP_NAME = "SKILLOGUE";
 
-List<int> timezones = [
-  -12,
-  -11,
-  -10,
-  -9,
-  -8,
-  -7,
-  -6,
-  -5,
-  -4,
-  -3,
-  -2,
-  -1,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14
-];
+Color getRandomDarkColor() {
+  Color randomColor =
+      Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+  if (randomColor.computeLuminance() < 0.250) {
+    return randomColor;
+  } else {
+    return getRandomDarkColor();
+  }
+}
+
+TextStyle getWhiteTextStyle() {
+  return const TextStyle(color: Colors.white);
+}
+
+Color getLightBlue() {
+  return const Color.fromRGBO(179, 217, 248, 0);
+}
+
 List<String> countries = [
   'Afghanistan',
   'Albania',
@@ -348,7 +341,6 @@ List<String> skills = [
   'Hiking',
   'History',
   'Horse Riding',
-  'Horse riding',
   'Hunting',
   'Jewellery making',
   'Jogging',

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skillogue/constants.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
-import 'package:skillogue/screens/settings.dart';
-import 'package:skillogue/utils/colors.dart';
+import 'package:skillogue/screens/profile/settings.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Profile profile;
@@ -178,10 +179,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Center(
                           child: TextButton(
                             onPressed: () {
-                              Navigator.push(
+                              setState(() {
+                                widget.profile.logged = false;
+                              });
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const PreLogin()));
+                                      builder: (context) => MyApp()));
                             },
                             child: Text(
                               'Log Out',
