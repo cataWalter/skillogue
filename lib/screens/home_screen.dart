@@ -155,7 +155,7 @@ class _HomeHelperState extends State<HomeHelper> {
             //buildNavBarItem(Icons.home, HOME, "Home"),
             buildNavBarItem(Icons.search, SEARCH, "Search"),
             newMessages
-                ? buildNavBarItem(Icons.mark_chat_unread, MESSAGES, "Messages")
+                ? buildMessageItem(MESSAGES, "Messages")
                 : buildNavBarItem(Icons.chat_bubble, MESSAGES, "Messages"),
             // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
           ],
@@ -163,6 +163,49 @@ class _HomeHelperState extends State<HomeHelper> {
       ),
     );
   }
+
+  Widget buildMessageItem(int index, String text) {
+    double radius = MediaQuery.of(context).size.width / 5;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget.currentPage = index;
+        });
+      },
+      child: SizedBox(
+        width: radius,
+        height: 45,
+        child: Column(
+            children: [
+              SizedBox(
+                child: Stack(
+                  children: [
+                    Icon(
+                        Icons.chat_bubble,
+                        size: 30,
+                        color: index == widget.currentPage ? Colors.black : Colors.grey[600],
+                      ),
+                    Icon(
+                      Icons.circle,
+                      color: Colors.red,
+                      size: 5,
+                      textDirection: TextDirection.ltr,
+
+
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                text,
+                style: const TextStyle(fontSize: 10, color: Colors.white),
+              ),
+            ],
+        ),
+      ),
+    );
+  }
+
 
   Widget buildNavBarItem(IconData icon, int index, String text) {
     return GestureDetector(
