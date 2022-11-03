@@ -124,11 +124,24 @@ class _HomeHelperState extends State<HomeHelper> {
             //buildNavBarItem(Icons.event, EVENTS, "Events"),
             //buildNavBarItem(Icons.home, HOME, "Home"),
             buildNavBarItem(Icons.search, SEARCH, "Search"),
-            buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
+            buildMessageItem(),
+            // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
           ],
         ),
       ),
     );
+  }
+
+  Widget buildMessageItem(){
+    bool _finalRead = true;
+
+    setState(() {
+      for (Conversation conv in c){
+        SingleMessage m = conv.messages.last;
+        _finalRead = (_finalRead && m.read);
+        }
+      });
+    return _finalRead ? buildNavBarItem(Icons.mark_chat_unread, MESSAGES, "Messages") : buildNavBarItem(Icons.chat_bubble, MESSAGES, "Messages");
   }
 
   Widget buildNavBarItem(IconData icon, int index, String text) {
