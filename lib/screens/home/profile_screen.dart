@@ -113,14 +113,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     columnAlignmentInfoType(
-                      formatList(widget.profile.skills),
-                      "Skills",
-                      TextAlign.start,
-                    ),
-                    columnAlignmentInfoType(
                       formatList(widget.profile.languages),
                       "Languages",
                       TextAlign.end,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    columnAlignmentInfoType(
+                      formatList(widget.profile.skills),
+                      "Skills",
+                      TextAlign.center,
                     ),
                   ],
                 ),
