@@ -6,19 +6,22 @@ import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
-import 'package:skillogue/screens/home/message_screen.dart';
-import 'package:skillogue/screens/home/profile_screen.dart';
-import 'package:skillogue/screens/home/search_screen.dart';
-import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/main.dart';
+import 'package:skillogue/screens/messages/message_screen.dart';
+import 'package:skillogue/screens/profile/profile_screen.dart';
+import 'package:skillogue/screens/search/search_screen.dart';
+
+import 'package:skillogue/constants.dart';
 
 class Home extends StatelessWidget {
   Profile profile;
-  int currentPage;
+  int currentPage = SEARCH;
 
   Home(this.profile, this.currentPage, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    if (profile.logged == false) return MyApp();
     return WillPopScope(
       onWillPop: () async {
         Navigator.push(
@@ -51,17 +54,44 @@ class HomeHelper extends StatefulWidget {
 
 class _HomeHelperState extends State<HomeHelper> {
   List<Conversation> c = [];
+  bool newMessages = false;
 
   @override
   void initState() {
     super.initState();
 
     updateConversations();
-    sleep(const Duration(seconds: 1));
   }
 
   void updateConversations() async {
-    c = await getConversationsFromMessages(widget.profile.username);
+    bool foundNewMessage;
+    while (true) {
+      foundNewMessage = false;
+      c = await getConversationsFromMessages(widget.profile.username);
+      sortConversations(c);
+      for (Conversation x in c) {
+        if (x.messages.last.outgoing == false &&
+            x.messages.last.read == false) {
+          setState(() {
+            newMessages = true;
+            foundNewMessage = true;
+          });
+          break;
+        }
+      }
+      if (foundNewMessage == false) {
+        setState(() {
+          newMessages = false;
+        });
+      }
+      await Future.delayed(const Duration(seconds: 1));
+    }
+  }
+
+  void sortConversations(List<Conversation> c) {
+    Comparator<Conversation> sortById =
+        (a, b) => a.messages.last.date.compareTo(b.messages.last.date);
+    c.sort(sortById);
   }
 
   @override
@@ -124,24 +154,14 @@ class _HomeHelperState extends State<HomeHelper> {
             //buildNavBarItem(Icons.event, EVENTS, "Events"),
             //buildNavBarItem(Icons.home, HOME, "Home"),
             buildNavBarItem(Icons.search, SEARCH, "Search"),
-            buildMessageItem(),
+            newMessages
+                ? buildNavBarItem(Icons.mark_chat_unread, MESSAGES, "Messages")
+                : buildNavBarItem(Icons.chat_bubble, MESSAGES, "Messages"),
             // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
           ],
         ),
       ),
     );
-  }
-
-  Widget buildMessageItem(){
-    bool _finalRead = true;
-
-    setState(() {
-      for (Conversation conv in c){
-        SingleMessage m = conv.messages.last;
-        _finalRead = (_finalRead && m.read);
-        }
-      });
-    return _finalRead ? buildNavBarItem(Icons.mark_chat_unread, MESSAGES, "Messages") : buildNavBarItem(Icons.chat_bubble, MESSAGES, "Messages");
   }
 
   Widget buildNavBarItem(IconData icon, int index, String text) {
@@ -176,17 +196,14 @@ class _HomeHelperState extends State<HomeHelper> {
     switch (widget.currentPage) {
       case SEARCH:
         {
-          updateConversations();
           return SearchWidget(widget.profile, widget.search, c);
         }
       case PROFILE:
         {
-          updateConversations();
           return ProfileScreen(widget.profile);
         }
       case MESSAGES:
         {
-          updateConversations();
           return MessageWidget(widget.profile, c);
         }
       default:

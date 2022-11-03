@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/constants.dart';
 import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/utils/colors.dart';
 
 class MessageWidget extends StatefulWidget {
   Profile p;
@@ -45,6 +46,12 @@ class ChatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        for (var x in c.messages) {
+          if (x.outgoing == false && x.read == false) {
+            x.read = true;
+          }
+        }
+        setRead(c.username, p.username);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -89,7 +96,7 @@ class ChatCard extends StatelessWidget {
             Opacity(
               opacity: 0.64,
               child: Text(
-                parseDate(c.messages[0].date),
+                parseDateGroup(c.messages.last.date),
                 style: const TextStyle(color: Colors.white),
               ),
             )
@@ -121,11 +128,11 @@ class ChatCard extends StatelessWidget {
   }
 
   Opacity getLastMessage() {
-    if (c.messages[0].read == false && c.messages[0].outgoing == false) {
+    if (c.messages.last.read == false && c.messages.last.outgoing == false) {
       return Opacity(
         opacity: 0.95,
         child: Text(
-          c.messages[0].text,
+          c.messages.last.text,
           style:
               const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           maxLines: 1,
@@ -136,7 +143,7 @@ class ChatCard extends StatelessWidget {
       return Opacity(
         opacity: 0.64,
         child: Text(
-          c.messages[0].text,
+          c.messages.last.text,
           style: const TextStyle(color: Colors.white),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -144,17 +151,35 @@ class ChatCard extends StatelessWidget {
       );
     }
   }
+}
 
-  String parseDate(DateTime d) {
-    Duration difference = DateTime.now().difference(d);
-    if (difference.inDays == 0) {
-      return "${d.hour}:${d.minute}";
-    }
-    if (difference.inDays == 1) {
-      return "yesterday";
-    }
-    return "${d.day}/${d.month}/${d.year}";
+String parseTime(DateTime d) {
+  if (d.minute <= 9) {
+    return "${d.hour}:0${d.minute}";
+  } else {
+    return "${d.hour}:${d.minute}";
   }
+}
+
+String parseDate(DateTime d) {
+  if (d.day == DateTime.now().day) {
+    return "Today";
+  }
+  if (d.day == DateTime.now().day - 1) {
+    return "Yesterday";
+  }
+  return "${d.day}/${d.month}/${d.year}";
+}
+
+String parseDateGroup(DateTime d) {
+  Duration difference = DateTime.now().difference(d);
+  if (difference.inDays == 0) {
+    return parseTime(d);
+  }
+  if (difference.inDays == 1) {
+    return "Yesterday1";
+  }
+  return "${d.day}/${d.month}/${d.year}";
 }
 
 class ConversationWidget extends StatefulWidget {
@@ -203,7 +228,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
               child: GroupedListView(
                   padding: const EdgeInsets.all(8),
                   reverse: true,
-                  order: GroupedListOrder.ASC,
+                  order: GroupedListOrder.DESC,
                   useStickyGroupSeparators: true,
                   floatingHeader: true,
                   elements: widget.c.messages,
@@ -217,7 +242,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: Text(
-                                parseDateGroupbuilder(message.date),
+                                parseDate(message.date),
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
@@ -302,17 +327,6 @@ class _ConversationWidgetState extends State<ConversationWidget> {
 
   Color? myGrey = Colors.grey[900];
 
-  String parseDateGroupbuilder(DateTime d) {
-    Duration difference = DateTime.now().difference(d);
-    if (difference.inDays == 0) {
-      return "Today";
-    }
-    if (difference.inDays == 1) {
-      return "Yesterday";
-    }
-    return "${d.day}/${d.month}/${d.year}";
-  }
-
   Align getSingleMessageWidget(SingleMessage message) {
     if (message.outgoing) {
       return Align(
@@ -338,7 +352,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                     height: 8,
                   ),
                   Text(
-                    "${message.date.hour}:${message.date.minute}",
+                    parseTime(message.date),
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 10,
@@ -374,7 +388,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                     height: 8,
                   ),
                   Text(
-                    "${message.date.hour}:${message.date.minute}",
+                    parseTime(message.date),
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 10,

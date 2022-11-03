@@ -15,6 +15,7 @@ class Profile {
   List<String> skills = [];
   List<String> languages = [];
   List<Message> messages = [];
+  bool logged = true;
 
   Profile(this.objectId, this.username, this.fullName, this.country, this.city,
       this.gender, this.age, this.skills, this.languages);
@@ -85,7 +86,7 @@ Profile profileFromJson(dynamic t) {
   }
   int newAge = t['age'] as int;
   if (newAge < 18 || newAge > 99) {
-    newAge = 42;
+    newAge = 98;
   }
   return Profile(
     t['objectId'] as String,

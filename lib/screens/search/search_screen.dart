@@ -9,7 +9,7 @@ import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/entities/search_result.dart';
-import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/constants.dart';
 
 class SearchWidget extends StatefulWidget {
   Profile curProfile;
@@ -348,8 +348,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                         onPressed: () async {
                           if (!widget.curProfile.isEmptyProfile()) {
                             saveSearch();
-                            searchResults =
-                                await findUsers(widget.curProfile.username);
+                            searchResults = await findUsers(
+                                widget.curProfile.username, widget.curSearch);
                             Comparator<SearchResult> sortById =
                                 (a, b) => b.lastLogin.compareTo(a.lastLogin);
                             searchResults.sort(sortById);
@@ -384,7 +384,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                                   title: const Text(
                                       "Some details about you are still missing!"),
                                   content: const Text(
-                                      "Please, set them before looking for others"),
+                                      "Please, update your info in the SETTINGS before looking for others"),
                                   actions: <Widget>[
                                     TextButton(
                                       child: const Text("OK"),
@@ -448,7 +448,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               ),
               trailing: IconButton(
                 onPressed: () {
-                  sendNewMessage(searchResults[index].username);
+                  sendNewMessage(searchResults[index].fullName);
                 },
                 icon: const Icon(Icons.message_outlined),
               ),
@@ -460,6 +460,9 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   String searchResultsLanguages(SearchResult s) {
+    if (s.languages.length == 1) {
+      return s.languages[0];
+    }
     String res = "${s.languages[0]} | ";
     for (var i = 1; i < s.languages.length - 1; i++) {
       res = "$res${s.languages[i]} | ";
@@ -499,29 +502,31 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   void saveSearch() {
-    if (selectedGenders.isNotEmpty) {
-      widget.curSearch.genders = selectedGenders;
-    }
-    if (selectedCountries.isNotEmpty) {
-      widget.curSearch.countries = selectedCountries;
-    }
-    if (selectedLanguages.isNotEmpty) {
-      widget.curSearch.languages = selectedLanguages;
-    }
-    if (selectedSkills.isNotEmpty) {
-      widget.curSearch.countries = selectedSkills;
-    }
-    if (controllerCity.text.trim() != "") {
+    widget.curSearch.genders = selectedGenders;
+    widget.curSearch.countries = selectedCountries;
+    widget.curSearch.languages = selectedLanguages;
+    widget.curSearch.skills = selectedSkills;
+    if (controllerCity.text.toString().isEmpty) {
+      widget.curSearch.city = "";
+    } else {
       widget.curSearch.city = controllerCity.text.trim();
     }
-    if (controllerMaxAge.text.trim() != "") {
+    if (controllerMaxAge.text.toString().isEmpty) {
+      widget.curSearch.maxAge = 99;
+    }
+    if (controllerMinAge.text.toString().isEmpty) {
+      widget.curSearch.minAge = 18;
+    }
+    if (controllerMaxAge.text.toString().isNotEmpty &&
+        controllerMinAge.text.toString().isNotEmpty) {
       int maxAge = int.parse(controllerMaxAge.text.trim());
-      if (maxAge <= 99) widget.curSearch.maxAge = maxAge;
-    }
-    if (controllerMinAge.text.trim() != "") {
       int minAge = int.parse(controllerMinAge.text.trim());
-      if (minAge >= 18) widget.curSearch.minAge = minAge;
+      if (maxAge <= 99 && minAge >= 18 && maxAge >= minAge) {
+        widget.curSearch.maxAge = maxAge;
+        widget.curSearch.minAge = minAge;
+      }
     }
+    return;
   }
 
   void sendNewMessage(String destUsername) {
@@ -532,11 +537,12 @@ class _SearchWidgetState extends State<SearchWidget> {
         return AlertDialog(
           backgroundColor: Colors.blueGrey[800],
           content: SizedBox(
-            height: 315,
+            height: 300,
             child: Column(
               children: [
                 SizedBox(
                   child: TextField(
+                    //minLines: 1,
                     maxLines: 10,
                     decoration: InputDecoration(
                       //border: const OutlineInputBorder(),
@@ -554,29 +560,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                       padding: const EdgeInsets.only(top: 30),
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.teal.shade300,
-                            borderRadius: BorderRadius.circular(40)),
-                        child: Center(
-                          child: TextButton(
-                            child: Text(
-                              'Back',
-                              style: GoogleFonts.bebasNeue(
-                                  fontSize: 24,
-                                  color: Colors
-                                      .white), //GoogleFonts.openSans(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.teal.shade300,
+                            color: Colors.blue,
                             borderRadius: BorderRadius.circular(40)),
                         child: Center(
                           child: TextButton(

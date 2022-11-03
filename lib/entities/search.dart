@@ -10,9 +10,6 @@ class Search {
   int? minAge;
   int? maxAge;
 
-
-
-
   void addSkill(String text) {
     if (!skills.contains(text)) {
       skills.add(text);
@@ -62,12 +59,30 @@ class Search {
   }
 }
 
-Future<List<SearchResult>> findUsers(String username) async {
+Future<List<SearchResult>> findUsers(String searcher, Search curSearch) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
-  QueryBuilder<ParseObject>(ParseObject('Profile'));
-  //parseQuery.whereContains('att1', 'Walter');
-  parseQuery.whereNotEqualTo('username', username);
+      QueryBuilder<ParseObject>(ParseObject('Profile'));
+  parseQuery.whereNotEqualTo('username', searcher);
+
+  if (curSearch.skills.isNotEmpty) {
+    parseQuery.whereArrayContainsAll('skills', curSearch.skills);
+  }
+  if (curSearch.languages.isNotEmpty) {
+    parseQuery.whereArrayContainsAll('languages', curSearch.languages);
+  }
+  if (curSearch.countries.isNotEmpty) {
+    parseQuery.whereArrayContainsAll('countries', curSearch.countries);
+  }
+  if (curSearch.genders.isNotEmpty) {
+    parseQuery.whereArrayContainsAll('genders', curSearch.genders);
+  }
+
+  if (curSearch.city != "") {
+    parseQuery.whereEqualTo('city', curSearch.city);
+  }
+  parseQuery.whereGreaterThanOrEqualsTo('age', curSearch.minAge);
+  parseQuery.whereLessThanOrEqualTo('age', curSearch.maxAge);
 
   final ParseResponse apiResponse = await parseQuery.query();
   if (apiResponse.success && apiResponse.results != null) {
@@ -75,19 +90,18 @@ Future<List<SearchResult>> findUsers(String username) async {
   } else {
     results = [];
   }
-  return filterUser(username, searchResults(results));
+  return filterUser(searcher, searchResults(results));
 }
 
-Future<List<SearchResult>> filterUser(String username,
-    List<SearchResult> s) async {
+Future<List<SearchResult>> filterUser(
+    String username, List<SearchResult> s) async {
   try {
     for (var x in s) {
       if (username == x.username) {
         s.remove(x);
       }
     }
-  }
-  catch (e){
+  } catch (e) {
     return s;
   }
   List<String> s1 = await getContactedSender(username);
@@ -119,7 +133,7 @@ SearchResult searchResultFromJson(dynamic t) {
 Future<List<String>> getContactedSender(String username) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
-  QueryBuilder<ParseObject>(ParseObject('Contacted'));
+      QueryBuilder<ParseObject>(ParseObject('Contacted'));
   parseQuery.whereContains('sender', username);
   final ParseResponse apiResponse = await parseQuery.query();
   if (apiResponse.success && apiResponse.results != null) {
