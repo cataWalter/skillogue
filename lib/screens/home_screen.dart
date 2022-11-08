@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
@@ -87,6 +89,12 @@ class _HomeHelperState extends State<HomeHelper> {
     }
   }
 
+  void sortConversations(List<Conversation> c) {
+    Comparator<Conversation> sortById =
+        (a, b) => a.messages.last.date.compareTo(b.messages.last.date);
+    c.sort(sortById);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,7 +142,7 @@ class _HomeHelperState extends State<HomeHelper> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    appName,
+                    APP_NAME,
                     style: GoogleFonts.bebasNeue(
                         fontSize: 28, fontWeight: FontWeight.w300),
                   ),
@@ -180,8 +188,7 @@ class _HomeHelperState extends State<HomeHelper> {
               //buildNavBarItem(Icons.home, HOME, "Home"),
               buildNavBarItem(Icons.search, searchIndex, "Search"),
               newMessages
-                  ? buildNavBarItem(
-                      Icons.mark_chat_unread, messagesIndex, "Messages")
+                  ? buildMessageItem(messagesIndex, "Messages")
                   : buildNavBarItem(
                       Icons.chat_bubble, messagesIndex, "Messages"),
               // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
@@ -191,6 +198,49 @@ class _HomeHelperState extends State<HomeHelper> {
       ),
     );
   }
+
+  Widget buildMessageItem(int index, String text) {
+    double radius = MediaQuery.of(context).size.width / 5;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget.currentPage = index;
+        });
+      },
+      child: SizedBox(
+        width: radius,
+        height: 45,
+        child: Column(
+            children: [
+              SizedBox(
+                child: Stack(
+                  children: [
+                    Icon(
+                        Icons.chat_bubble,
+                        size: 30,
+                        color: index == widget.currentPage ? Colors.black : Colors.grey[600],
+                      ),
+                    Icon(
+                      Icons.circle,
+                      color: Colors.red,
+                      size: 5,
+                      textDirection: TextDirection.ltr,
+
+
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                text,
+                style: const TextStyle(fontSize: 10, color: Colors.white),
+              ),
+            ],
+        ),
+      ),
+    );
+  }
+
 
   Widget buildNavBarItem(IconData icon, int index, String text) {
     return GestureDetector(
@@ -222,15 +272,15 @@ class _HomeHelperState extends State<HomeHelper> {
 
   Widget getScreen() {
     switch (widget.currentPage) {
-      case searchIndex:
+      case SEARCH:
         {
           return SearchWidget(widget.profile, widget.search, c);
         }
-      case profileIndex:
+      case PROFILE:
         {
           return ProfileScreen(widget.profile);
         }
-      case messagesIndex:
+      case MESSAGES:
         {
           return MessageWidget(widget.profile, c);
         }
