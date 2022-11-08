@@ -5,6 +5,7 @@ import 'package:skillogue/constants.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/screens/profile/profile_show.dart';
 
 class MessageWidget extends StatefulWidget {
   Profile p;
@@ -19,14 +20,20 @@ class MessageWidget extends StatefulWidget {
 class _MessageWidgetState extends State<MessageWidget> {
   @override
   Widget build(BuildContext context) {
+    return getConversationScreen();
+  }
+
+  Widget getConversationScreen() {
     if (widget.c.isNotEmpty) {
+      sortConversations(widget.c);
       return ListView.builder(
         itemCount: widget.c.length,
-        itemBuilder: ((context, index) => ChatCard(widget.p, widget.c[index])),
+        itemBuilder: ((context, index) =>
+            ChatCard(widget.p, widget.c[index], widget.c)),
       );
     } else {
       return const Padding(
-        padding: EdgeInsets.only(top: 80, left: 30, right: 30),
+        padding: EdgeInsets.only(top: 60, left: 30, right: 30),
         child: Text(
           "No conversations here.\nStart making new friends now! :-)",
           style: TextStyle(color: Colors.white, fontSize: 20),
@@ -39,8 +46,9 @@ class _MessageWidgetState extends State<MessageWidget> {
 class ChatCard extends StatelessWidget {
   Profile p;
   Conversation c;
+  List<Conversation> allConv;
 
-  ChatCard(this.p, this.c, {super.key});
+  ChatCard(this.p, this.c, this.allConv, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +63,7 @@ class ChatCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ConversationWidget(c, p),
+            builder: (context) => ConversationWidget(c, p, allConv),
           ),
         );
       },
@@ -154,11 +162,7 @@ class ChatCard extends StatelessWidget {
 }
 
 String parseTime(DateTime d) {
-  if (d.minute <= 9) {
-    return "${d.hour}:0${d.minute}";
-  } else {
-    return "${d.hour}:${d.minute}";
-  }
+  return "${parseSmallNumbers(d.hour)}:${parseSmallNumbers(d.minute)}";
 }
 
 String parseDate(DateTime d) {
@@ -168,16 +172,23 @@ String parseDate(DateTime d) {
   if (d.day == DateTime.now().day - 1) {
     return "Yesterday";
   }
-  return "${d.day}/${d.month}/${d.year}";
+  return '${parseSmallNumbers(d.day)}/${parseSmallNumbers(d.month)}/${d.year}';
+}
+
+String parseSmallNumbers(int n) {
+  if (n <= 9) {
+    return "0$n";
+  } else {
+    return n.toString();
+  }
 }
 
 String parseDateGroup(DateTime d) {
-  Duration difference = DateTime.now().difference(d);
-  if (difference.inDays == 0) {
+  if (d.day == DateTime.now().day) {
     return parseTime(d);
   }
-  if (difference.inDays == 1) {
-    return "Yesterday1";
+  if (d.day == DateTime.now().day - 1) {
+    return "Yesterday";
   }
   return "${d.day}/${d.month}/${d.year}";
 }
@@ -185,8 +196,10 @@ String parseDateGroup(DateTime d) {
 class ConversationWidget extends StatefulWidget {
   Conversation c;
   Profile p;
+  List<Conversation> allConv;
+  late Profile lookupProfile;
 
-  ConversationWidget(this.c, this.p, {super.key});
+  ConversationWidget(this.c, this.p, this.allConv, {super.key});
 
   @override
   State<ConversationWidget> createState() => _ConversationWidgetState();
@@ -206,7 +219,39 @@ class _ConversationWidgetState extends State<ConversationWidget> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text(widget.c.username),
+          title: GestureDetector(
+            onTap: () async {
+              widget.lookupProfile = await queryByUsername(widget.c.username);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Scaffold(
+                    body: Column(
+                      children: [
+                        const SizedBox(
+                          height: 60,
+                        ),
+                        ProfileShow(widget.lookupProfile),
+                      ],
+                    ),
+                    /*
+                    bottomNavigationBar: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.abc_outlined,
+                          color: Colors.white,
+                          size: 100,
+                        ),
+                      ],
+                    ),
+                    */
+                  ),
+                ),
+              );
+            },
+            child: Text(widget.c.username),
+          ),
           actions: [
             PopupMenuButton(
               color: myGrey,
@@ -294,17 +339,18 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                             final message = ParseObject('Message')
                               ..set('sender', widget.p.username)
                               ..set('receiver', widget.c.username)
-                              ..set('text', newMessageController.text)
+                              ..set('text', newMessageController.text.trim())
                               ..set('date', DateTime.now())
                               ..set('read', false);
                             await message.save();
                             setState(() {
                               widget.c.messages.add(SingleMessage(
                                   "",
-                                  newMessageController.text,
+                                  newMessageController.text.trim(),
                                   DateTime.now(),
                                   true,
                                   false));
+                              sortConversations(widget.allConv);
                             });
                           },
                           child: const Icon(

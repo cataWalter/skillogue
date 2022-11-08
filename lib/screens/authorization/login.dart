@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home_screen.dart';
@@ -19,6 +20,7 @@ class _LoginState extends State<Login> {
   final controllerPassword = TextEditingController();
   bool isLoggedIn = false;
   late Profile loggedProfile;
+  final _myBox = Hive.box("mybox");
 
   @override
   void initState() {
@@ -72,6 +74,8 @@ class _LoginState extends State<Login> {
     if (response.success) {
       //showSuccess("User was successfully login!");
       loggedProfile = await queryByUsername(username);
+      _myBox.put(loggedProfileKey, username);
+      print("dio cane");
       loggedProfile.logged = true;
       var oldProfile = ParseObject('Profile')
         ..objectId = loggedProfile.objectId
@@ -84,7 +88,7 @@ class _LoginState extends State<Login> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, SEARCH),
+          builder: (context) => Home(loggedProfile, searchIndex),
         ),
       );
     } else {

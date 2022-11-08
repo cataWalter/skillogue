@@ -86,7 +86,7 @@ Profile profileFromJson(dynamic t) {
   }
   int newAge = t['age'] as int;
   if (newAge < 18 || newAge > 99) {
-    newAge = 98;
+    newAge = 100;
   }
   return Profile(
     t['objectId'] as String,

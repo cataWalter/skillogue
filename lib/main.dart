@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/screens/authorization/login.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
 import 'package:skillogue/constants.dart';
 
@@ -9,12 +9,21 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   WidgetsFlutterBinding.ensureInitialized();
+
+  //Back4App
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, debug: true);
-  runApp(MyApp());
+
+  //Hive
+  await Hive.initFlutter();
+  var box = await Hive.openBox('mybox');
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -23,12 +32,11 @@ class MyApp extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MyApp(),
+            builder: (context) => const MyApp(),
           ),
         );
         return false;
       },
-
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -38,17 +46,18 @@ class MyApp extends StatelessWidget {
         ),
         //home: const PreLogin(),
         home: WillPopScope(
-            onWillPop: () async {
-              print("willpop1");
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyApp(),
-                ),
-              );
-              return false;
-            },
-            child: PreLogin()),
+          onWillPop: () async {
+            print("willpop1");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyApp(),
+              ),
+            );
+            return false;
+          },
+          child: const PreLogin(),
+        ),
       ),
     );
   }
