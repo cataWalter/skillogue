@@ -142,7 +142,7 @@ class _HomeHelperState extends State<HomeHelper> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    APP_NAME,
+                    appName,
                     style: GoogleFonts.bebasNeue(
                         fontSize: 28, fontWeight: FontWeight.w300),
                   ),
@@ -272,15 +272,15 @@ class _HomeHelperState extends State<HomeHelper> {
 
   Widget getScreen() {
     switch (widget.currentPage) {
-      case SEARCH:
+      case searchIndex:
         {
           return SearchWidget(widget.profile, widget.search, c);
         }
-      case PROFILE:
+      case profileIndex:
         {
           return ProfileScreen(widget.profile);
         }
-      case MESSAGES:
+      case messagesIndex:
         {
           return MessageWidget(widget.profile, c);
         }
