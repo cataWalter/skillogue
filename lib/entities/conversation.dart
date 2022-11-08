@@ -3,6 +3,8 @@ class Conversation {
   List<SingleMessage> messages;
 
   Conversation(this.username, this.messages);
+
+
 }
 
 class SingleMessage {
@@ -14,3 +16,10 @@ class SingleMessage {
 
   SingleMessage(this.objectId, this.text, this.date, this.outgoing, this.read);
 }
+
+void sortConversations(List<Conversation> c) {
+  Comparator<Conversation> sortConversationsByDate =
+      (a, b) => b.messages.last.date.compareTo(a.messages.last.date);
+  c.sort(sortConversationsByDate);
+}
+

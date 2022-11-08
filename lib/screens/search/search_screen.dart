@@ -10,6 +10,7 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/entities/search_result.dart';
 import 'package:skillogue/constants.dart';
+import 'package:skillogue/screens/profile/profile_show.dart';
 
 class SearchWidget extends StatefulWidget {
   Profile curProfile;
@@ -24,7 +25,7 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  bool _searchResults = false;
+  int _searchIndex = 0;
   var controllerCity;
   var controllerMinAge;
   var controllerMaxAge;
@@ -33,6 +34,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   List<String> selectedSkills = [];
   List<String> selectedLanguages = [];
   List<String> selectedGenders = [];
+  late Profile lookupProfile;
 
   @override
   void initState() {
@@ -60,11 +62,18 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   Widget getSearch() {
-    if (_searchResults == false) {
+    if (_searchIndex == 0) {
       return getSearchForm();
-    } else {
+    } else if (_searchIndex == 1) {
       return getSearchResults();
+    } else if (_searchIndex == 2) {
+      return getProfileLookup();
     }
+    return Container();
+  }
+
+  Widget getProfileLookup() {
+    return ProfileShow(lookupProfile);
   }
 
   Widget getSearchForm() {
@@ -77,7 +86,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             Column(
               children: [
                 const SizedBox(
-                  height: 45,
+                  height: 52,
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -355,7 +364,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                             searchResults.sort(sortById);
                             if (searchResults.isNotEmpty) {
                               setState(() {
-                                _searchResults = true;
+                                _searchIndex = 1;
                               });
                             } else {
                               showDialog(
@@ -426,6 +435,13 @@ class _SearchWidgetState extends State<SearchWidget> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(
+              onTap: () async {
+                lookupProfile =
+                    await queryByUsername(searchResults[index].username);
+                setState(() {
+                  _searchIndex = 2;
+                });
+              },
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -574,7 +590,6 @@ class _SearchWidgetState extends State<SearchWidget> {
                             onPressed: () {
                               sendMessage(widget.curProfile.username,
                                   destUsername, controllerNewMessage.text);
-
                               updateContacted(
                                   widget.curProfile.username, destUsername);
                               Navigator.of(context).pop();

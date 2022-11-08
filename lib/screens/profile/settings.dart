@@ -63,7 +63,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
               Row(
                 children: [
                   Text(
-                    APP_NAME,
+                    appName,
                     style: GoogleFonts.bebasNeue(
                         fontSize: 28, fontWeight: FontWeight.w300),
                   ),
@@ -133,7 +133,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white)),
-                      labelText: widget.profile.age.toString().isNotEmpty
+                      labelText: widget.profile.age.toString().isNotEmpty && widget.profile.age <= 99
                           ? widget.profile.age.toString()
                           : "Age",
                       hintText: 'Age',
@@ -345,7 +345,7 @@ class _SettingsHelperState extends State<SettingsHelper> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  Home(widget.profile, PROFILE),
+                                  Home(widget.profile, profileIndex),
                             ));
                       },
                       child: Text(

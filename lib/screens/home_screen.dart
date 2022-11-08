@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
@@ -15,7 +13,7 @@ import 'package:skillogue/constants.dart';
 
 class Home extends StatelessWidget {
   Profile profile;
-  int currentPage = SEARCH;
+  int currentPage = searchIndex;
 
   Home(this.profile, this.currentPage, {super.key});
 
@@ -59,45 +57,70 @@ class _HomeHelperState extends State<HomeHelper> {
   @override
   void initState() {
     super.initState();
-
-    updateConversations();
+    //repeatUpdateConversations();
   }
 
-  void updateConversations() async {
-    bool foundNewMessage;
+  void repeatUpdateConversations() async {
     while (true) {
-      foundNewMessage = false;
-      c = await getConversationsFromMessages(widget.profile.username);
-      sortConversations(c);
-      for (Conversation x in c) {
-        if (x.messages.last.outgoing == false &&
-            x.messages.last.read == false) {
-          setState(() {
-            newMessages = true;
-            foundNewMessage = true;
-          });
-          break;
-        }
-      }
-      if (foundNewMessage == false) {
-        setState(() {
-          newMessages = false;
-        });
-      }
+      updateConversations();
       await Future.delayed(const Duration(seconds: 1));
     }
   }
 
-  void sortConversations(List<Conversation> c) {
-    Comparator<Conversation> sortById =
-        (a, b) => a.messages.last.date.compareTo(b.messages.last.date);
-    c.sort(sortById);
+  void updateConversations() async {
+    bool foundNewMessage = false;
+    c = await getConversationsFromMessages(widget.profile.username);
+    sortConversations(c);
+    for (Conversation x in c) {
+      if (x.messages.last.outgoing == false && x.messages.last.read == false) {
+        setState(() {
+          newMessages = true;
+          foundNewMessage = true;
+        });
+        break;
+      }
+    }
+    if (foundNewMessage == false) {
+      setState(() {
+        newMessages = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      floatingActionButton: widget.currentPage == messagesIndex
+          ? SizedBox(
+              height: 70,
+              width: 70,
+              child: FloatingActionButton(
+                onPressed: updateConversations,
+                backgroundColor: Colors.black,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Icon(
+                      Icons.message_outlined,
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    Text(
+                      "Update",
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.35),
+                        fontSize: 8,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          : Container(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
         child: AppBar(
@@ -111,7 +134,7 @@ class _HomeHelperState extends State<HomeHelper> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    APP_NAME,
+                    appName,
                     style: GoogleFonts.bebasNeue(
                         fontSize: 28, fontWeight: FontWeight.w300),
                   ),
@@ -137,28 +160,33 @@ class _HomeHelperState extends State<HomeHelper> {
         padding: const EdgeInsets.only(top: 25),
         child: getScreen(),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-              )
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+        child: Container(
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                )
+              ],
+              color: Colors.grey.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(30)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              buildNavBarItem(Icons.person, profileIndex, "Profile"),
+              //buildNavBarItem(Icons.event, EVENTS, "Events"),
+              //buildNavBarItem(Icons.home, HOME, "Home"),
+              buildNavBarItem(Icons.search, searchIndex, "Search"),
+              newMessages
+                  ? buildNavBarItem(
+                      Icons.mark_chat_unread, messagesIndex, "Messages")
+                  : buildNavBarItem(
+                      Icons.chat_bubble, messagesIndex, "Messages"),
+              // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
             ],
-            color: Colors.grey.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(30)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            buildNavBarItem(Icons.person, PROFILE, "Profile"),
-            //buildNavBarItem(Icons.event, EVENTS, "Events"),
-            //buildNavBarItem(Icons.home, HOME, "Home"),
-            buildNavBarItem(Icons.search, SEARCH, "Search"),
-            newMessages
-                ? buildNavBarItem(Icons.mark_chat_unread, MESSAGES, "Messages")
-                : buildNavBarItem(Icons.chat_bubble, MESSAGES, "Messages"),
-            // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
-          ],
+          ),
         ),
       ),
     );
@@ -194,15 +222,15 @@ class _HomeHelperState extends State<HomeHelper> {
 
   Widget getScreen() {
     switch (widget.currentPage) {
-      case SEARCH:
+      case searchIndex:
         {
           return SearchWidget(widget.profile, widget.search, c);
         }
-      case PROFILE:
+      case profileIndex:
         {
           return ProfileScreen(widget.profile);
         }
-      case MESSAGES:
+      case messagesIndex:
         {
           return MessageWidget(widget.profile, c);
         }

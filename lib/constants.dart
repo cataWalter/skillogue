@@ -2,18 +2,19 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-const keyApplicationId = 'KjZ8yf9Li4HJsa7ZyFECkCnd3E1r9FmZbnZYBMp2';
-const keyClientKey = 'O7ROa6lKUMkhsMCHQMbjvra2gm4YGK3APW8k1eqb';
+const keyApplicationId = 'xhYBShLQtWSlLo4BmLdK0QKvHiSFjwsAE36DeWnf';
+const keyClientKey = '4gn52E4GHQDZOuDYQgw53YJpsBTcR8Yh6Fu5k1fQ';
 const keyParseServerUrl = 'https://parseapi.back4app.com';
 
-const HOME = 0;
-const SEARCH = 1;
-const MESSAGES = 2;
-const EVENTS = 3;
-const PROFILE = 4;
+const homeIndex = 0;
+const searchIndex = 1;
+const messagesIndex = 2;
+const eventsIndex = 3;
+const profileIndex = 4;
 
-const APP_NAME = "SKILLOGUE";
+const appName = "SKILLOGUE";
 
+const loggedProfileKey = 0;
 Color getRandomDarkColor() {
   Color randomColor =
       Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);

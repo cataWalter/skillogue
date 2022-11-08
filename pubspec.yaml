@@ -18,7 +18,8 @@ dependencies:
   grouped_list: ^5.1.2
   multi_select_flutter: ^4.1.2
   flutter_launcher_icons: ^0.10.0
-
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

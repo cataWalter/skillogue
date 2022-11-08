@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:skillogue/constants.dart';
+import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/authorization/login.dart';
 import 'package:skillogue/screens/authorization/registration.dart';
+import 'package:skillogue/screens/home_screen.dart';
 
 class PreLogin extends StatefulWidget {
   const PreLogin({Key? key}) : super(key: key);
@@ -12,6 +16,27 @@ class PreLogin extends StatefulWidget {
 }
 
 class _PreLoginState extends State<PreLogin> {
+  final Box _myBox = Hive.box("mybox");
+
+  @override
+  void initState() {
+    super.initState();
+    f();
+  }
+
+  f() async {
+    if (_myBox.get(loggedProfileKey) != null) {
+      Profile loggedProfile =
+          await queryByUsername(_myBox.get(loggedProfileKey));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(loggedProfile, searchIndex),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -25,7 +50,6 @@ class _PreLoginState extends State<PreLogin> {
         );
         return false;
       },
-
       child: Scaffold(
         //backgroundColor: Colors.grey[300],
         body: SafeArea(
