@@ -5,8 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/constants.dart';
+import 'package:skillogue/utils/constants.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -88,7 +89,7 @@ class _LoginState extends State<Login> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, searchIndex),
+          builder: (context) => Home(loggedProfile, [], Search()),
         ),
       );
     } else {
@@ -140,7 +141,8 @@ class _LoginState extends State<Login> {
                         borderSide: const BorderSide(color: Colors.white)),
                     labelText: 'Username',
                     hintText: 'Username',
-                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                    labelStyle: textFieldStyleWithOpacity,
+                    hintStyle: textFieldStyleWithOpacity,
                     filled: true,
                     fillColor: Colors.grey[850],
                   ),
@@ -160,38 +162,40 @@ class _LoginState extends State<Login> {
                         borderSide: const BorderSide(color: Colors.white)),
                     labelText: 'Password',
                     hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                    labelStyle: textFieldStyleWithOpacity,
+                    hintStyle: textFieldStyleWithOpacity,
                     filled: true,
                     fillColor: Colors.grey[850],
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30, top: 150),
+              const SizedBox(
+                height: 60,
+              ),
+              TextButton(
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  height: 80,
+                  width: 300,
                   decoration: BoxDecoration(
-                      color: Colors.blue[400],
+                      color: Colors.blue,
                       borderRadius: BorderRadius.circular(40)),
                   child: Center(
-                    child: TextButton(
-                      child: Text(
-                        'Sign In',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
-                        style: GoogleFonts.bebasNeue(
-                            fontSize: 30,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
-                      ),
-                      onPressed: () {
-                        if (isLoggedIn == false) {
-                          doUserLogin(controllerUsername.text.trim(),
-                              controllerPassword.text.trim());
-                        }
-                      },
+                    child: Text(
+                      'Sign In',
+                      //style: TextStyle(color: Colors.white, fontSize: 30),
+                      style: GoogleFonts.bebasNeue(
+                          fontSize: 30,
+                          color: Colors
+                              .white), //GoogleFonts.openSans(color: Colors.white),
                     ),
                   ),
                 ),
+                onPressed: () {
+                  if (isLoggedIn == false) {
+                    doUserLogin(controllerUsername.text.trim(),
+                        controllerPassword.text.trim());
+                  }
+                },
               ),
             ],
           ),

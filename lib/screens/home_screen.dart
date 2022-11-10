@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
@@ -7,285 +9,138 @@ import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/main.dart';
+import 'package:skillogue/screens/events/event_screen.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
 import 'package:skillogue/screens/search/search_screen.dart';
+import 'package:skillogue/utils/constants.dart';
 
-import 'package:skillogue/constants.dart';
+class Home extends StatefulWidget {
+  late List<Conversation> conversations;
+  late Profile profile;
+  late Search search;
 
-class Home extends StatelessWidget {
-  Profile profile;
-  int currentPage = searchIndex;
+  Home(this.profile, this.conversations, this.search);
 
-  Home(this.profile, this.currentPage, {super.key});
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  int _page = 0;
+  bool message = false;
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
+
 
   @override
   Widget build(BuildContext context) {
-    if (profile.logged == false) return MyApp();
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Home(profile, currentPage),
-          ),
-        );
-        return false;
-      },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomeHelper(profile, currentPage),
-        theme: ThemeData(scaffoldBackgroundColor: Colors.black),
-      ),
-    );
-  }
-}
-
-class HomeHelper extends StatefulWidget {
-  Profile profile;
-  Search search = Search();
-  int currentPage;
-
-  HomeHelper(this.profile, this.currentPage, {super.key});
-
-  @override
-  _HomeHelperState createState() => _HomeHelperState();
-}
-
-class _HomeHelperState extends State<HomeHelper> {
-  List<Conversation> c = [];
-  bool newMessages = false;
-
-  @override
-  void initState() {
-    super.initState();
-    //repeatUpdateConversations();
-  }
-
-  void repeatUpdateConversations() async {
-    while (true) {
-      updateConversations();
-      await Future.delayed(const Duration(seconds: 1));
-    }
-  }
-
-  void updateConversations() async {
-    bool foundNewMessage = false;
-    c = await getConversationsFromMessages(widget.profile.username);
-    sortConversations(c);
-    for (Conversation x in c) {
-      if (x.messages.last.outgoing == false && x.messages.last.read == false) {
-        setState(() {
-          newMessages = true;
-          foundNewMessage = true;
-        });
-        break;
-      }
-    }
-    if (foundNewMessage == false) {
-      setState(() {
-        newMessages = false;
-      });
-    }
-  }
-
-  void sortConversations(List<Conversation> c) {
-    Comparator<Conversation> sortById =
-        (a, b) => a.messages.last.date.compareTo(b.messages.last.date);
-    c.sort(sortById);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      floatingActionButton: widget.currentPage == messagesIndex
-          ? SizedBox(
-              height: 70,
-              width: 70,
-              child: FloatingActionButton(
-                onPressed: updateConversations,
-                backgroundColor: Colors.black,
-                child: Column(
+    if (widget.profile.logged == false) return MyApp();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(47),
+          child: AppBar(
+            backgroundColor: Colors.black,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Icon(
-                      Icons.message_outlined,
-                      color: Colors.white,
-                      size: 35,
-                    ),
                     Text(
-                      "Update",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.35),
-                        fontSize: 8,
+                      appName,
+                      style: GoogleFonts.bebasNeue(
+                          fontSize: 28, fontWeight: FontWeight.w300),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: Image.asset(
+                        'assets/images/logo2.png',
                       ),
-                    )
+                    ),
                   ],
                 ),
-              ),
-            )
-          : Container(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(47),
-        child: AppBar(
-          backgroundColor: Colors.black,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    appName,
-                    style: GoogleFonts.bebasNeue(
-                        fontSize: 28, fontWeight: FontWeight.w300),
+                Text(
+                  widget.profile.username,
+                  style: GoogleFonts.bebasNeue(
+                    fontSize: 24,
                   ),
-                  SizedBox(
-                    height: 40,
-                    child: Image.asset(
-                      'assets/images/logo2.png',
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                widget.profile.username,
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 24,
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 25),
-        child: getScreen(),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14.0),
-        child: Container(
-          decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                )
               ],
-              color: Colors.grey.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(30)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildNavBarItem(Icons.person, profileIndex, "Profile"),
-              //buildNavBarItem(Icons.event, EVENTS, "Events"),
-              //buildNavBarItem(Icons.home, HOME, "Home"),
-              buildNavBarItem(Icons.search, searchIndex, "Search"),
-              newMessages
-                  ? buildMessageItem(messagesIndex, "Messages")
-                  : buildNavBarItem(
-                      Icons.chat_bubble, messagesIndex, "Messages"),
-              // buildNavBarItem(Icons.messenger_outlined, MESSAGES, "Messages"),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildMessageItem(int index, String text) {
-    double radius = MediaQuery.of(context).size.width / 5;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          widget.currentPage = index;
-        });
-      },
-      child: SizedBox(
-        width: radius,
-        height: 45,
-        child: Column(
-            children: [
-              SizedBox(
-                child: Stack(
-                  children: [
-                    Icon(
-                        Icons.chat_bubble,
-                        size: 30,
-                        color: index == widget.currentPage ? Colors.black : Colors.grey[600],
-                      ),
-                    Icon(
-                      Icons.circle,
-                      color: Colors.red,
-                      size: 5,
-                      textDirection: TextDirection.ltr,
-
-
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                text,
-                style: const TextStyle(fontSize: 10, color: Colors.white),
-              ),
-            ],
-        ),
-      ),
-    );
-  }
-
-
-  Widget buildNavBarItem(IconData icon, int index, String text) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          widget.currentPage = index;
-        });
-      },
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width / 5,
-        height: 45,
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 30,
-              color:
-                  index == widget.currentPage ? Colors.black : Colors.grey[600],
-            ),
-            Text(
-              text,
-              style: const TextStyle(fontSize: 10, color: Colors.white),
-            ),
+        bottomNavigationBar: CurvedNavigationBar(
+          key: _bottomNavigationKey,
+          index: 0,
+          height: 60.0,
+          items: const [
+            Icon(Icons.perm_identity, size: 30),
+            Icon(Icons.event, size: 30),
+            Icon(Icons.search, size: 30),
+            Icon(Icons.message_outlined, size: 30),
           ],
+          color: Colors.white,
+          buttonBackgroundColor: Colors.white,
+          backgroundColor: Colors.black26,
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 300),
+          onTap: (index) {
+            setState(() {
+              _page = index;
+            });
+          },
+          letIndexChange: (index) => true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+          child: getScreen(),
         ),
       ),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.black26),
     );
   }
 
   Widget getScreen() {
-    switch (widget.currentPage) {
+    switch (_page) {
       case searchIndex:
         {
-          return SearchWidget(widget.profile, widget.search, c);
+          return SearchWidget(widget.profile, Search(), widget.conversations);
         }
       case profileIndex:
         {
-          return ProfileScreen(widget.profile);
+          return WillPopScope(
+            onWillPop: () async {
+              print("willpop2");
+              return true;
+            },
+            child: ProfileScreen(
+                widget.profile, widget.conversations, widget.search),
+          );
         }
       case messagesIndex:
         {
-          return MessageWidget(widget.profile, c);
+          updateConversations();
+          return MessageWidget(widget.profile, widget.conversations);
+        }
+      case eventsIndex:
+        {
+          return EventWidget();
         }
       default:
         return Container();
     }
+  }
+
+  void updateConversations() async {
+    print("UPDATING CONVERSATIONS AT ${DateTime.now()}");
+    widget.conversations =
+        await getConversationsFromMessages(widget.profile.username);
+    sortConversations(widget.conversations);
   }
 }

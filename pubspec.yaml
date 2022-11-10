@@ -20,6 +20,10 @@ dependencies:
   flutter_launcher_icons: ^0.10.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  auto_size_text: ^3.0.0
+  curved_navigation_bar: ^1.0.3
+  back_button_interceptor: ^6.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

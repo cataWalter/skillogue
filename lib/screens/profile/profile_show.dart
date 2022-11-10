@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skillogue/constants.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/entities/profile.dart';
 
 class ProfileShow extends StatelessWidget {
@@ -167,10 +167,5 @@ class ProfileShow extends StatelessWidget {
     );
   }
 
-  String initials(String fullName) {
-    if (fullName.length < 2) {
-      return "";
-    }
-    return fullName[0].toUpperCase() + fullName[1].toUpperCase();
-  }
+
 }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
-import 'package:skillogue/constants.dart';
+import 'package:skillogue/screens/home_screen.dart';
+import 'package:skillogue/utils/constants.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -26,18 +28,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        print("willpop2");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MyApp(),
-          ),
-        );
-        return false;
-      },
-      child: MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -45,20 +36,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
         ),
         //home: const PreLogin(),
-        home: WillPopScope(
-          onWillPop: () async {
-            print("willpop1");
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyApp(),
-              ),
-            );
-            return false;
-          },
-          child: const PreLogin(),
-        ),
-      ),
-    );
+        home: PreLogin());
   }
 }

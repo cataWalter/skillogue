@@ -8,19 +8,14 @@ class Message {
   String receiver;
   String text;
   DateTime date;
-  bool read;
 
-  Message(this.objectId, this.sender, this.receiver, this.text, this.date,
-      this.read);
+  Message(this.objectId, this.sender, this.receiver, this.text, this.date);
 }
 
 Future<void> sendMessage(String source, String dest, String text) async {
   final message = ParseObject('Message')
-    ..set('sender', source)
-    ..set('receiver', dest)
-    ..set('text', text)
-    ..set('date', DateTime.now())
-    ..set('read', false);
+    ..set('sender', source)..set('receiver', dest)..set('text', text)..set(
+        'date', DateTime.now());
   await message.save();
 }
 
@@ -43,14 +38,14 @@ Future<List<Conversation>> getConversationsFromMessages(String username) async {
     for (Conversation y in c) {
       if (y.username == newUsername) {
         y.messages
-            .add(SingleMessage(x.objectId, x.text, x.date, outgoing, x.read));
+            .add(SingleMessage(x.objectId, x.text, x.date, outgoing));
         added = true;
         break;
       }
     }
     if (added == false) {
       c.add(Conversation(newUsername,
-          [SingleMessage(x.objectId, x.text, x.date, outgoing, x.read)]));
+          [SingleMessage(x.objectId, x.text, x.date, outgoing)]));
     }
   }
   return c;
@@ -68,7 +63,7 @@ Future<List<Message>> queryAllMessages(String username) async {
 Future<List<Message>> queryMessages(String username, String role) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
-      QueryBuilder<ParseObject>(ParseObject('Message'));
+  QueryBuilder<ParseObject>(ParseObject('Message'));
   parseQuery.whereEqualTo(role, username);
   final ParseResponse apiResponse = await parseQuery.query();
   if (apiResponse.success && apiResponse.results != null) {
@@ -93,31 +88,9 @@ Message messageFromJson(dynamic t) {
       t['sender'] as String,
       t['receiver'] as String,
       t['text'] as String,
-      t['date'] as DateTime,
-      t['read'] as bool);
+      t['date'] as DateTime)
+  ;
 }
 
-void setRead(String source, String dest) async {
 
 
-  List<ParseObject> results = <ParseObject>[];
-  final QueryBuilder<ParseObject> parseQuery =
-      QueryBuilder<ParseObject>(ParseObject('Message'));
-  parseQuery.whereEqualTo('sender', source);
-  parseQuery.whereEqualTo('receiver', dest);
-  parseQuery.whereEqualTo('read', false);
-  final ParseResponse apiResponse = await parseQuery.query();
-  if (apiResponse.success && apiResponse.results != null) {
-    results = apiResponse.results as List<ParseObject>;
-  } else {
-    results = [];
-  }
-  List<Message> m = messagesFromResults(results);
-  for (Message x in m) {
-    x.read = true;
-    final message = ParseObject('Message')
-      ..objectId = x.objectId
-      ..set('read', true);
-    message.save();
-  }
-}

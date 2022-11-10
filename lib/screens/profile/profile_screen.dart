@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:skillogue/constants.dart';
+import 'package:skillogue/entities/conversation.dart';
+import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/profile/profile_show.dart';
 import 'package:skillogue/screens/profile/settings.dart';
 
-class ProfileScreen extends StatefulWidget {
-  Profile profile;
+class ProfileScreen extends StatelessWidget {
+  final Profile profile;
+  final List<Conversation> conversations;
+  final Search search;
+  final _myBox = Hive.box("mybox");
 
-  ProfileScreen(this.profile, {super.key});
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  final Box _myBox = Hive.box("mybox");
+  ProfileScreen(this.profile, this.conversations, this.search, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +31,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FloatingActionButton(
+                  heroTag: null,
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Settings(widget.profile)));
+                            builder: (context) => Settings(profile, conversations, search)));
                   },
                   backgroundColor: Colors.black,
                   child: Column(
@@ -58,13 +57,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 FloatingActionButton(
+                  heroTag: null,
                   onPressed: () {
                     _myBox.delete(loggedProfileKey);
-                    setState(() {
-                      widget.profile.logged = false;
-                    });
+                    profile.logged = false;
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => MyApp()));
+                        MaterialPageRoute(builder: (context) => const MyApp()));
                   },
                   backgroundColor: Colors.black,
                   child: Column(
@@ -87,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          ProfileShow(widget.profile),
+          ProfileShow(profile),
           const SizedBox(
             height: 60,
           ),
