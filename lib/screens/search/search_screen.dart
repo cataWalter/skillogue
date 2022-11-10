@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
@@ -9,7 +10,7 @@ import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/entities/search_result.dart';
-import 'package:skillogue/constants.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/screens/profile/profile_show.dart';
 
 class SearchWidget extends StatefulWidget {
@@ -36,9 +37,16 @@ class _SearchWidgetState extends State<SearchWidget> {
   List<String> selectedGenders = [];
   late Profile lookupProfile;
 
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    print("BACK BUTTON!2"); // Do some stuff.
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
+    BackButtonInterceptor.add(myInterceptor);
+
     controllerCity = TextEditingController(text: widget.curSearch.city);
     if (widget.curSearch.minAge == null) {
       controllerMinAge = TextEditingController();
@@ -268,7 +276,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                             borderSide: BorderSide(color: Colors.white)),
                         labelText: 'City',
                         hintText: 'City',
-                        hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                        labelStyle: textFieldStyleWithOpacity,
+                        hintStyle: textFieldStyleWithOpacity,
                         filled: true,
                         fillColor: Colors.grey[850],
                       ),
@@ -290,15 +299,16 @@ class _SearchWidgetState extends State<SearchWidget> {
                       width: 140,
                       child: TextField(
                         controller: controllerMinAge,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         textCapitalization: TextCapitalization.none,
                         autocorrect: false,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white)),
                           labelText: 'Minimum Age',
+                          labelStyle: textFieldStyleWithOpacity,
                           hintText: 'Minimum Age',
-                          hintStyle: TextStyle(color: Colors.blueGrey[400]),
+                          hintStyle: textFieldStyleWithOpacity,
                           filled: true,
                           fillColor: Colors.grey[850],
                         ),
@@ -314,7 +324,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                       width: 140,
                       child: TextField(
                         controller: controllerMaxAge,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         textCapitalization: TextCapitalization.none,
                         autocorrect: false,
                         decoration: InputDecoration(
@@ -323,10 +333,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                             color: Colors.white,
                           )),
                           labelText: 'Maximum Age',
+                          labelStyle: textFieldStyleWithOpacity,
                           hintText: 'Maximum Age',
-                          hintStyle: TextStyle(
-                            color: Colors.blueGrey[400],
-                          ),
+                          hintStyle: textFieldStyleWithOpacity,
                           filled: true,
                           fillColor: Colors.grey[850],
                         ),
@@ -442,31 +451,37 @@ class _SearchWidgetState extends State<SearchWidget> {
                   _searchIndex = 2;
                 });
               },
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    searchResults[index].fullName,
-                    style: const TextStyle(color: Colors.white),
+              dense: true,
+              leading: CircleAvatar(
+                radius: 20,
+                backgroundColor: getRandomDarkColor(),
+                child: Text(
+                  initials(searchResults[index].fullName),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
                   ),
-                  Text(
-                    searchResultsLanguages(searchResults[index]),
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ],
+                ),
+              ),
+              title: Text(
+                searchResults[index].fullName,
+                style: const TextStyle(color: Colors.white),
               ),
               subtitle: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  "${profileDescription(searchResults[index])}\nSkills: ${searchResultsSkills(searchResults[index])}",
+                  "${profileDescription(searchResults[index])}\nLanguages: ${searchResultsLanguages(searchResults[index])}\nSkills: ${searchResultsSkills(searchResults[index])}",
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
               trailing: IconButton(
                 onPressed: () {
-                  sendNewMessage(searchResults[index].fullName);
+                  sendNewMessage(searchResults[index].username);
                 },
-                icon: const Icon(Icons.message_outlined),
+                icon: Icon(
+                  Icons.message_outlined,
+                  color: Colors.white.withOpacity(0.9),
+                ),
               ),
             ),
           ),
@@ -640,7 +655,6 @@ class _SearchWidgetState extends State<SearchWidget> {
             text,
             DateTime.now(),
             true,
-            false,
           )
         ],
       ),

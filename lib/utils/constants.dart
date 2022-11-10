@@ -1,20 +1,22 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 const keyApplicationId = 'xhYBShLQtWSlLo4BmLdK0QKvHiSFjwsAE36DeWnf';
 const keyClientKey = '4gn52E4GHQDZOuDYQgw53YJpsBTcR8Yh6Fu5k1fQ';
 const keyParseServerUrl = 'https://parseapi.back4app.com';
 
-const homeIndex = 0;
-const searchIndex = 1;
-const messagesIndex = 2;
-const eventsIndex = 3;
-const profileIndex = 4;
+const searchIndex = 2;
+const messagesIndex = 3;
+const eventsIndex = 1;
+const profileIndex = 0;
 
 const appName = "SKILLOGUE";
 
 const loggedProfileKey = 0;
+
+const newFunctionalityMessage =
+    "Everyone wants the moon, but you gotta wait for this functionality! :-)";
+
 Color getRandomDarkColor() {
   Color randomColor =
       Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
@@ -75,6 +77,7 @@ List<String> countries = [
   'Congo',
   'Costa Rica',
   "Cote d'Ivoire",
+  'Country-less Wanderer',
   'Croatia',
   'Cuba',
   'Cyprus',
@@ -386,3 +389,5 @@ List<String> skills = [
 List<String> genders = ["Male", "Female", "Other"];
 
 const STANDARD_OPACITY = 0.35;
+TextStyle textFieldStyleWithOpacity =
+    TextStyle(color: Colors.grey.withOpacity(0.9));

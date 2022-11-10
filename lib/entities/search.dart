@@ -104,7 +104,6 @@ Future<List<SearchResult>> filterUser(
   } catch (e) {
     return s;
   }
-  List<String> s1 = await getContactedSender(username);
   return s;
 }
 

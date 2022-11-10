@@ -1,20 +1,20 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/constants.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/entities/conversation.dart';
-import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_show.dart';
 
 class MessageWidget extends StatefulWidget {
-  Profile p;
-  List<Conversation> c;
+  final Profile profile;
+  final List<Conversation> conversations;
 
   @override
   State<MessageWidget> createState() => _MessageWidgetState();
 
-  MessageWidget(this.p, this.c, {super.key});
+  MessageWidget(this.profile, this.conversations, {super.key});
 }
 
 class _MessageWidgetState extends State<MessageWidget> {
@@ -24,12 +24,12 @@ class _MessageWidgetState extends State<MessageWidget> {
   }
 
   Widget getConversationScreen() {
-    if (widget.c.isNotEmpty) {
-      sortConversations(widget.c);
+    if (widget.conversations.isNotEmpty) {
+      sortConversations(widget.conversations);
       return ListView.builder(
-        itemCount: widget.c.length,
+        itemCount: widget.conversations.length,
         itemBuilder: ((context, index) =>
-            ChatCard(widget.p, widget.c[index], widget.c)),
+            ChatCard(widget.profile, widget.conversations[index], widget.conversations)),
       );
     } else {
       return const Padding(
@@ -54,12 +54,6 @@ class ChatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        for (var x in c.messages) {
-          if (x.outgoing == false && x.read == false) {
-            x.read = true;
-          }
-        }
-        setRead(c.username, p.username);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -96,7 +90,10 @@ class ChatCard extends StatelessWidget {
                           color: Colors.white),
                     ),
                     const SizedBox(height: 8),
-                    getMessage(),
+                    addOutgoingIcon(
+                      c.messages.last.outgoing,
+                      c.messages.last.text.replaceAll("\n", " "),
+                    ),
                   ],
                 ),
               ),
@@ -114,48 +111,30 @@ class ChatCard extends StatelessWidget {
     );
   }
 
-  Widget getMessage() {
-    if (c.messages[0].outgoing == true) {
-      return Row(
-        children: [
-          const Opacity(
-            opacity: 0.64,
-            child: Icon(
-              Icons.arrow_forward_rounded,
-              color: Colors.white,
-              size: 14,
-            ),
-          ),
-          const Text("  "),
-          getLastMessage(),
-        ],
-      );
+  addOutgoingIcon(bool outgoing, String t) {
+    if (!outgoing) {
+      return getOverflowReplacement(t, true);
     } else {
-      return getLastMessage();
+      return getOverflowReplacement(t, false);
     }
   }
 
-  Opacity getLastMessage() {
-    if (c.messages.last.read == false && c.messages.last.outgoing == false) {
-      return Opacity(
-        opacity: 0.95,
-        child: Text(
-          c.messages.last.text,
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+  AutoSizeText getOverflowReplacement(String t, bool bold) {
+    if (bold) {
+      return AutoSizeText(
+        t,
+        overflow: TextOverflow.ellipsis,
+        minFontSize: 14,
+        style: TextStyle(color: Colors.white.withOpacity(0.6)),
+        maxLines: 1,
       );
     } else {
-      return Opacity(
-        opacity: 0.64,
-        child: Text(
-          c.messages.last.text,
-          style: const TextStyle(color: Colors.white),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+      return AutoSizeText(
+        t,
+        overflow: TextOverflow.ellipsis,
+        minFontSize: 14,
+        style: TextStyle(color: Colors.white.withOpacity(0.2)),
+        maxLines: 1,
       );
     }
   }
@@ -206,9 +185,11 @@ class ConversationWidget extends StatefulWidget {
 }
 
 class _ConversationWidgetState extends State<ConversationWidget> {
+  final newMessageController = TextEditingController();
+  DateTime loginClickTime = DateTime.fromMicrosecondsSinceEpoch(0);
+
   @override
   Widget build(BuildContext context) {
-    final newMessageController = TextEditingController();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -226,26 +207,16 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Scaffold(
-                    body: Column(
-                      children: [
-                        const SizedBox(
-                          height: 60,
-                        ),
-                        ProfileShow(widget.lookupProfile),
-                      ],
+                    body: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 60,
+                          ),
+                          ProfileShow(widget.lookupProfile),
+                        ],
+                      ),
                     ),
-                    /*
-                    bottomNavigationBar: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.abc_outlined,
-                          color: Colors.white,
-                          size: 100,
-                        ),
-                      ],
-                    ),
-                    */
                   ),
                 ),
               );
@@ -259,7 +230,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                 const PopupMenuItem(
                   value: 0,
                   child: Text(
-                    'Coming soon...',
+                    newFunctionalityMessage,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -335,23 +306,23 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: FloatingActionButton(
+                          heroTag: null,
                           onPressed: () async {
-                            final message = ParseObject('Message')
-                              ..set('sender', widget.p.username)
-                              ..set('receiver', widget.c.username)
-                              ..set('text', newMessageController.text.trim())
-                              ..set('date', DateTime.now())
-                              ..set('read', false);
-                            await message.save();
-                            setState(() {
-                              widget.c.messages.add(SingleMessage(
-                                  "",
-                                  newMessageController.text.trim(),
-                                  DateTime.now(),
-                                  true,
-                                  false));
-                              sortConversations(widget.allConv);
-                            });
+                            String t = newMessageController.text.trim();
+                            if (t.isNotEmpty) {
+                              newMessageController.clear();
+                              final message = ParseObject('Message')
+                                ..set('sender', widget.p.username)
+                                ..set('receiver', widget.c.username)
+                                ..set('text', t)
+                                ..set('date', DateTime.now());
+                              await message.save();
+                              setState(() {
+                                widget.c.messages.add(
+                                    SingleMessage("", t, DateTime.now(), true));
+                                sortConversations(widget.allConv);
+                              });
+                            }
                           },
                           child: const Icon(
                             Icons.send,

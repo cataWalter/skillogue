@@ -121,3 +121,10 @@ void updateContacted(String source, String dest) async {
     ..set('receiver', dest);
   await profile.save();
 }
+
+String initials(String fullName) {
+  if (fullName.length < 2) {
+    return "";
+  }
+  return fullName[0].toUpperCase() + fullName[1].toUpperCase();
+}
