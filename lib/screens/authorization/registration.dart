@@ -81,6 +81,7 @@ class _RegistrationState extends State<Registration> {
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
+                  obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),

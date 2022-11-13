@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +17,7 @@ class Home extends StatefulWidget {
   late Profile profile;
   late Search search;
 
-  Home(this.profile, this.conversations, this.search);
+  Home(this.profile, this.conversations, this.search, {super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -28,14 +25,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _page = 0;
-  bool message = false;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-
-
 
   @override
   Widget build(BuildContext context) {
-    if (widget.profile.logged == false) return MyApp();
+    if (widget.profile.logged == false) return const MyApp();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -80,10 +74,22 @@ class _HomeState extends State<Home> {
           index: 0,
           height: 60.0,
           items: const [
-            Icon(Icons.perm_identity, size: 30),
-            Icon(Icons.event, size: 30),
-            Icon(Icons.search, size: 30),
-            Icon(Icons.message_outlined, size: 30),
+            Icon(
+              Icons.perm_identity,
+              size: 30,
+            ),
+            Icon(
+              Icons.event,
+              size: 30,
+            ),
+            Icon(
+              Icons.search,
+              size: 30,
+            ),
+            Icon(
+              Icons.message_outlined,
+              size: 30,
+            ),
           ],
           color: Colors.white,
           buttonBackgroundColor: Colors.white,
@@ -102,7 +108,7 @@ class _HomeState extends State<Home> {
           child: getScreen(),
         ),
       ),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.black26),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
   }
 
@@ -110,7 +116,7 @@ class _HomeState extends State<Home> {
     switch (_page) {
       case searchIndex:
         {
-          return SearchWidget(widget.profile, Search(), widget.conversations);
+          return SearchWidget(widget.profile, widget.search, widget.conversations);
         }
       case profileIndex:
         {
@@ -126,11 +132,11 @@ class _HomeState extends State<Home> {
       case messagesIndex:
         {
           updateConversations();
-          return MessageWidget(widget.profile, widget.conversations);
+          return MessageScreen(widget.profile, widget.conversations);
         }
       case eventsIndex:
         {
-          return EventWidget();
+          return const EventWidget();
         }
       default:
         return Container();

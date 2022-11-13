@@ -123,8 +123,10 @@ void updateContacted(String source, String dest) async {
 }
 
 String initials(String fullName) {
-  if (fullName.length < 2) {
+  if (fullName.length < 3) {
     return "";
   }
-  return fullName[0].toUpperCase() + fullName[1].toUpperCase();
+  return fullName[0].toUpperCase() +
+      fullName[1].toUpperCase() +
+      fullName[2].toUpperCase();
 }

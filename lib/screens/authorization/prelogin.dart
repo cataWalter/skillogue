@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/authorization/login.dart';
 import 'package:skillogue/screens/authorization/registration.dart';
 import 'package:skillogue/screens/home_screen.dart';
@@ -22,20 +22,55 @@ class _PreLoginState extends State<PreLogin> {
   @override
   void initState() {
     super.initState();
-    f();
+    autologinCheck();
   }
 
-  f() async {
+  autologinCheck() async {
     if (_myBox.get(loggedProfileKey) != null) {
       Profile loggedProfile =
           await queryByUsername(_myBox.get(loggedProfileKey));
-      Navigator.push(
+      List<Conversation> c =
+          await updateConversationsFromConvClass(_myBox.get(loggedProfileKey));
+      Search s = getOldSearch();
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, [], Search()),
+          builder: (context) => Home(loggedProfile, c, s),
         ),
       );
     }
+  }
+
+  Search getOldSearch() {
+    Search oldSearch = Search();
+    if (_myBox.get(lastCountriesKey) != null) {
+      oldSearch.countries = _myBox.get(lastCountriesKey);
+    }
+    if (_myBox.get(lastSkillsKey) != null) {
+      oldSearch.skills = _myBox.get(lastSkillsKey);
+    }
+    if (_myBox.get(lastLanguagesKey) != null) {
+      oldSearch.languages = _myBox.get(lastLanguagesKey);
+    }
+    if (_myBox.get(lastGendersKey) != null) {
+      oldSearch.genders = _myBox.get(lastGendersKey);
+    }
+    if (_myBox.get(lastCityKey) != null) {
+      oldSearch.city = _myBox.get(lastCityKey);
+    }
+    if (_myBox.get(lastMinAge) != null) {
+      oldSearch.minAge = _myBox.get(lastMinAge);
+    }
+    else {
+      oldSearch.minAge = 18;
+    }
+    if (_myBox.get(lastMaxAge) != null) {
+      oldSearch.maxAge = _myBox.get(lastMaxAge);
+    }
+    else {
+      oldSearch.maxAge = 99;
+    }
+    return oldSearch;
   }
 
   @override
