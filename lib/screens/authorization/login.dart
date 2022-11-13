@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/screens/home_screen.dart';
@@ -22,12 +21,6 @@ class _LoginState extends State<Login> {
   bool isLoggedIn = false;
   late Profile loggedProfile;
   final _myBox = Hive.box("mybox");
-
-  @override
-  void initState() {
-    super.initState();
-    //doUserLogin("walter", "1");
-  }
 
   void showSuccess(String message) {
     showDialog(
@@ -76,7 +69,6 @@ class _LoginState extends State<Login> {
       //showSuccess("User was successfully login!");
       loggedProfile = await queryByUsername(username);
       _myBox.put(loggedProfileKey, username);
-      print("dio cane");
       loggedProfile.logged = true;
       var oldProfile = ParseObject('Profile')
         ..objectId = loggedProfile.objectId
@@ -86,10 +78,11 @@ class _LoginState extends State<Login> {
         isLoggedIn = true;
       });
       if (!mounted) return;
-      Navigator.push(
+      List<Conversation> c = await updateConversationsFromConvClass(username);
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, [], Search()),
+          builder: (context) => Home(loggedProfile, c, Search()),
         ),
       );
     } else {
@@ -156,6 +149,7 @@ class _LoginState extends State<Login> {
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
+                  obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),

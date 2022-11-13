@@ -94,17 +94,17 @@ Future<List<SearchResult>> findUsers(String searcher, Search curSearch) async {
 }
 
 Future<List<SearchResult>> filterUser(
-    String username, List<SearchResult> s) async {
+    String username, List<SearchResult> searchResults) async {
   try {
-    for (var x in s) {
-      if (username == x.username) {
-        s.remove(x);
+    for (var profileResult in searchResults) {
+      if (username == profileResult.username) {
+        searchResults.remove(profileResult);
       }
     }
   } catch (e) {
-    return s;
+    return searchResults;
   }
-  return s;
+  return searchResults;
 }
 
 List<SearchResult> searchResults(List<ParseObject> results) {

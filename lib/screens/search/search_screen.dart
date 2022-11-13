@@ -1,17 +1,17 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
-import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/search.dart';
 import 'package:skillogue/entities/search_result.dart';
+import 'package:skillogue/screens/messages/conversation_screen.dart';
+import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/screens/profile/profile_show.dart';
 
 class SearchWidget extends StatefulWidget {
   Profile curProfile;
@@ -37,15 +37,11 @@ class _SearchWidgetState extends State<SearchWidget> {
   List<String> selectedGenders = [];
   late Profile lookupProfile;
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    print("BACK BUTTON!2"); // Do some stuff.
-    return true;
-  }
+  final _myBox = Hive.box("mybox");
 
   @override
   void initState() {
     super.initState();
-    BackButtonInterceptor.add(myInterceptor);
 
     controllerCity = TextEditingController(text: widget.curSearch.city);
     if (widget.curSearch.minAge == null) {
@@ -81,7 +77,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   Widget getProfileLookup() {
-    return ProfileShow(lookupProfile);
+    return ProfileOverview(lookupProfile);
   }
 
   Widget getSearchForm() {
@@ -459,7 +455,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                   initials(searchResults[index].fullName),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -503,6 +499,9 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   String searchResultsSkills(SearchResult s) {
+    if (s.skills.length == 1){
+      return s.skills[0];
+    }
     String res = "${s.skills[0]} | ";
     for (var i = 1; i < s.skills.length - 1; i++) {
       res = "$res${s.skills[i]} | ";
@@ -534,19 +533,29 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   void saveSearch() {
     widget.curSearch.genders = selectedGenders;
+    _myBox.put(lastGendersKey, selectedGenders);
+
     widget.curSearch.countries = selectedCountries;
+    _myBox.put(lastCountriesKey, selectedCountries);
+
     widget.curSearch.languages = selectedLanguages;
+    _myBox.put(lastLanguagesKey, selectedLanguages);
+
     widget.curSearch.skills = selectedSkills;
     if (controllerCity.text.toString().isEmpty) {
       widget.curSearch.city = "";
+      _myBox.delete(lastCityKey);
     } else {
       widget.curSearch.city = controllerCity.text.trim();
+      _myBox.put(lastCityKey, controllerCity.text.trim());
     }
     if (controllerMaxAge.text.toString().isEmpty) {
       widget.curSearch.maxAge = 99;
+      _myBox.delete(lastMaxAge);
     }
     if (controllerMinAge.text.toString().isEmpty) {
       widget.curSearch.minAge = 18;
+      _myBox.delete(lastMinAge);
     }
     if (controllerMaxAge.text.toString().isNotEmpty &&
         controllerMinAge.text.toString().isNotEmpty) {
@@ -555,13 +564,15 @@ class _SearchWidgetState extends State<SearchWidget> {
       if (maxAge <= 99 && minAge >= 18 && maxAge >= minAge) {
         widget.curSearch.maxAge = maxAge;
         widget.curSearch.minAge = minAge;
+        _myBox.put(lastMinAge, minAge);
+        _myBox.put(lastMaxAge, maxAge);
       }
     }
     return;
   }
 
   void sendNewMessage(String destUsername) {
-    final controllerNewMessage = TextEditingController();
+    /*final controllerNewMessage = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
@@ -620,7 +631,20 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         );
       },
-    );
+    );*/
+
+    widget.curConversations.add(Conversation(destUsername, []));
+    for (Conversation x in widget.curConversations) {
+      if (x.username == destUsername) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConversationScreen(
+                x, widget.curProfile, widget.curConversations, () {}),
+          ),
+        );
+      }
+    }
   }
 
   void sendMessageLocal(String source, String dest, String text) async {

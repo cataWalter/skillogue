@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
-import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 
 void main() async {
@@ -18,7 +16,7 @@ void main() async {
 
   //Hive
   await Hive.initFlutter();
-  var box = await Hive.openBox('mybox');
+  await Hive.openBox('mybox');
 
   runApp(const MyApp());
 }
@@ -36,6 +34,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
         ),
         //home: const PreLogin(),
-        home: PreLogin());
+        home: const PreLogin());
   }
 }
