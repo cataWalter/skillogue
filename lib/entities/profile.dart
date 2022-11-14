@@ -115,12 +115,7 @@ void newProfileUpload(String username) async {
   await profile.save();
 }
 
-void updateContacted(String source, String dest) async {
-  final profile = ParseObject('Contacted')
-    ..set('sender', source)
-    ..set('receiver', dest);
-  await profile.save();
-}
+
 
 String initials(String fullName) {
   if (fullName.length < 3) {

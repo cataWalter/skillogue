@@ -1,4 +1,4 @@
-class SearchResult {
+class ProfileSearchResult {
   String username;
   String fullName;
   List<String> skills = [];
@@ -9,7 +9,7 @@ class SearchResult {
   int age;
   DateTime lastLogin;
 
-  SearchResult(
+  ProfileSearchResult(
       this.username,
       this.fullName,
       this.skills,

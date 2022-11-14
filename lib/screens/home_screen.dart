@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/message.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/events/event_screen.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
@@ -15,7 +15,7 @@ import 'package:skillogue/utils/constants.dart';
 class Home extends StatefulWidget {
   late List<Conversation> conversations;
   late Profile profile;
-  late Search search;
+  late ProfileSearch search;
 
   Home(this.profile, this.conversations, this.search, {super.key});
 
@@ -116,7 +116,7 @@ class _HomeState extends State<Home> {
     switch (_page) {
       case searchIndex:
         {
-          return SearchWidget(widget.profile, widget.search, widget.conversations);
+          return SearchScreen(widget.profile, widget.search, widget.conversations);
         }
       case profileIndex:
         {
@@ -136,7 +136,7 @@ class _HomeState extends State<Home> {
         }
       case eventsIndex:
         {
-          return const EventWidget();
+          return EventScreen(widget.profile, widget.search, widget.conversations);
         }
       default:
         return Container();

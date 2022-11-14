@@ -7,30 +7,30 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search.dart';
-import 'package:skillogue/entities/search_result.dart';
+import 'package:skillogue/entities/profile_search.dart';
+import 'package:skillogue/entities/profile_search_result.dart';
 import 'package:skillogue/screens/messages/conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
 
-class SearchWidget extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   Profile curProfile;
-  Search curSearch;
+  ProfileSearch curSearch;
   List<Conversation> curConversations;
 
-  SearchWidget(this.curProfile, this.curSearch, this.curConversations,
+  SearchScreen(this.curProfile, this.curSearch, this.curConversations,
       {super.key});
 
   @override
-  State<SearchWidget> createState() => _SearchWidgetState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchWidgetState extends State<SearchWidget> {
+class _SearchScreenState extends State<SearchScreen> {
   int _searchIndex = 0;
   var controllerCity;
   var controllerMinAge;
   var controllerMaxAge;
-  late List<SearchResult> searchResults;
+  late List<ProfileSearchResult> searchResults;
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
   List<String> selectedLanguages = [];
@@ -352,7 +352,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     child: Center(
                       child: TextButton(
                         child: Text(
-                          'Search',
+                          'Search Profiles',
                           //style: TextStyle(color: Colors.white, fontSize: 30),
                           style: GoogleFonts.bebasNeue(
                               fontSize: 30,
@@ -363,8 +363,10 @@ class _SearchWidgetState extends State<SearchWidget> {
                           if (!widget.curProfile.isEmptyProfile()) {
                             saveSearch();
                             searchResults = await findUsers(
-                                widget.curProfile.username, widget.curSearch);
-                            Comparator<SearchResult> sortById =
+                                widget.curProfile.username,
+                                widget.curSearch,
+                                widget.curConversations);
+                            Comparator<ProfileSearchResult> sortById =
                                 (a, b) => b.lastLogin.compareTo(a.lastLogin);
                             searchResults.sort(sortById);
                             if (searchResults.isNotEmpty) {
@@ -375,17 +377,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text("No users found!"),
-                                    content: const Text(":'("),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text("OK"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
+                                  return const AlertDialog(
+                                    title: Text("No users found!"),
+                                    content: Text(":'("),
                                   );
                                 },
                               );
@@ -466,7 +460,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               subtitle: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  "${profileDescription(searchResults[index])}\nLanguages: ${searchResultsLanguages(searchResults[index])}\nSkills: ${searchResultsSkills(searchResults[index])}",
+                  "\n${profileDescription(searchResults[index])}\n${profileDescription2(searchResults[index])}\n\nLanguages:\n${searchResultsLanguages(searchResults[index])}\n\nSkills:\n${searchResultsSkills(searchResults[index])}",
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -486,7 +480,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     ); //results
   }
 
-  String searchResultsLanguages(SearchResult s) {
+  String searchResultsLanguages(ProfileSearchResult s) {
     if (s.languages.length == 1) {
       return s.languages[0];
     }
@@ -498,8 +492,8 @@ class _SearchWidgetState extends State<SearchWidget> {
     return res;
   }
 
-  String searchResultsSkills(SearchResult s) {
-    if (s.skills.length == 1){
+  String searchResultsSkills(ProfileSearchResult s) {
+    if (s.skills.length == 1) {
       return s.skills[0];
     }
     String res = "${s.skills[0]} | ";
@@ -510,17 +504,24 @@ class _SearchWidgetState extends State<SearchWidget> {
     return res;
   }
 
-  String profileDescription(SearchResult s) {
+  String profileDescription(ProfileSearchResult s) {
     String res = "";
     if (s.gender.isNotEmpty) {
-      res = "$res${s.gender}, ";
+      res = "$res${s.gender} | ";
     }
-    if (s.city.isNotEmpty) {
-      res = "$res${s.city}, ";
-    }
-
     if (s.age > 0) {
-      res = "$res${s.age.toString()}, ";
+      res = "$res${s.age.toString()}";
+    }
+    return res;
+  }
+
+  String profileDescription2(ProfileSearchResult s) {
+    String res = "";
+    if (s.city.isNotEmpty) {
+      res = "$res${s.city} | ";
+    }
+    if (s.country.isNotEmpty) {
+      res = "$res${s.country}";
     }
     return res;
   }
@@ -572,67 +573,6 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   void sendNewMessage(String destUsername) {
-    /*final controllerNewMessage = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          content: SizedBox(
-            height: 300,
-            child: Column(
-              children: [
-                SizedBox(
-                  child: TextField(
-                    //minLines: 1,
-                    maxLines: 10,
-                    decoration: InputDecoration(
-                      //border: const OutlineInputBorder(),
-                      hintText: 'Send a new message to $destUsername',
-                      hintStyle: TextStyle(color: Colors.grey[600]),
-                    ),
-                    controller: controllerNewMessage,
-                    style: TextStyle(color: Colors.grey[200]),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(40)),
-                        child: Center(
-                          child: TextButton(
-                            child: Text(
-                              'Send',
-                              style: GoogleFonts.bebasNeue(
-                                  fontSize: 24,
-                                  color: Colors
-                                      .white), //GoogleFonts.openSans(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              sendMessage(widget.curProfile.username,
-                                  destUsername, controllerNewMessage.text);
-                              updateContacted(
-                                  widget.curProfile.username, destUsername);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );*/
-
     widget.curConversations.add(Conversation(destUsername, []));
     for (Conversation x in widget.curConversations) {
       if (x.username == destUsername) {
@@ -648,40 +588,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   void sendMessageLocal(String source, String dest, String text) async {
-    for (Conversation x in widget.curConversations) {
-      if (x.username == dest) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("You have already contacted this user!"),
-              content: const Text("Embrace the unknown"),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
-      return;
-    }
     widget.curConversations.add(
-      Conversation(
-        dest,
-        [
-          SingleMessage(
-            "",
-            text,
-            DateTime.now(),
-            true,
-          )
-        ],
-      ),
-    );
+        Conversation(dest, [SingleMessage("", text, DateTime.now(), true)]));
   }
 }

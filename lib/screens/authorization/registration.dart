@@ -172,9 +172,13 @@ class _RegistrationState extends State<Registration> {
   }
 
   void doUserRegistration() async {
+    if (controllerUsername.text.trim().isEmpty) return;
     final username = controllerUsername.text.trim();
+    controllerUsername.clear();
     final email = controllerEmail.text.trim();
+    controllerEmail.clear();
     final password = controllerPassword.text.trim();
+    controllerPassword.clear();
     final user = ParseUser.createUser(username, password, email);
     newProfileUpload(username);
     var response = await user.signUp();
