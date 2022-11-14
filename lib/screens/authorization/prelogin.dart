@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:skillogue/entities/conversation.dart';
-import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/authorization/login.dart';
@@ -31,7 +31,7 @@ class _PreLoginState extends State<PreLogin> {
           await queryByUsername(_myBox.get(loggedProfileKey));
       List<Conversation> c =
           await updateConversationsFromConvClass(_myBox.get(loggedProfileKey));
-      Search s = getOldSearch();
+      ProfileSearch s = getOldSearch();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -41,8 +41,8 @@ class _PreLoginState extends State<PreLogin> {
     }
   }
 
-  Search getOldSearch() {
-    Search oldSearch = Search();
+  ProfileSearch getOldSearch() {
+    ProfileSearch oldSearch = ProfileSearch();
     if (_myBox.get(lastCountriesKey) != null) {
       oldSearch.countries = _myBox.get(lastCountriesKey);
     }

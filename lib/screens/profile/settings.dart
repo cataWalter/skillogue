@@ -7,14 +7,14 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 
 class Settings extends StatefulWidget {
   final Profile profile;
   final List<Conversation> conversations;
-  final Search search;
+  final ProfileSearch search;
 
   const Settings(this.profile, this.conversations, this.search, {super.key});
 
@@ -150,7 +150,8 @@ class _SettingsState extends State<Settings> {
                             borderSide: BorderSide(color: Colors.white)),
                         hintText: widget.profile.city.isNotEmpty
                             ? widget.profile.city
-                            : "City",
+                            : "City" +
+                                "(Please use the English Spelling of your city)",
                         labelText: 'City',
                         hintStyle: textFieldStyleWithOpacity,
                         labelStyle: textFieldStyleWithOpacity,
@@ -331,7 +332,7 @@ class _SettingsState extends State<Settings> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => Home(widget.profile,
-                                  widget.conversations, Search()),
+                                  widget.conversations, widget.search),
                             ));
                       },
                       child: Container(
@@ -392,7 +393,7 @@ class _SettingsState extends State<Settings> {
       }
     }
     if (controllerCity.text.isNotEmpty) {
-      widget.profile.city = controllerCity.text;
+      widget.profile.city = capitalizeFirstLetterString(controllerCity.text);
     }
   }
 
@@ -422,15 +423,13 @@ class _SettingsState extends State<Settings> {
       }
     }
     if (controllerCity.text.isNotEmpty) {
-      oldProfile.set('city', controllerCity.text);
+      oldProfile.set('city', capitalizeFirstLetterString(controllerCity.text));
     }
-    /*..set('fullName', controllerFullName.text)
-      ..set('city', controllerCity.text)
-      ..set('gender', widget.profile.gender)
-      ..set('skills', widget.profile.skills)
-      ..set('languages', widget.profile.languages)
-      ..set('age', int.parse(controllerAge.text));*/
     await oldProfile.save();
+  }
+
+  String capitalizeFirstLetterString(String s) {
+    return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
   }
 
   String dropdownCountry() {

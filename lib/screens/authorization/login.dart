@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/search.dart';
+import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 
@@ -62,11 +62,17 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void doUserLogin(String username, String password) async {
+  void doUserLogin() async {
+    if (controllerUsername.text.trim().isEmpty) {
+      return;
+    }
+    String username = controllerUsername.text.trim();
+    controllerUsername.clear();
+    String password = controllerPassword.text.trim();
+    controllerPassword.clear();
     final user = ParseUser(username, password, null);
     var response = await user.login();
     if (response.success) {
-      //showSuccess("User was successfully login!");
       loggedProfile = await queryByUsername(username);
       _myBox.put(loggedProfileKey, username);
       loggedProfile.logged = true;
@@ -82,7 +88,7 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, c, Search()),
+          builder: (context) => Home(loggedProfile, c, ProfileSearch()),
         ),
       );
     } else {
@@ -186,8 +192,7 @@ class _LoginState extends State<Login> {
                 ),
                 onPressed: () {
                   if (isLoggedIn == false) {
-                    doUserLogin(controllerUsername.text.trim(),
-                        controllerPassword.text.trim());
+                    doUserLogin();
                   }
                 },
               ),
