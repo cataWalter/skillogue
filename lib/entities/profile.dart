@@ -20,14 +20,6 @@ class Profile {
   Profile(this.objectId, this.username, this.fullName, this.country, this.city,
       this.gender, this.age, this.skills, this.languages);
 
-  void addGender(String text) {
-    gender = text;
-  }
-
-  void delGender(String text) {
-    gender = "Genderless Wanderer";
-  }
-
   bool isEmptyProfile() {
     return fullName.isEmpty ||
         country.isEmpty ||
@@ -114,8 +106,6 @@ void newProfileUpload(String username) async {
     ..set('languages', []);
   await profile.save();
 }
-
-
 
 String initials(String fullName) {
   if (fullName.length < 3) {

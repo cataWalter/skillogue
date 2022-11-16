@@ -18,78 +18,64 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(
-            height: 60,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FloatingActionButton(
-                  heroTag: null,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Settings(profile, conversations, search)));
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            AppBar(
+              toolbarHeight: 50,
+              backgroundColor: Colors.black,
+              actions: [
+                PopupMenuButton(
+                  onSelected: (int item) {
+                    switch (item) {
+                      case 0:
+                        {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Settings(profile, conversations, search)));
+                        }
+                        break;
+                      case 1:
+                        {
+                          _myBox.delete(loggedProfileKey);
+                          profile.logged = false;
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MyApp()));
+                        }
+                    }
                   },
-                  backgroundColor: Colors.black,
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                      Text(
+                  color: myGrey,
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem(
+                      value: 0,
+                      child: Text(
                         "Settings",
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.35),
-                          fontSize: 8,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                FloatingActionButton(
-                  heroTag: null,
-                  onPressed: () {
-                    _myBox.delete(loggedProfileKey);
-                    profile.logged = false;
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const MyApp()));
-                  },
-                  backgroundColor: Colors.black,
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                        size: 40,
+                        style: TextStyle(color: Colors.white),
                       ),
-                      Text(
+                    ),
+                    const PopupMenuItem(
+                      value: 1,
+                      child: Text(
                         "Log Out",
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.35),
-                          fontSize: 8,
-                        ),
-                      )
-                    ],
-                  ),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-          ProfileShow(profile),
-          const SizedBox(
-            height: 60,
-          ),
-        ],
+            SingleChildScrollView(child: ProfileShow(profile)),
+            const SizedBox(
+              height: 60,
+            ),
+          ],
+        ),
       ),
     );
   }

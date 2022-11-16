@@ -321,36 +321,22 @@ class _SettingsState extends State<Settings> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Center(
-                    child: TextButton(
-                      onPressed: () {
-                        updateLocalProfileSettings();
-                        updateDatabaseProfileSettings();
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Home(widget.profile,
-                                  widget.conversations, widget.search),
-                            ));
-                      },
-                      child: Container(
-                        height: 80,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(40)),
-                        child: Center(
-                          child: Text(
-                            'Save',
-                            style: GoogleFonts.bebasNeue(
-                                fontSize: 30, color: Colors.white),
-                          ),
-                        ),
+                const SizedBox(
+                  height: 40,
+                ),
+                FloatingActionButton(
+                  child: const Icon(Icons.save),
+                  onPressed: () {
+                    updateLocalProfileSettings();
+                    updateDatabaseProfileSettings();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Home(widget.profile,
+                            widget.conversations, widget.search),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),

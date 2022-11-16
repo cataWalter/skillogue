@@ -10,58 +10,10 @@ class ProfileSearch {
   String? city;
   int? minAge;
   int? maxAge;
-
-  void addSkill(String text) {
-    if (!skills.contains(text)) {
-      skills.add(text);
-    }
-  }
-
-  void delSkill(String text) {
-    if (skills.contains(text)) {
-      skills.remove(text);
-    }
-  }
-
-  void addCountry(String text) {
-    if (!countries.contains(text)) {
-      countries.add(text);
-    }
-  }
-
-  void delCountry(String text) {
-    if (countries.contains(text)) {
-      countries.remove(text);
-    }
-  }
-
-  void addLanguage(String text) {
-    if (!languages.contains(text)) {
-      languages.add(text);
-    }
-  }
-
-  void delLanguage(String text) {
-    if (languages.contains(text)) {
-      languages.remove(text);
-    }
-  }
-
-  void addGender(String text) {
-    if (!genders.contains(text)) {
-      genders.add(text);
-    }
-  }
-
-  void delGender(String text) {
-    if (genders.contains(text)) {
-      genders.remove(text);
-    }
-  }
 }
 
-Future<List<ProfileSearchResult>> findUsers(
-    String searcher, ProfileSearch curSearch, List<Conversation> conversations) async {
+Future<List<ProfileSearchResult>> findUsers(String searcher,
+    ProfileSearch curSearch, List<Conversation> conversations) async {
   List<ParseObject> results = <ParseObject>[];
   final QueryBuilder<ParseObject> parseQuery =
       QueryBuilder<ParseObject>(ParseObject('Profile'));
@@ -95,8 +47,10 @@ Future<List<ProfileSearchResult>> findUsers(
   return filterUser(searcher, searchResults(results), conversations);
 }
 
-Future<List<ProfileSearchResult>> filterUser(String username,
-    List<ProfileSearchResult> searchResults, List<Conversation> conversations) async {
+Future<List<ProfileSearchResult>> filterUser(
+    String username,
+    List<ProfileSearchResult> searchResults,
+    List<Conversation> conversations) async {
   List<ProfileSearchResult> s = [];
   for (ProfileSearchResult searchResult in searchResults) {
     if (!toFilter(searchResult, conversations, username)) {
@@ -140,8 +94,3 @@ ProfileSearchResult searchResultFromJson(dynamic t) {
     t['updatedAt'] as DateTime,
   );
 }
-
-
-
-
-

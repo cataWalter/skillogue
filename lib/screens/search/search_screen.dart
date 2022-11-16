@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
@@ -82,16 +81,66 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget getSearchForm() {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          if (!widget.curProfile.isEmptyProfile()) {
+            saveSearch();
+            searchResults = await findUsers(
+                widget.curProfile.username,
+                widget.curSearch,
+                widget.curConversations);
+            Comparator<ProfileSearchResult> sortById =
+                (a, b) => b.lastLogin.compareTo(a.lastLogin);
+            searchResults.sort(sortById);
+            if (searchResults.isNotEmpty) {
+              setState(() {
+                _searchIndex = 1;
+              });
+            } else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    title: Text("No users found!"),
+                    content: Text(":'("),
+                  );
+                },
+              );
+            }
+          } else {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text(
+                      "Some details about you are still missing!"),
+                  content: const Text(
+                      "Please, update your info in the SETTINGS before looking for others"),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text("OK"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
+        icon: Icon(Icons.search),
+        label: Text("Search"),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            const SizedBox(height: 80,),
             Column(
               children: [
-                const SizedBox(
-                  height: 52,
-                ),
                 Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(.4),
@@ -263,6 +312,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: SizedBox(
                     width: double.maxFinite,
                     child: TextField(
+                      style: TextStyle(color: Colors.grey[300]),
                       controller: controllerCity,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.none,
@@ -294,6 +344,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     SizedBox(
                       width: 140,
                       child: TextField(
+                        style: TextStyle(color: Colors.grey[300]),
                         controller: controllerMinAge,
                         keyboardType: TextInputType.number,
                         textCapitalization: TextCapitalization.none,
@@ -319,6 +370,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     SizedBox(
                       width: 140,
                       child: TextField(
+                        style: TextStyle(color: Colors.grey[300]),
                         controller: controllerMaxAge,
                         keyboardType: TextInputType.number,
                         textCapitalization: TextCapitalization.none,
@@ -341,74 +393,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 const SizedBox(
                   height: 40,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(40)),
-                    child: Center(
-                      child: TextButton(
-                        child: Text(
-                          'Search Profiles',
-                          //style: TextStyle(color: Colors.white, fontSize: 30),
-                          style: GoogleFonts.bebasNeue(
-                              fontSize: 30,
-                              color: Colors
-                                  .white), //GoogleFonts.openSans(color: Colors.white),
-                        ),
-                        onPressed: () async {
-                          if (!widget.curProfile.isEmptyProfile()) {
-                            saveSearch();
-                            searchResults = await findUsers(
-                                widget.curProfile.username,
-                                widget.curSearch,
-                                widget.curConversations);
-                            Comparator<ProfileSearchResult> sortById =
-                                (a, b) => b.lastLogin.compareTo(a.lastLogin);
-                            searchResults.sort(sortById);
-                            if (searchResults.isNotEmpty) {
-                              setState(() {
-                                _searchIndex = 1;
-                              });
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return const AlertDialog(
-                                    title: Text("No users found!"),
-                                    content: Text(":'("),
-                                  );
-                                },
-                              );
-                            }
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text(
-                                      "Some details about you are still missing!"),
-                                  content: const Text(
-                                      "Please, update your info in the SETTINGS before looking for others"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -437,9 +421,14 @@ class _SearchScreenState extends State<SearchScreen> {
               onTap: () async {
                 lookupProfile =
                     await queryByUsername(searchResults[index].username);
-                setState(() {
+                /*setState(() {
                   _searchIndex = 2;
-                });
+                });*/
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Scaffold(body: ProfileOverview(lookupProfile))));
               },
               dense: true,
               leading: CircleAvatar(

@@ -10,93 +10,90 @@ class ProfileShow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              CircleAvatar(
-                radius: 60,
-                backgroundColor: getRandomDarkColor(),
-                child: Text(
-                  initials(profile.fullName),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 40,
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            CircleAvatar(
+              radius: 60,
+              backgroundColor: getRandomDarkColor(),
+              child: Text(
+                initials(profile.fullName),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  columnInfoType(profile.fullName, "Full Name"),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                children: [
-                  profile.age >= 18 && profile.age <= 99
-                      ? columnInfoType(profile.age.toString(), "Age")
-                      : columnInfoType("", "Age"),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  columnInfoType(profile.city, "City"),
-                ],
-              ),
-              Column(
-                children: [
-                  columnInfoType(profile.gender, "Gender"),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  columnInfoType(profile.country, "Country"),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              columnAlignmentInfoType(
-                formatList(profile.languages),
-                "Languages",
-                TextAlign.center,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              columnAlignmentInfoType(
-                formatList(profile.skills),
-                "Skills",
-                TextAlign.center,
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                columnInfoType(profile.fullName, "Full Name"),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                profile.age >= 18 && profile.age <= 99
+                    ? columnInfoType(profile.age.toString(), "Age")
+                    : columnInfoType("", "Age"),
+                const SizedBox(
+                  height: 30,
+                ),
+                columnInfoType(profile.city, "City"),
+              ],
+            ),
+            Column(
+              children: [
+                columnInfoType(profile.gender, "Gender"),
+                const SizedBox(
+                  height: 30,
+                ),
+                columnInfoType(profile.country, "Country"),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            columnAlignmentInfoType(
+              formatList(profile.languages),
+              "Languages",
+              TextAlign.center,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            columnAlignmentInfoType(
+              formatList(profile.skills),
+              "Skills",
+              TextAlign.center,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -166,6 +163,4 @@ class ProfileShow extends StatelessWidget {
       ],
     );
   }
-
-
 }

@@ -103,10 +103,7 @@ class _HomeState extends State<Home> {
           },
           letIndexChange: (index) => true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-          child: getScreen(),
-        ),
+        body: getScreen(),
       ),
       theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
@@ -116,7 +113,8 @@ class _HomeState extends State<Home> {
     switch (_page) {
       case searchIndex:
         {
-          return SearchScreen(widget.profile, widget.search, widget.conversations);
+          return SearchScreen(
+              widget.profile, widget.search, widget.conversations);
         }
       case profileIndex:
         {
@@ -136,7 +134,8 @@ class _HomeState extends State<Home> {
         }
       case eventsIndex:
         {
-          return EventScreen(widget.profile, widget.search, widget.conversations);
+          return EventScreen(
+              widget.profile, widget.search, widget.conversations);
         }
       default:
         return Container();
