@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
@@ -34,6 +33,7 @@ class _EventScreenState extends State<EventScreen> {
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
   late Profile lookupProfile;
+  TextEditingController dateInput = TextEditingController();
 
   final _myBox = Hive.box("mybox");
 
@@ -59,6 +59,72 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Row(children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 40.0),
+          child: FloatingActionButton.extended(
+            onPressed: () async {
+              if (!widget.curProfile.isEmptyProfile()) {
+                saveSearch();
+                searchResults = await findUsers(widget.curProfile.username,
+                    widget.curSearch, widget.curConversations);
+                Comparator<ProfileSearchResult> sortById =
+                    (a, b) => b.lastLogin.compareTo(a.lastLogin);
+                searchResults.sort(sortById);
+                if (searchResults.isNotEmpty) {
+                  setState(() {
+                    _searchIndex = 1;
+                  });
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text("No users found!"),
+                        content: Text(":'("),
+                      );
+                    },
+                  );
+                }
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text(
+                          "Some details about you are still missing!"),
+                      content: const Text(
+                          "Please, update your info in the SETTINGS before looking for others"),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            icon: Icon(
+              Icons.search,
+            ),
+            label: Text("Search"),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 130.0),
+          child: FloatingActionButton.extended(
+            onPressed: () {},
+            icon: Icon(
+              Icons.add,
+            ),
+            label: Text("Create"),
+          ),
+        ),
+      ]),
       body: getSearch(),
     );
   }
@@ -85,11 +151,11 @@ class _EventScreenState extends State<EventScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            const SizedBox(
+              height: 80,
+            ),
             Column(
               children: [
-                const SizedBox(
-                  height: 52,
-                ),
                 Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(.4),
@@ -173,13 +239,12 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                 ),
                 spacer(),
-
-
                 Align(
                   alignment: Alignment.bottomLeft,
                   child: SizedBox(
                     width: double.maxFinite,
                     child: TextField(
+                      style: TextStyle(color: Colors.grey[300]),
                       controller: controllerCity,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.none,
@@ -197,78 +262,43 @@ class _EventScreenState extends State<EventScreen> {
                     ),
                   ),
                 ),
-                
+                spacer(),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: TextField(
+                      style: TextStyle(color: Colors.grey[300]),
+                      controller: dateInput,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'Date',
+                        hintText: 'Date',
+                        labelStyle: textFieldStyleWithOpacity,
+                        hintStyle: textFieldStyleWithOpacity,
+                        filled: true,
+                        fillColor: Colors.grey[850],
+                      ),
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(DateTime.now().year),
+                            lastDate: DateTime(DateTime.now().year + 5));
+                        if (pickedDate != null) {
+                          setState(() {
+                            dateInput.text = formatDatePicker(pickedDate);
+                          });
+                        } else {}
+                      },
+                    ),
+                  ),
+                ),
                 spacer(),
                 const SizedBox(
                   height: 40,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(40)),
-                    child: Center(
-                      child: TextButton(
-                        child: Text(
-                          'Search Events',
-                          //style: TextStyle(color: Colors.white, fontSize: 30),
-                          style: GoogleFonts.bebasNeue(
-                              fontSize: 30,
-                              color: Colors
-                                  .white), //GoogleFonts.openSans(color: Colors.white),
-                        ),
-                        onPressed: () async {
-                          if (!widget.curProfile.isEmptyProfile()) {
-                            saveSearch();
-                            searchResults = await findUsers(
-                                widget.curProfile.username,
-                                widget.curSearch,
-                                widget.curConversations);
-                            Comparator<ProfileSearchResult> sortById =
-                                (a, b) => b.lastLogin.compareTo(a.lastLogin);
-                            searchResults.sort(sortById);
-                            if (searchResults.isNotEmpty) {
-                              setState(() {
-                                _searchIndex = 1;
-                              });
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return const AlertDialog(
-                                    title: Text("No users found!"),
-                                    content: Text(":'("),
-                                  );
-                                },
-                              );
-                            }
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text(
-                                      "Some details about you are still missing!"),
-                                  content: const Text(
-                                      "Please, update your info in the SETTINGS before looking for others"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -276,6 +306,10 @@ class _EventScreenState extends State<EventScreen> {
         ),
       ),
     );
+  }
+
+  String formatDatePicker(DateTime pickedDate) {
+    return "${pickedDate.day} - ${pickedDate.month} - ${pickedDate.year}";
   }
 
   Widget getSearchResults() {
@@ -306,7 +340,7 @@ class _EventScreenState extends State<EventScreen> {
                 radius: 20,
                 backgroundColor: getRandomDarkColor(),
                 child: Text(
-                  initials(searchResults[index].fullName),
+                  initials("met"),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -314,13 +348,13 @@ class _EventScreenState extends State<EventScreen> {
                 ),
               ),
               title: Text(
-                searchResults[index].fullName,
+                "Metallica Rock Tour 2022",
                 style: const TextStyle(color: Colors.white),
               ),
               subtitle: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  "\n${profileDescription(searchResults[index])}\n${profileDescription2(searchResults[index])}\n\nLanguages:\n${searchResultsLanguages(searchResults[index])}\n\nSkills:\n${searchResultsSkills(searchResults[index])}",
+                  "\n9pm, 19/11/2022\nStadio San Siro, Milano\n\nLorem ipsum dolor sit amet. Id omnis nihil sit dignissimos consequatur hic nisi inventore vel aperiam delectus ea eius voluptas ut ducimus Quis. Ab quia debitis ut dolor ducimus aut eius nesciunt. Sit quam praesentium et eius itaque est quis reiciendis eos provident officia aut ipsa laudantium! Qui doloremque fugit et adipisci nesciunt aut cumque molestias et possimus reprehenderit ex sint quasi.",
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -329,7 +363,7 @@ class _EventScreenState extends State<EventScreen> {
                   sendNewMessage(searchResults[index].username);
                 },
                 icon: Icon(
-                  Icons.message_outlined,
+                  Icons.arrow_circle_right_outlined,
                   color: Colors.white.withOpacity(0.9),
                 ),
               ),
@@ -393,12 +427,8 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void saveSearch() {
-
-
     widget.curSearch.countries = selectedCountries;
     _myBox.put(lastCountriesKey, selectedCountries);
-
-
 
     widget.curSearch.skills = selectedSkills;
     if (controllerCity.text.toString().isEmpty) {
