@@ -45,6 +45,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Colors.black,
+
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
                     body: ProfileOverview(widget.lookupProfile),
                   ),
                 ),

@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
               size: 30,
             ),
             Icon(
-              Icons.search,
+              Icons.groups,
               size: 30,
             ),
             Icon(
@@ -103,7 +103,10 @@ class _HomeState extends State<Home> {
           },
           letIndexChange: (index) => true,
         ),
-        body: getScreen(),
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: getScreen(),
+        ),
       ),
       theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
@@ -134,8 +137,9 @@ class _HomeState extends State<Home> {
         }
       case eventsIndex:
         {
-          return EventScreen(
-              widget.profile, widget.search, widget.conversations);
+          /*return EventScreen(
+              widget.profile, widget.search, widget.conversations);*/
+          return const Center(child: Text(newFunctionalityMessage, style: TextStyle(color: Colors.white),));
         }
       default:
         return Container();
