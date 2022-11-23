@@ -18,12 +18,11 @@ Future<List<ProfileSearchResult>> findUsers(String searcher,
   final QueryBuilder<ParseObject> parseQuery =
       QueryBuilder<ParseObject>(ParseObject('Profile'));
   parseQuery.whereNotEqualTo('username', searcher);
-
   if (curSearch.skills.isNotEmpty) {
     parseQuery.whereArrayContainsAll('skills', curSearch.skills);
   }
   if (curSearch.languages.isNotEmpty) {
-    parseQuery.whereArrayContainsAll('languages', curSearch.languages);
+    parseQuery.whereContainedIn('languages', curSearch.languages);
   }
   if (curSearch.countries.isNotEmpty) {
     parseQuery.whereArrayContainsAll('countries', curSearch.countries);

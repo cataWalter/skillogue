@@ -473,9 +473,9 @@ class _SearchScreenState extends State<SearchScreen> {
     if (s.languages.length == 1) {
       return s.languages[0];
     }
-    String res = "${s.languages[0]} | ";
+    String res = "${s.languages[0]}, ";
     for (var i = 1; i < s.languages.length - 1; i++) {
-      res = "$res${s.languages[i]} | ";
+      res = "$res${s.languages[i]}, ";
     }
     res = res + s.languages[s.languages.length - 1];
     return res;
@@ -485,9 +485,9 @@ class _SearchScreenState extends State<SearchScreen> {
     if (s.skills.length == 1) {
       return s.skills[0];
     }
-    String res = "${s.skills[0]} | ";
+    String res = "${s.skills[0]}, ";
     for (var i = 1; i < s.skills.length - 1; i++) {
-      res = "$res${s.skills[i]} | ";
+      res = "$res${s.skills[i]}, ";
     }
     res = res + s.skills[s.skills.length - 1];
     return res;
@@ -496,7 +496,7 @@ class _SearchScreenState extends State<SearchScreen> {
   String profileDescription(ProfileSearchResult s) {
     String res = "";
     if (s.gender.isNotEmpty) {
-      res = "$res${s.gender} | ";
+      res = "$res${s.gender}, ";
     }
     if (s.age > 0) {
       res = "$res${s.age.toString()}";
@@ -507,7 +507,7 @@ class _SearchScreenState extends State<SearchScreen> {
   String profileDescription2(ProfileSearchResult s) {
     String res = "";
     if (s.city.isNotEmpty) {
-      res = "$res${s.city} | ";
+      res = "$res${s.city}, ";
     }
     if (s.country.isNotEmpty) {
       res = "$res${s.country}";

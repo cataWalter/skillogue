@@ -23,7 +23,7 @@ const lastMinAge = 6;
 const lastMaxAge = 7;
 
 const newFunctionalityMessage =
-    "Everyone wants the moon, but you gotta wait for this functionality! :-)";
+    "COMING SOON! :-)";
 
 Color getRandomDarkColor() {
   Color randomColor =
