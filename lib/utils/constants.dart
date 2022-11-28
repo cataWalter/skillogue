@@ -1,9 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:supabase/supabase.dart';
 
-const keyApplicationId = 'xhYBShLQtWSlLo4BmLdK0QKvHiSFjwsAE36DeWnf';
-const keyClientKey = '4gn52E4GHQDZOuDYQgw53YJpsBTcR8Yh6Fu5k1fQ';
-const keyParseServerUrl = 'https://parseapi.back4app.com';
+const supabaseUrl = 'https://yngloibojslkksjxnieo.supabase.co';
+const supabaseKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InluZ2xvaWJvanNsa2tzanhuaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjkzMTE2NDUsImV4cCI6MTk4NDg4NzY0NX0.tTZqggCePAuBr9hGICNmeMQcgmFuwaZT_jbUtRFLmeE';
+
+final supabase = SupabaseClient(supabaseUrl, supabaseKey);
 
 const searchIndex = 2;
 const messagesIndex = 3;
@@ -22,8 +25,20 @@ const lastCityKey = 5;
 const lastMinAge = 6;
 const lastMaxAge = 7;
 
-const newFunctionalityMessage =
-    "COMING SOON! :-)";
+const newFunctionalityMessage = "COMING SOON! :-)";
+
+String initials(String fullName) {
+  if (fullName.length < 3) {
+    return "";
+  }
+  return fullName[0].toUpperCase() +
+      fullName[1].toUpperCase() +
+      fullName[2].toUpperCase();
+}
+
+DateTime stringToDatetime(String x) {
+  return DateTime.parse(x);
+}
 
 Color getRandomDarkColor() {
   Color randomColor =
@@ -128,7 +143,7 @@ List<String> skills = [
 ];
 List<String> genders = ["Male", "Female", "Other"];
 
-const STANDARD_OPACITY = 0.35;
+const standardOpacity = 0.35;
 TextStyle textFieldStyleWithOpacity =
     TextStyle(color: Colors.grey.withOpacity(0.9));
 

@@ -42,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
                       case 1:
                         {
                           _myBox.delete(loggedProfileKey);
-                          profile.logged = false;
+                          profile.isLogged = false;
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

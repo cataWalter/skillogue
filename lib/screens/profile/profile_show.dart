@@ -19,7 +19,7 @@ class ProfileShow extends StatelessWidget {
               radius: 60,
               backgroundColor: getRandomDarkColor(),
               child: Text(
-                initials(profile.fullName),
+                initials(profile.name),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 40,
@@ -32,7 +32,7 @@ class ProfileShow extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                columnInfoType(profile.fullName, "Full Name"),
+                columnInfoType(profile.name, "Name"),
               ],
             ),
           ],

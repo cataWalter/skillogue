@@ -1,14 +1,14 @@
-import 'package:skillogue/entities/message.dart';
-
 class Conversation {
-  String username;
+  String destEmail;
+  String destName;
+
   List<SingleMessage> messages;
 
-  Conversation(this.username, this.messages);
+  Conversation(this.destEmail, this.destName, this.messages);
 }
 
 class SingleMessage {
-  String objectId;
+  int objectId;
   String text;
   DateTime date;
   bool outgoing;
@@ -16,19 +16,10 @@ class SingleMessage {
   SingleMessage(this.objectId, this.text, this.date, this.outgoing);
 }
 
-Future<List<Conversation>> updateConversationsFromConvClass(
-    String username) async {
-  List<Conversation> c =
-      await getConversationsFromMessages(username) as List<Conversation>;
-  print("UPDATING CONVERSATIONS AT ${DateTime.now()}");
-  sortConversations(c);
-  return c;
-}
-
-void sortConversations(List<Conversation> c) {
+void sortConversations(List<Conversation> conversations) {
   Comparator<Conversation> sortConversationsByDate =
       (a, b) => b.messages.last.date.compareTo(a.messages.last.date);
-  c.sort(sortConversationsByDate);
+  conversations.sort(sortConversationsByDate);
 }
 
 String parseTime(DateTime d) {

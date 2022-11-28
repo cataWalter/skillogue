@@ -1,28 +1,26 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
-import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
 
-class Settings extends StatefulWidget {
-  final Profile profile;
-  final List<Conversation> conversations;
-  final ProfileSearch search;
+import '../../utils/backend/profile_backend.dart';
 
-  const Settings(this.profile, this.conversations, this.search, {super.key});
+class GuidedRegistration extends StatefulWidget {
+  final String email;
+
+  const GuidedRegistration(this.email, {super.key});
 
   @override
-  _SettingsState createState() => _SettingsState();
+  _GuidedRegistrationState createState() => _GuidedRegistrationState();
 }
 
-class _SettingsState extends State<Settings> {
+class _GuidedRegistrationState extends State<GuidedRegistration> {
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
@@ -67,7 +65,7 @@ class _SettingsState extends State<Settings> {
                 Row(
                   children: [
                     Text(
-                      widget.profile.name,
+                      widget.email,
                       style: GoogleFonts.bebasNeue(
                         fontSize: 24,
                       ),
@@ -99,9 +97,7 @@ class _SettingsState extends State<Settings> {
                         border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
-                        hintText: widget.profile.name.isNotEmpty
-                            ? widget.profile.name
-                            : "Full Name",
+                        hintText: "Full Name",
                         labelStyle: textFieldStyleWithOpacity,
                         labelText: 'Full Name',
                         hintStyle: textFieldStyleWithOpacity,
@@ -123,10 +119,7 @@ class _SettingsState extends State<Settings> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
-                        hintText: widget.profile.age.toString().isNotEmpty &&
-                                widget.profile.age <= 99
-                            ? widget.profile.age.toString()
-                            : "Age",
+                        hintText: "Age",
                         labelText: 'Age',
                         hintStyle: textFieldStyleWithOpacity,
                         labelStyle: textFieldStyleWithOpacity,
@@ -148,9 +141,8 @@ class _SettingsState extends State<Settings> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
-                        hintText: widget.profile.city.isNotEmpty
-                            ? widget.profile.city
-                            : "City (Please use the English Spelling of your city)",
+                        hintText:
+                            "City (Please use the English Spelling of your city)",
                         labelText: 'City',
                         hintStyle: textFieldStyleWithOpacity,
                         labelStyle: textFieldStyleWithOpacity,
@@ -171,9 +163,7 @@ class _SettingsState extends State<Settings> {
                       width: 27,
                     ),
                     DropdownButton<String>(
-                      value: widget.profile.country.isNotEmpty
-                          ? widget.profile.country
-                          : dropdownCountryValue,
+                      value: dropdownCountryValue,
                       icon: const Icon(Icons.arrow_downward),
                       elevation: 16,
                       style: const TextStyle(color: Colors.white),
@@ -209,9 +199,7 @@ class _SettingsState extends State<Settings> {
                       width: 30,
                     ),
                     DropdownButton<String>(
-                      value: widget.profile.gender.isNotEmpty
-                          ? widget.profile.gender
-                          : dropdownGenderValue,
+                      value: dropdownGenderValue,
                       icon: const Icon(Icons.arrow_downward),
                       elevation: 16,
                       style: const TextStyle(color: Colors.white),
@@ -248,7 +236,7 @@ class _SettingsState extends State<Settings> {
                     children: <Widget>[
                       MultiSelectBottomSheetField(
                         initialChildSize: 0.4,
-                        initialValue: widget.profile.languages,
+                        initialValue: const [],
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
                         buttonText: const Text("Languages"),
@@ -292,7 +280,7 @@ class _SettingsState extends State<Settings> {
                     children: <Widget>[
                       MultiSelectBottomSheetField(
                         initialChildSize: 0.4,
-                        initialValue: widget.profile.skills,
+                        initialValue: const [],
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
                         buttonText: const Text("Skills"),
@@ -325,16 +313,42 @@ class _SettingsState extends State<Settings> {
                 ),
                 FloatingActionButton(
                   child: const Icon(Icons.save),
-                  onPressed: () {
-                    updateLocalProfileSettings();
-                    updateDatabaseProfileSettings();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Home(widget.conversations,
-                            widget.profile, widget.search),
-                      ),
-                    );
+                  onPressed: () async {
+                    var parameters = {};
+                    if (changedCountry &&
+                        changedGender &&
+                        controllerCity.text.isNotEmpty &&
+                        controllerFullName.text.isNotEmpty &&
+                        selectedLanguages.isNotEmpty &&
+                        controllerAge.text.isNotEmpty &&
+                        int.parse(controllerAge.text) >= 18 &&
+                        int.parse(controllerAge.text) <= 99) {
+                      parameters.addAll({'country': dropdownCountryValue});
+                      parameters.addAll({'gender': dropdownGenderValue});
+                      parameters.addAll({
+                        'city': capitalizeFirstLetterString(controllerCity.text)
+                      });
+                      parameters.addAll({'name': controllerFullName.text});
+                      parameters.addAll({'languages': selectedLanguages});
+                      parameters.addAll({'skills': selectedSkills});
+                      parameters.addAll({'age': int.parse(controllerAge.text)});
+                      await supabase
+                          .from('profile')
+                          .update(parameters)
+                          .eq('email', widget.email);
+                      Profile registeredProfile =
+                          await findProfileByEmail(widget.email);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Home(
+                            [],
+                            registeredProfile,
+                            ProfileSearch(),
+                          ),
+                        ),
+                      );
+                    } else {}
                   },
                 ),
               ],
@@ -346,84 +360,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  String? validateName(String s) {
-    if (s == "error") {
-      return "error1";
-    } else {
-      return null;
-    }
-  }
-
-  void updateLocalProfileSettings() {
-    if (changedCountry) {
-      widget.profile.country = dropdownCountryValue;
-    }
-    if (changedGender) {
-      widget.profile.gender = dropdownGenderValue;
-    }
-    if (controllerFullName.text.isNotEmpty) {
-      widget.profile.name = controllerFullName.text;
-    }
-    if (selectedLanguages.isNotEmpty) {
-      widget.profile.languages = selectedLanguages;
-    }
-    if (selectedSkills.isNotEmpty) {
-      widget.profile.skills = selectedSkills;
-    }
-
-    if (controllerAge.text.isNotEmpty) {
-      int newAge = int.parse(controllerAge.text);
-      if (newAge >= 18 && newAge <= 99) {
-        widget.profile.age = newAge;
-      }
-    }
-    if (controllerCity.text.isNotEmpty) {
-      widget.profile.city = capitalizeFirstLetterString(controllerCity.text);
-    }
-  }
-
-  void updateDatabaseProfileSettings() async {
-    var parameters = {};
-    if (changedCountry) {
-      parameters.addAll({'country': dropdownCountryValue});
-    }
-    if (changedGender) {
-      parameters.addAll({'gender': dropdownGenderValue});
-    }
-    if (controllerCity.text.isNotEmpty) {
-      parameters
-          .addAll({'city': capitalizeFirstLetterString(controllerCity.text)});
-    }
-    if (controllerFullName.text.isNotEmpty) {
-      parameters.addAll({'name': controllerFullName.text});
-    }
-    if (selectedLanguages.isNotEmpty) {
-      parameters.addAll({'languages': selectedLanguages});
-    }
-    if (selectedSkills.isNotEmpty) {
-      parameters.addAll({'skills': selectedSkills});
-    }
-    if (controllerAge.text.isNotEmpty) {
-      int newAge = int.parse(controllerAge.text);
-      if (newAge >= 18 && newAge <= 99) {
-        parameters.addAll({'age': newAge});
-      }
-    }
-    await supabase
-        .from('profile')
-        .update(parameters)
-        .eq('email', widget.profile.email);
-  }
-
   String capitalizeFirstLetterString(String s) {
     return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
-  }
-
-  String dropdownCountry() {
-    if (widget.profile.country.isNotEmpty) {
-      return widget.profile.country;
-    } else {
-      return "";
-    }
   }
 }
