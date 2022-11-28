@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +9,9 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/authorization/login.dart';
 import 'package:skillogue/screens/authorization/registration.dart';
 import 'package:skillogue/screens/home_screen.dart';
+
+import '../../utils/backend/message_backend.dart';
+import '../../utils/backend/profile_backend.dart';
 
 class PreLogin extends StatefulWidget {
   const PreLogin({Key? key}) : super(key: key);
@@ -30,14 +32,13 @@ class _PreLoginState extends State<PreLogin> {
   autologinCheck() async {
     if (_myBox.get(loggedProfileKey) != null) {
       Profile loggedProfile =
-          await queryByUsername(_myBox.get(loggedProfileKey));
-      List<Conversation> c =
-          await updateConversationsFromConvClass(_myBox.get(loggedProfileKey));
+          await findProfileByEmail(_myBox.get(loggedProfileKey));
+      List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
       ProfileSearch s = getOldSearch();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, c, s),
+          builder: (context) => Home(c, loggedProfile, s),
         ),
       );
     }
@@ -135,7 +136,7 @@ class _PreLoginState extends State<PreLogin> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const Registration(),

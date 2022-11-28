@@ -7,10 +7,12 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
-import 'package:skillogue/entities/profile_search_result.dart';
 import 'package:skillogue/screens/messages/conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
+
+import '../../utils/backend/profile_backend.dart';
+import '../../utils/backend/profile_search_backend.dart';
 
 class SearchScreen extends StatefulWidget {
   Profile curProfile;
@@ -29,7 +31,7 @@ class _SearchScreenState extends State<SearchScreen> {
   var controllerCity;
   var controllerMinAge;
   var controllerMaxAge;
-  late List<ProfileSearchResult> searchResults;
+  late List<Profile> searchResults;
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
   List<String> selectedLanguages = [];
@@ -86,11 +88,9 @@ class _SearchScreenState extends State<SearchScreen> {
         onPressed: () async {
           if (!widget.curProfile.isEmptyProfile()) {
             saveSearch();
-            searchResults = await findUsers(
-                widget.curProfile.username,
-                widget.curSearch,
-                widget.curConversations);
-            Comparator<ProfileSearchResult> sortById =
+            searchResults = await findUsers(widget.curProfile.name,
+                widget.curSearch, widget.curConversations);
+            Comparator<Profile> sortById =
                 (a, b) => b.lastLogin.compareTo(a.lastLogin);
             searchResults.sort(sortById);
             if (searchResults.isNotEmpty) {
@@ -113,8 +113,8 @@ class _SearchScreenState extends State<SearchScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text(
-                      "Some details about you are still missing!"),
+                  title:
+                      const Text("Some details about you are still missing!"),
                   content: const Text(
                       "Please, update your info in the SETTINGS before looking for others"),
                   actions: <Widget>[
@@ -130,15 +130,17 @@ class _SearchScreenState extends State<SearchScreen> {
             );
           }
         },
-        icon: Icon(Icons.search),
-        label: Text("Search"),
+        icon: const Icon(Icons.search),
+        label: const Text("Search"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(height: 80,),
+            const SizedBox(
+              height: 80,
+            ),
             Column(
               children: [
                 Container(
@@ -420,10 +422,8 @@ class _SearchScreenState extends State<SearchScreen> {
             child: ListTile(
               onTap: () async {
                 lookupProfile =
-                    await queryByUsername(searchResults[index].username);
-                /*setState(() {
-                  _searchIndex = 2;
-                });*/
+                    await findProfileByEmail(searchResults[index].email);
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -435,7 +435,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 radius: 20,
                 backgroundColor: getRandomDarkColor(),
                 child: Text(
-                  initials(searchResults[index].fullName),
+                  initials(searchResults[index].name),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -443,7 +443,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               title: Text(
-                searchResults[index].fullName,
+                searchResults[index].name,
                 style: const TextStyle(color: Colors.white),
               ),
               subtitle: Align(
@@ -455,7 +455,8 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               trailing: IconButton(
                 onPressed: () {
-                  sendNewMessage(searchResults[index].username);
+                  sendNewMessage(
+                      searchResults[index].email, searchResults[index].name);
                 },
                 icon: Icon(
                   Icons.message_outlined,
@@ -469,7 +470,7 @@ class _SearchScreenState extends State<SearchScreen> {
     ); //results
   }
 
-  String searchResultsLanguages(ProfileSearchResult s) {
+  String searchResultsLanguages(s) {
     if (s.languages.length == 1) {
       return s.languages[0];
     }
@@ -481,7 +482,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return res;
   }
 
-  String searchResultsSkills(ProfileSearchResult s) {
+  String searchResultsSkills(s) {
     if (s.skills.length == 1) {
       return s.skills[0];
     }
@@ -493,7 +494,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return res;
   }
 
-  String profileDescription(ProfileSearchResult s) {
+  String profileDescription(s) {
     String res = "";
     if (s.gender.isNotEmpty) {
       res = "$res${s.gender}, ";
@@ -504,7 +505,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return res;
   }
 
-  String profileDescription2(ProfileSearchResult s) {
+  String profileDescription2(s) {
     String res = "";
     if (s.city.isNotEmpty) {
       res = "$res${s.city}, ";
@@ -561,10 +562,10 @@ class _SearchScreenState extends State<SearchScreen> {
     return;
   }
 
-  void sendNewMessage(String destUsername) {
-    widget.curConversations.add(Conversation(destUsername, []));
+  void sendNewMessage(String destEmail, String destName) {
+    widget.curConversations.add(Conversation(destEmail, destName, []));
     for (Conversation x in widget.curConversations) {
-      if (x.username == destUsername) {
+      if (x.destEmail == destEmail) {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -576,8 +577,9 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void sendMessageLocal(String source, String dest, String text) async {
-    widget.curConversations.add(
-        Conversation(dest, [SingleMessage("", text, DateTime.now(), true)]));
+  void sendMessageLocal(
+      String source, String dest, String destName, String text) async {
+    widget.curConversations.add(Conversation(
+        dest, destName, [SingleMessage(0, text, DateTime.now(), true)]));
   }
 }

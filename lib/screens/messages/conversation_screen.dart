@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
+
+import '../../utils/backend/message_backend.dart';
+import '../../utils/backend/profile_backend.dart';
 
 class ConversationScreen extends StatefulWidget {
   Conversation conversation;
@@ -40,14 +42,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
           title: GestureDetector(
             onTap: () async {
               widget.lookupProfile =
-                  await queryByUsername(widget.conversation.username);
+                  await findProfileByEmail(widget.conversation.destEmail);
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => Scaffold(
                     appBar: AppBar(
                       backgroundColor: Colors.black,
-
                       leading: IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
                         onPressed: () => Navigator.of(context).pop(),
@@ -58,7 +59,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 ),
               );
             },
-            child: Text(widget.conversation.username),
+            child: Text(widget.conversation.destName),
           ),
           actions: [
             PopupMenuButton(
@@ -149,18 +150,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                 newMessageController.text.trim();
                             if (newTextMessage.isNotEmpty) {
                               newMessageController.clear();
-                              final message = ParseObject('Message')
-                                ..set('sender', widget.profile.username)
-                                ..set('receiver', widget.conversation.username)
-                                ..set('text', newTextMessage)
-                                ..set('date', DateTime.now());
-                              await message.save();
+                              sendMessage(
+                                  widget.profile.email,
+                                  widget.conversation.destEmail,
+                                  newTextMessage);
                               setState(() {
                                 widget.conversation.messages.add(SingleMessage(
-                                    "", newTextMessage, DateTime.now(), true));
+                                    0, newTextMessage, DateTime.now(), true));
                                 sortConversations(widget.allConversations);
                               });
-                              //widget.callbackFunction();
                             }
                           },
                           child: const Icon(

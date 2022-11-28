@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
+
+import '../../utils/backend/authorization_backend.dart';
+import '../../utils/backend/message_backend.dart';
+import '../../utils/backend/profile_backend.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -20,7 +22,6 @@ class _LoginState extends State<Login> {
   final controllerPassword = TextEditingController();
   bool isLoggedIn = false;
   late Profile loggedProfile;
-  final _myBox = Hive.box("mybox");
 
   void showSuccess(String message) {
     showDialog(
@@ -42,71 +43,34 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void showError(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void doUserLogin() async {
-    if (controllerUsername.text.trim().isEmpty) {
+    if (controllerUsername.text.trim().isEmpty ||
+        controllerPassword.text.trim().isEmpty) {
       return;
     }
-    String username = controllerUsername.text.trim();
+    String email = controllerUsername.text.trim();
     controllerUsername.clear();
     String password = controllerPassword.text.trim();
     controllerPassword.clear();
-    final user = ParseUser(username, password, null);
-    var response = await user.login();
-    if (response.success) {
-      loggedProfile = await queryByUsername(username);
-      _myBox.put(loggedProfileKey, username);
-      loggedProfile.logged = true;
-      var oldProfile = ParseObject('Profile')
-        ..objectId = loggedProfile.objectId
-        ..set('lastLogin', DateTime.now());
-      await oldProfile.save();
-      setState(() {
-        isLoggedIn = true;
-      });
-      if (!mounted) return;
-      List<Conversation> c = await updateConversationsFromConvClass(username);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(loggedProfile, c, ProfileSearch()),
+    //final AuthResponse res =
+    await login(email, password);
+    loggedProfile = await findProfileByEmail(email);
+    loggedProfile.isLogged = true;
+    loginDateUpdate(email);
+    setState(() {
+      isLoggedIn = true;
+    });
+    List<Conversation> c = await getMessagesAll(email);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Home(
+          c,
+          loggedProfile,
+          ProfileSearch(),
         ),
-      );
-    } else {
-      showError(response.error!.message);
-    }
-  }
-
-  void doUserLogout() async {
-    final user = await ParseUser.currentUser() as ParseUser;
-    var response = await user.logout();
-    if (response.success) {
-      showSuccess("User was successfully logout!");
-      setState(() {
-        isLoggedIn = false;
-      });
-    } else {
-      showError(response.error!.message);
-    }
+      ),
+    );
   }
 
   @override

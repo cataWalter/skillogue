@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/authorization/prelogin.dart';
+import 'package:skillogue/screens/authorization/guided_registration.dart';
 import 'package:skillogue/utils/constants.dart';
+
+import '../../utils/backend.dart';
+import '../../utils/backend/authorization_backend.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -13,7 +14,6 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
   final controllerEmail = TextEditingController();
 
@@ -31,26 +31,6 @@ class _RegistrationState extends State<Registration> {
                   height: 300,
                   child: Image.asset(
                     'assets/images/logo.png',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: TextField(
-                  controller: controllerUsername,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.white)),
-                    labelText: 'Username',
-                    hintText: 'Username',
-                    labelStyle: textFieldStyleWithOpacity,
-                    hintStyle: textFieldStyleWithOpacity,
-                    filled: true,
-                    fillColor: Colors.grey[850],
                   ),
                 ),
               ),
@@ -126,66 +106,41 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  void showSuccess(String username) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Success!"),
-          content: const Text("User was successfully created!"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PreLogin(),
-                  ),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showError(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void doUserRegistration() async {
-    if (controllerUsername.text.trim().isEmpty) return;
-    final username = controllerUsername.text.trim();
-    controllerUsername.clear();
     final email = controllerEmail.text.trim();
     controllerEmail.clear();
     final password = controllerPassword.text.trim();
     controllerPassword.clear();
-    final user = ParseUser.createUser(username, password, email);
-    newProfileUpload(username);
-    var response = await user.signUp();
-    if (response.success) {
-      showSuccess(username);
+    bool usersWithSameEmail = await existsUsersWithSameEmail(email);
+    if (usersWithSameEmail) {
+      databaseInsert('profile', {'email': email});
+      //final AuthResponse res =
+      await registration(email, password);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GuidedRegistration(email),
+        ),
+      );
     } else {
-      showError(response.error!.message);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error!"),
+            content: const Text(
+                "The email is already associated with an existing account!"),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }

@@ -1,10 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
@@ -67,7 +67,7 @@ class _SettingsState extends State<Settings> {
                 Row(
                   children: [
                     Text(
-                      widget.profile.username,
+                      widget.profile.name,
                       style: GoogleFonts.bebasNeue(
                         fontSize: 24,
                       ),
@@ -99,8 +99,8 @@ class _SettingsState extends State<Settings> {
                         border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
-                        hintText: widget.profile.fullName.isNotEmpty
-                            ? widget.profile.fullName
+                        hintText: widget.profile.name.isNotEmpty
+                            ? widget.profile.name
                             : "Full Name",
                         labelStyle: textFieldStyleWithOpacity,
                         labelText: 'Full Name',
@@ -150,8 +150,7 @@ class _SettingsState extends State<Settings> {
                             borderSide: BorderSide(color: Colors.white)),
                         hintText: widget.profile.city.isNotEmpty
                             ? widget.profile.city
-                            : "City" +
-                                "(Please use the English Spelling of your city)",
+                            : "City (Please use the English Spelling of your city)",
                         labelText: 'City',
                         hintStyle: textFieldStyleWithOpacity,
                         labelStyle: textFieldStyleWithOpacity,
@@ -166,7 +165,7 @@ class _SettingsState extends State<Settings> {
                     Text(
                       "Country:",
                       style: TextStyle(
-                          color: Colors.white.withOpacity(STANDARD_OPACITY)),
+                          color: Colors.white.withOpacity(standardOpacity)),
                     ),
                     const SizedBox(
                       width: 27,
@@ -204,7 +203,7 @@ class _SettingsState extends State<Settings> {
                     Text(
                       "Gender:",
                       style: TextStyle(
-                          color: Colors.white.withOpacity(STANDARD_OPACITY)),
+                          color: Colors.white.withOpacity(standardOpacity)),
                     ),
                     const SizedBox(
                       width: 30,
@@ -332,8 +331,8 @@ class _SettingsState extends State<Settings> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Home(widget.profile,
-                            widget.conversations, widget.search),
+                        builder: (context) => Home(widget.conversations,
+                            widget.profile, widget.search),
                       ),
                     );
                   },
@@ -363,7 +362,7 @@ class _SettingsState extends State<Settings> {
       widget.profile.gender = dropdownGenderValue;
     }
     if (controllerFullName.text.isNotEmpty) {
-      widget.profile.fullName = controllerFullName.text;
+      widget.profile.name = controllerFullName.text;
     }
     if (selectedLanguages.isNotEmpty) {
       widget.profile.languages = selectedLanguages;
@@ -384,34 +383,36 @@ class _SettingsState extends State<Settings> {
   }
 
   void updateDatabaseProfileSettings() async {
-    Profile loggedProfile = await queryByUsername(widget.profile.username);
-    var oldProfile = ParseObject('Profile')..objectId = loggedProfile.objectId;
+    var parameters = {};
     if (changedCountry) {
-      oldProfile.set('country', dropdownCountryValue);
+      parameters.addAll({'country': dropdownCountryValue});
     }
     if (changedGender) {
-      oldProfile.set('gender', dropdownGenderValue);
+      parameters.addAll({'gender': dropdownGenderValue});
+    }
+    if (controllerCity.text.isNotEmpty) {
+      parameters
+          .addAll({'city': capitalizeFirstLetterString(controllerCity.text)});
     }
     if (controllerFullName.text.isNotEmpty) {
-      oldProfile.set('fullName', controllerFullName.text);
+      parameters.addAll({'name': controllerFullName.text});
     }
     if (selectedLanguages.isNotEmpty) {
-      oldProfile.set('languages', selectedLanguages);
+      parameters.addAll({'languages': selectedLanguages});
     }
     if (selectedSkills.isNotEmpty) {
-      oldProfile.set('skills', selectedSkills);
+      parameters.addAll({'skills': selectedSkills});
     }
-
     if (controllerAge.text.isNotEmpty) {
       int newAge = int.parse(controllerAge.text);
       if (newAge >= 18 && newAge <= 99) {
-        oldProfile.set('age', newAge);
+        parameters.addAll({'age': newAge});
       }
     }
-    if (controllerCity.text.isNotEmpty) {
-      oldProfile.set('city', capitalizeFirstLetterString(controllerCity.text));
-    }
-    await oldProfile.save();
+    await supabase
+        .from('profile')
+        .update(parameters)
+        .eq('email', widget.profile.email);
   }
 
   String capitalizeFirstLetterString(String s) {

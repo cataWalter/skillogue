@@ -21,13 +21,11 @@ class _MessageScreenState extends State<MessageScreen> {
     return getConversationScreen();
   }
 
-  dynamic callback(){
+  dynamic callback() {
     Future.delayed(Duration.zero, () async {
-      setState(() {
-      });
+      setState(() {});
     });
   }
-
 
   Widget getConversationScreen() {
     if (widget.allConversations.isNotEmpty) {
@@ -39,7 +37,7 @@ class _MessageScreenState extends State<MessageScreen> {
       );
     } else {
       return const Padding(
-        padding: EdgeInsets.only(top: 60, left: 30, right: 30),
+        padding: EdgeInsets.only(top: 80, left: 30, right: 30),
         child: Text(
           "No conversations here.\nStart making new friends now! :-)",
           style: TextStyle(color: Colors.white, fontSize: 20),
@@ -66,8 +64,8 @@ class _MessageScreenState extends State<MessageScreen> {
               radius: 24,
               backgroundColor: getRandomDarkColor(),
               child: Text(
-                co1.username.toString()[0].toUpperCase() +
-                    co1.username.toString()[1].toUpperCase(),
+                co1.destEmail.toString()[0].toUpperCase() +
+                    co1.destEmail.toString()[1].toUpperCase(),
                 style: const TextStyle(
                   color: Colors.white,
                 ),
@@ -80,7 +78,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      co1.username,
+                      co1.destEmail,
                       style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -135,8 +133,4 @@ class _MessageScreenState extends State<MessageScreen> {
       );
     }
   }
-
-
 }
-
-
