@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/guided_registration.dart';
 import 'package:skillogue/utils/constants.dart';
-
-import '../../utils/backend.dart';
+import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/authorization_backend.dart';
 
 class Registration extends StatefulWidget {

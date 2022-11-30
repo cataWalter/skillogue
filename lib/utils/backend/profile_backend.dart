@@ -1,5 +1,5 @@
 import '../../entities/profile.dart';
-import '../backend.dart';
+import 'misc_backend.dart';
 import '../constants.dart';
 
 Profile parseProfile(List newProfileFields) {
@@ -18,6 +18,6 @@ Profile parseProfile(List newProfileFields) {
 
 Future<Profile> findProfileByEmail(String email) async {
   final List<dynamic> data =
-  await supabase.from('profile').select().eq('email', email);
+      await supabase.from('profile').select().eq('email', email);
   return parseProfile(parseLinkedMap(data[0]));
 }

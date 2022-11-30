@@ -33,7 +33,7 @@ class _PreLoginState extends State<PreLogin> {
     if (_myBox.get(loggedProfileKey) != null) {
       Profile loggedProfile =
           await findProfileByEmail(_myBox.get(loggedProfileKey));
-      List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
+      List<Conversation> c =  await getMessagesAll(_myBox.get(loggedProfileKey));
       ProfileSearch s = getOldSearch();
       Navigator.pushReplacement(
         context,

@@ -1,44 +1,27 @@
-
 import '../../entities/conversation.dart';
-import '../../entities/message.dart';
-import '../backend.dart';
+import 'misc_backend.dart';
 import '../constants.dart';
 
-Future<List<Conversation>> getMessagesNew(
-    String email, List<Conversation> newConversations) async {
-  final List<dynamic> sentMessages = await supabase
-      .from('message')
-      .select()
-      .eq('sender', email)
-      .match({"downloaded_by_receiver": false});
+Future<String> findName(String email) async {
+  return (await supabase.from('profile').select('name').eq('email', email))[0]
+      .values
+      .first;
+}
 
-  final List<dynamic> receivedMessages = await supabase
-      .from('message')
-      .select()
-      .eq('receiver', email)
-      .match({"downloaded_by_sender": false});
-  if (sentMessages.length + receivedMessages.length == 0) {
-    return newConversations;
-  }
-  return updateConversations(newConversations, sentMessages, receivedMessages);
+Future<void> sendMessage(String source, String dest, String text) async {
+  databaseInsert('message', {
+    'sender': source,
+    'receiver': dest,
+    'text': text,
+  });
 }
 
 Future<List<Conversation>> getMessagesAll(String email) async {
   List<Conversation> newConversations = [];
   final List<dynamic> sentMessages =
-  await supabase.from('message').select().eq('sender', email);
+      await supabase.from('message').select().eq('sender', email);
   final List<dynamic> receivedMessages =
-  await supabase.from('message').select().eq('receiver', email);
-  return updateConversations(newConversations, sentMessages, receivedMessages);
-}
-
-updateConversations(newConversations, sentMessages, receivedMessages) async {
-  for (Message m in sentMessages) {
-    setReceivedSender(m.id);
-  }
-  for (Message m in receivedMessages) {
-    setReceivedReceiver(m.id);
-  }
+      await supabase.from('message').select().eq('receiver', email);
   bool added;
   for (var newMessageMap in sentMessages) {
     var newMessage = parseLinkedMap(newMessageMap);
@@ -78,13 +61,13 @@ updateConversations(newConversations, sentMessages, receivedMessages) async {
     var newMessage = parseLinkedMap(newMessageMap);
     added = false;
     for (Conversation x in newConversations) {
-      if (x.destEmail == newMessage[2]) {
+      if (x.destEmail == newMessage[4]) {
         x.messages.add(
           SingleMessage(
             newMessage[0],
-            newMessage[4],
+            newMessage[3],
             DateTime.parse(newMessage[1]),
-            false,
+            true,
           ),
         );
         added = true;
@@ -94,46 +77,19 @@ updateConversations(newConversations, sentMessages, receivedMessages) async {
     if (added == false) {
       newConversations.add(
         Conversation(
-          newMessage[2],
-          await findName(newMessage[2]),
+          newMessage[4],
+          await findName(newMessage[3]),
           [
             SingleMessage(
               newMessage[0],
-              newMessage[4],
+              newMessage[3],
               DateTime.parse(newMessage[1]),
-              false,
+              true,
             )
           ],
         ),
       );
     }
-  }
-  sortConversations(newConversations);
+  }  sortConversations(newConversations);
   return newConversations;
-}
-
-Future<String> findName(String email) async {
-  return (await supabase.from('profile').select('name').eq('email', email))[0]
-      .values
-      .first;
-}
-
-Future<void> sendMessage(String source, String dest, String text) async {
-  databaseInsert('message', {
-    'sender': source,
-    'receiver': dest,
-    'text': text,
-  });
-}
-
-void setReceivedReceiver(id) async {
-  await supabase
-      .from('message')
-      .update({'downloaded_by_receiver': true}).match({'id': id});
-}
-
-void setReceivedSender(id) async {
-  await supabase
-      .from('message')
-      .update({'downloaded_by_sender': true}).match({'id': id});
 }

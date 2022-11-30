@@ -26,7 +26,7 @@ class _SettingsState extends State<Settings> {
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
-  String dropdownCountryValue = 'Country-less Wanderer';
+  String dropdownCountryValue = 'Other';
   String dropdownGenderValue = 'Other';
   List<String> selectedLanguages = [];
   List<String> selectedSkills = [];

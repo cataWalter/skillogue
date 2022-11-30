@@ -1,3 +1,4 @@
+import 'dart:collection';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
 import 'package:skillogue/screens/search/search_screen.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../utils/backend/message_backend.dart';
 
@@ -33,6 +35,51 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     updateConversations();
+  }
+
+  updateConversations() {
+    supabase.channel('*').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(event: '*', schema: '*'),
+      (payload, [ref]) {
+        parsePayload(payload);
+        setState(() {});
+      },
+    ).subscribe();
+  }
+
+  parsePayload(LinkedHashMap payload) async {
+    String eventType = payload.entries.elementAt(3).value;
+    if (eventType == "INSERT") {
+      DateTime date = DateTime.parse(
+          payload.entries.elementAt(4).value.entries.elementAt(0).value);
+      int id = payload.entries.elementAt(4).value.entries.elementAt(1).value;
+      String receiverEmail =
+          payload.entries.elementAt(4).value.entries.elementAt(2).value;
+      String senderEmail =
+          payload.entries.elementAt(4).value.entries.elementAt(3).value;
+      String text =
+          payload.entries.elementAt(4).value.entries.elementAt(4).value;
+      for (Conversation c in widget.conversations) {
+        if (c.destEmail == senderEmail) {
+          c.messages.add(SingleMessage(id, text, date, false));
+          return;
+        }
+      }
+      widget.conversations.add(Conversation(senderEmail,
+          await findName(senderEmail), [SingleMessage(id, text, date, false)]));
+    }
+    /*else if (eventType == "DELETE") {
+      int oldId = payload.entries.elementAt(5).value.entries.elementAt(0).value;
+      for (Conversation c in widget.conversations) {
+        for (SingleMessage m in c.messages) {
+          if (m.id == oldId) {
+            c.messages.remove(m);
+            return;
+          }
+        }
+      }
+    } */
   }
 
   @override
@@ -154,33 +201,6 @@ class _HomeState extends State<Home> {
         }
       default:
         return Container();
-    }
-  }
-
-  void updateConversations() async {
-    while (true) {
-      print("UPDATING CONVERSATIONS AT ${DateTime.now()}");
-      /*List<Conversation> newConversations =
-          await getAllMessages(widget.profile.email);
-      for (Conversation c in newConversations) {
-        if (!widget.conversations.contains(c)) {
-          widget.conversations.add(c);
-          print("UPDATE!!!");
-        } else {
-          for (Conversation oldC in widget.conversations) {
-            for (SingleMessage m in c.messages) {
-              if (!oldC.messages.contains(m)) {
-                oldC.messages.add(m);
-                print("UPDATE!!!");
-              }
-            }
-          }
-        }
-      }*/
-      widget.conversations = await getMessagesNew(widget.profile.email, widget.conversations);
-      sortConversations(widget.conversations);
-      setState(() {});
-      await Future.delayed(const Duration(seconds: 1));
     }
   }
 }

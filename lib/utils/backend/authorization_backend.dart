@@ -4,7 +4,7 @@ import '../constants.dart';
 
 Future<bool> existsUsersWithSameEmail(String email) async {
   final List<dynamic> data =
-  await supabase.from('profile').select().eq('email', email);
+      await supabase.from('profile').select().eq('email', email);
   return data.isEmpty;
 }
 
