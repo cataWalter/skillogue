@@ -1,5 +1,4 @@
-
-import 'constants.dart';
+import '../constants.dart';
 
 Future<void> databaseInsert(String tableName, dynamic parameters) async {
   await supabase.from(tableName).insert(parameters);

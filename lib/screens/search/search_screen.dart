@@ -525,13 +525,10 @@ class _SearchScreenState extends State<SearchScreen> {
   void saveSearch() {
     widget.curSearch.genders = selectedGenders;
     _myBox.put(lastGendersKey, selectedGenders);
-
     widget.curSearch.countries = selectedCountries;
     _myBox.put(lastCountriesKey, selectedCountries);
-
     widget.curSearch.languages = selectedLanguages;
     _myBox.put(lastLanguagesKey, selectedLanguages);
-
     widget.curSearch.skills = selectedSkills;
     if (controllerCity.text.toString().isEmpty) {
       widget.curSearch.city = "";
@@ -575,11 +572,5 @@ class _SearchScreenState extends State<SearchScreen> {
         );
       }
     }
-  }
-
-  void sendMessageLocal(
-      String source, String dest, String destName, String text) async {
-    widget.curConversations.add(Conversation(
-        dest, destName, [SingleMessage(0, text, DateTime.now(), true)]));
   }
 }

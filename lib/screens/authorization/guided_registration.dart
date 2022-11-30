@@ -24,7 +24,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
-  String dropdownCountryValue = 'Country-less Wanderer';
+  String dropdownCountryValue = 'Other';
   String dropdownGenderValue = 'Other';
   List<String> selectedLanguages = [];
   List<String> selectedSkills = [];
@@ -83,6 +83,13 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
               children: [
                 const SizedBox(
                   height: 80,
+                ),
+                const Text(
+                  "Let's make this profile look good!",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                const SizedBox(
+                  height: 40,
                 ),
                 Align(
                   alignment: Alignment.bottomLeft,

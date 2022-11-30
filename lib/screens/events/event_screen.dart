@@ -460,35 +460,6 @@ class _EventScreenState extends State<EventScreen> {
     return;
   }
 
-  void sendNewMessage(String destUsername) {
-    widget.curConversations.add(Conversation(destUsername, []));
-    for (Conversation x in widget.curConversations) {
-      if (x.username == destUsername) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ConversationScreen(
-                x, widget.curProfile, widget.curConversations, () {}),
-          ),
-        );
-      }
-    }
-  }
 
-  void sendMessageLocal(String source, String dest, String text) async {
-    widget.curConversations.add(
-      Conversation(
-        dest,
-        [
-          SingleMessage(
-            "",
-            text,
-            DateTime.now(),
-            true,
-          )
-        ],
-      ),
-    );
-  }
 }
 */

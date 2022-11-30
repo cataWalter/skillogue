@@ -8,12 +8,12 @@ class Conversation {
 }
 
 class SingleMessage {
-  int objectId;
+  int id;
   String text;
   DateTime date;
   bool outgoing;
 
-  SingleMessage(this.objectId, this.text, this.date, this.outgoing);
+  SingleMessage(this.id, this.text, this.date, this.outgoing);
 }
 
 void sortConversations(List<Conversation> conversations) {
