@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
@@ -10,6 +9,11 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
+
+import '../../utils/appbar.dart';
+import '../../utils/backend/misc_backend.dart';
+import '../../utils/colors.dart';
+import '../../utils/data.dart';
 
 class Settings extends StatefulWidget {
   final Profile profile;
@@ -36,313 +40,250 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(47),
-          child: AppBar(
-            backgroundColor: Colors.black,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      appName,
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 28, fontWeight: FontWeight.w300),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Image.asset(
-                        'assets/images/logo2.png',
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      widget.profile.name,
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: 24,
-                      ),
-                    ),
-                  ],
-                )
-              ],
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          updateLocalProfileSettings();
+          updateDatabaseProfileSettings();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  Home(widget.conversations, widget.profile, widget.search),
             ),
-          ),
-        ),
-        body: Scaffold(
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 80,
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    child: TextField(
-                      controller: controllerFullName,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.none,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        hintText: widget.profile.name.isNotEmpty
-                            ? widget.profile.name
-                            : "Full Name",
-                        labelStyle: textFieldStyleWithOpacity,
-                        labelText: 'Full Name',
-                        hintStyle: textFieldStyleWithOpacity,
-                        filled: true,
-                        fillColor: Colors.grey[850],
+          );
+        },
+        icon: const Icon(Icons.save),
+        label: const Text("Save"),
+      ),
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(47),
+        child: myAppbar(widget.profile.name),
+      ),
+      body: Scaffold(
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 80,
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: TextField(
+                    controller: controllerFullName,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(),
                       ),
+                      hintText: widget.profile.name.isNotEmpty
+                          ? widget.profile.name
+                          : "Full Name",
+                      labelText: 'Full Name',
+                      filled: true,
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    child: TextField(
-                      controller: controllerAge,
-                      keyboardType: TextInputType.number,
-                      textCapitalization: TextCapitalization.none,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        hintText: widget.profile.age.toString().isNotEmpty &&
-                                widget.profile.age <= 99
-                            ? widget.profile.age.toString()
-                            : "Age",
-                        labelText: 'Age',
-                        hintStyle: textFieldStyleWithOpacity,
-                        labelStyle: textFieldStyleWithOpacity,
-                        filled: true,
-                        fillColor: Colors.grey[850],
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: TextField(
+                    controller: controllerAge,
+                    keyboardType: TextInputType.number,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(),
                       ),
+                      hintText: widget.profile.age.toString().isNotEmpty &&
+                              widget.profile.age <= 99
+                          ? widget.profile.age.toString()
+                          : "Age",
+                      labelText: 'Age',
+                      filled: true,
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    child: TextField(
-                      controller: controllerCity,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.none,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        hintText: widget.profile.city.isNotEmpty
-                            ? widget.profile.city
-                            : "City (Please use the English Spelling of your city)",
-                        labelText: 'City',
-                        hintStyle: textFieldStyleWithOpacity,
-                        labelStyle: textFieldStyleWithOpacity,
-                        filled: true,
-                        fillColor: Colors.grey[850],
-                      ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: TextField(
+                    controller: controllerCity,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      border:
+                          const OutlineInputBorder(borderSide: BorderSide()),
+                      hintText: widget.profile.city.isNotEmpty
+                          ? widget.profile.city
+                          : "City (Please use the English Spelling of your city)",
+                      labelText: 'City',
+                      filled: true,
                     ),
                   ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      "Country:",
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(standardOpacity)),
+              ),
+              Row(
+                children: [
+                  const Text(
+                    "Country:",
+                  ),
+                  const SizedBox(
+                    width: 27,
+                  ),
+                  DropdownButton<String>(
+                    value: widget.profile.country.isNotEmpty
+                        ? widget.profile.country
+                        : dropdownCountryValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    underline: Container(
+                      height: 3,
                     ),
-                    const SizedBox(
-                      width: 27,
+                    onChanged: (String? value) {
+                      changedCountry = true;
+                      setState(() {
+                        dropdownCountryValue = value!;
+                      });
+                    },
+                    items:
+                        countries.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    "Gender:",
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  DropdownButton<String>(
+                    value: widget.profile.gender.isNotEmpty
+                        ? widget.profile.gender
+                        : dropdownGenderValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    underline: Container(
+                      height: 3,
                     ),
-                    DropdownButton<String>(
-                      value: widget.profile.country.isNotEmpty
-                          ? widget.profile.country
-                          : dropdownCountryValue,
-                      icon: const Icon(Icons.arrow_downward),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.white),
-                      dropdownColor: Colors.blue[900],
-                      underline: Container(
-                        height: 3,
-                        color: Colors.blue,
-                      ),
-                      onChanged: (String? value) {
-                        changedCountry = true;
-                        setState(() {
-                          dropdownCountryValue = value!;
-                        });
-                      },
-                      items: countries
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
+                    onChanged: (String? value) {
+                      changedGender = true;
+                      setState(() {
+                        dropdownGenderValue = value!;
+                      });
+                    },
+                    items:
+                        genders.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2,
+                  ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      "Gender:",
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(standardOpacity)),
-                    ),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    DropdownButton<String>(
-                      value: widget.profile.gender.isNotEmpty
-                          ? widget.profile.gender
-                          : dropdownGenderValue,
-                      icon: const Icon(Icons.arrow_downward),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.white),
-                      dropdownColor: Colors.blue[900],
-                      underline: Container(
-                        height: 3,
-                        color: Colors.blue,
+                child: Column(
+                  children: <Widget>[
+                    MultiSelectBottomSheetField(
+                      initialChildSize: 0.4,
+                      initialValue: widget.profile.languages,
+                      listType: MultiSelectListType.CHIP,
+                      searchable: true,
+                      buttonText: const Text("Languages"),
+                      title: const Text("Languages"),
+                      buttonIcon: const Icon(
+                        Icons.flag,
                       ),
-                      onChanged: (String? value) {
-                        changedGender = true;
-                        setState(() {
-                          dropdownGenderValue = value!;
-                        });
-                      },
+                      searchIcon: const Icon(
+                        Icons.search,
+                      ),
                       items:
-                          genders.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                          languages.map((s) => MultiSelectItem(s, s)).toList(),
+                      onConfirm: (values) {
+                        selectedLanguages =
+                            values.map((e) => e.toString()).toList();
+                      },
+                      chipDisplay: MultiSelectChipDisplay(
+                        onTap: (value) {
+                          setState(() {
+                            selectedLanguages.remove(value.toString());
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(.4),
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      width: 2,
-                    ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2,
                   ),
-                  child: Column(
-                    children: <Widget>[
-                      MultiSelectBottomSheetField(
-                        initialChildSize: 0.4,
-                        initialValue: widget.profile.languages,
-                        listType: MultiSelectListType.CHIP,
-                        searchable: true,
-                        buttonText: const Text("Languages"),
-                        title: const Text("Languages"),
-                        buttonIcon: const Icon(
-                          Icons.flag,
-                        ),
-                        searchIcon: const Icon(
-                          Icons.search,
-                        ),
-                        items: languages
-                            .map((s) => MultiSelectItem(s, s))
-                            .toList(),
-                        onConfirm: (values) {
-                          selectedLanguages =
-                              values.map((e) => e.toString()).toList();
+                ),
+                child: Column(
+                  children: <Widget>[
+                    MultiSelectBottomSheetField(
+                      initialChildSize: 0.4,
+                      initialValue: widget.profile.skills,
+                      listType: MultiSelectListType.CHIP,
+                      searchable: true,
+                      buttonText: const Text("Skills"),
+                      title: const Text("Skills"),
+                      buttonIcon: const Icon(
+                        Icons.sports_tennis,
+                      ),
+                      searchIcon: const Icon(
+                        Icons.search,
+                      ),
+                      items: skills.map((s) => MultiSelectItem(s, s)).toList(),
+                      onConfirm: (values) {
+                        selectedSkills =
+                            values.map((e) => e.toString()).toList();
+                      },
+                      chipDisplay: MultiSelectChipDisplay(
+                        onTap: (value) {
+                          setState(() {
+                            selectedSkills.remove(value.toString());
+                          });
                         },
-                        chipDisplay: MultiSelectChipDisplay(
-                          onTap: (value) {
-                            setState(() {
-                              selectedLanguages.remove(value.toString());
-                            });
-                          },
-                        ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(.4),
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      width: 2,
                     ),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      MultiSelectBottomSheetField(
-                        initialChildSize: 0.4,
-                        initialValue: widget.profile.skills,
-                        listType: MultiSelectListType.CHIP,
-                        searchable: true,
-                        buttonText: const Text("Skills"),
-                        title: const Text("Skills"),
-                        buttonIcon: const Icon(
-                          Icons.sports_tennis,
-                        ),
-                        searchIcon: const Icon(
-                          Icons.search,
-                        ),
-                        items:
-                            skills.map((s) => MultiSelectItem(s, s)).toList(),
-                        onConfirm: (values) {
-                          selectedSkills =
-                              values.map((e) => e.toString()).toList();
-                        },
-                        chipDisplay: MultiSelectChipDisplay(
-                          onTap: (value) {
-                            setState(() {
-                              selectedSkills.remove(value.toString());
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                FloatingActionButton(
-                  child: const Icon(Icons.save),
-                  onPressed: () {
-                    updateLocalProfileSettings();
-                    updateDatabaseProfileSettings();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Home(widget.conversations,
-                            widget.profile, widget.search),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
   }
 

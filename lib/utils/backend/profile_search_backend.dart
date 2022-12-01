@@ -5,7 +5,6 @@ import '../../entities/conversation.dart';
 import '../../entities/profile.dart';
 import '../../entities/profile_search.dart';
 import 'misc_backend.dart';
-import '../constants.dart';
 
 Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
     List<Conversation> conversations) async {

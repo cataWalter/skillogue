@@ -2,12 +2,109 @@ import 'package:flutter/material.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/entities/profile.dart';
 
+import '../../utils/colors.dart';
+import '../../utils/utils.dart';
+
 class ProfileShow extends StatelessWidget {
   Profile profile;
-  String emptyField = "";
 
   ProfileShow(this.profile, {super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 60,
+            backgroundColor: getRandomDarkColor(),
+            child: Text(
+              initials(profile.name),
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          addVerticalSpace(20.0),
+          Row(
+            children: [
+              Icon(Icons.person),
+              Text(
+                "   " + profile.name,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                "      " + profile.age.toString(),
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+          addVerticalSpace(5.0),
+          Row(
+            children: [
+              Icon(Icons.location_on_rounded),
+              Text(
+                "   " + profile.city + ", " + profile.country,
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+          addVerticalSpace(10.0),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Skills",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w100),
+            ),
+          ),
+          addVerticalSpace(10.0),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              spacing: 8.0, // gap between adjacent chips
+              runSpacing: 4.0, // gap between lines
+              children: chippies(profile.skills),
+            ),
+          ),
+          addVerticalSpace(10.0),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Languages",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w100),
+            ),
+          ),
+          addVerticalSpace(10.0),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              spacing: 8.0, // gap between adjacent chips
+              runSpacing: 4.0, // gap between lines
+              children: chippies(profile.languages),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> chippies(List<String> toChip) {
+    List<Widget> res = [];
+    for (String s in toChip) {
+      res.add(Chip(
+          label: Text(
+        s,
+        style: TextStyle(fontSize: 20),
+      )));
+    }
+    return res;
+  }
+/*
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,9 +117,9 @@ class ProfileShow extends StatelessWidget {
               backgroundColor: getRandomDarkColor(),
               child: Text(
                 initials(profile.name),
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
                   fontSize: 40,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -117,18 +214,15 @@ class ProfileShow extends StatelessWidget {
         Text(
           type,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.35),
-            fontSize: 12,
+            //color: getTextColor().withOpacity(0.75),
+            fontSize: 14,
           ),
         ),
         Container(
-          decoration: BoxDecoration(
-            color: getLightBlue(),
-          ),
+          decoration: BoxDecoration(),
           child: Text(
             info,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -147,15 +241,14 @@ class ProfileShow extends StatelessWidget {
         Text(
           type,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.35),
-            fontSize: 12,
+            //color: getTextColor().withOpacity(0.75),
+            fontSize: 14,
           ),
         ),
         Text(
           info,
           textAlign: a,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
@@ -163,4 +256,6 @@ class ProfileShow extends StatelessWidget {
       ],
     );
   }
+  */
+
 }

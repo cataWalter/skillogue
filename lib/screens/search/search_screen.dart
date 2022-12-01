@@ -7,12 +7,15 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
-import 'package:skillogue/screens/messages/conversation_screen.dart';
+import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
 
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/backend/profile_search_backend.dart';
+import '../../utils/colors.dart';
+import '../../utils/data.dart';
+import '../../utils/utils.dart';
 
 class SearchScreen extends StatefulWidget {
   Profile curProfile;
@@ -45,13 +48,13 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
 
     controllerCity = TextEditingController(text: widget.curSearch.city);
-    if (widget.curSearch.minAge == null) {
+    if (widget.curSearch.minAge == null || widget.curSearch.minAge! < 18) {
       controllerMinAge = TextEditingController();
     } else {
       controllerMinAge =
           TextEditingController(text: widget.curSearch.minAge.toString());
     }
-    if (widget.curSearch.maxAge == null) {
+    if (widget.curSearch.maxAge == null || widget.curSearch.maxAge! > 99) {
       controllerMaxAge = TextEditingController();
     } else {
       controllerMaxAge =
@@ -131,7 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
           }
         },
         icon: const Icon(Icons.search),
-        label: const Text("Search"),
+        label: const Text("Search new friends"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
@@ -145,9 +148,7 @@ class _SearchScreenState extends State<SearchScreen> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(.4),
                     border: Border.all(
-                      color: Theme.of(context).primaryColor,
                       width: 2,
                     ),
                   ),
@@ -158,8 +159,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         initialValue: widget.curSearch.countries,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
-                        buttonText: const Text("Countries"),
-                        title: const Text("Countries"),
+                        buttonText: const Text(
+                            'In what countries should they live in?'),
+                        title: const Text('Countries'),
                         buttonIcon: const Icon(
                           Icons.flag,
                         ),
@@ -187,9 +189,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 spacer(),
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(.4),
                     border: Border.all(
-                      color: Theme.of(context).primaryColor,
                       width: 2,
                     ),
                   ),
@@ -200,8 +200,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         initialValue: widget.curSearch.skills,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
-                        buttonText: const Text("Skills"),
-                        title: const Text("Skills"),
+                        buttonText: const Text(
+                            'What passions are you are you looking for?'),
+                        title: const Text('Skills'),
                         buttonIcon: const Icon(
                           Icons.sports_tennis,
                         ),
@@ -228,9 +229,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 spacer(),
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(.4),
                     border: Border.all(
-                      color: Theme.of(context).primaryColor,
                       width: 2,
                     ),
                   ),
@@ -241,7 +240,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         initialValue: widget.curSearch.languages,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
-                        buttonText: const Text("Languages"),
+                        buttonText:
+                            const Text('What languages should they speak?'),
                         title: const Text("Languages"),
                         buttonIcon: const Icon(
                           Icons.abc_outlined,
@@ -270,9 +270,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 spacer(),
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(.4),
                     border: Border.all(
-                      color: Theme.of(context).primaryColor,
                       width: 2,
                     ),
                   ),
@@ -283,7 +281,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         initialValue: widget.curSearch.genders,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
-                        buttonText: const Text("Genders"),
+                        buttonText: const Text(
+                            "Are you looking for a specific gender?"),
                         title: const Text("Genders"),
                         buttonIcon: const Icon(
                           Icons.person,
@@ -314,20 +313,16 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: SizedBox(
                     width: double.maxFinite,
                     child: TextField(
-                      style: TextStyle(color: Colors.grey[300]),
+                      style: TextStyle(),
                       controller: controllerCity,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.none,
                       autocorrect: false,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        labelText: 'City',
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(borderSide: BorderSide()),
+                        labelText: "What's their city?",
                         hintText: 'City',
-                        labelStyle: textFieldStyleWithOpacity,
-                        hintStyle: textFieldStyleWithOpacity,
                         filled: true,
-                        fillColor: Colors.grey[850],
                       ),
                     ),
                   ),
@@ -341,53 +336,40 @@ class _SearchScreenState extends State<SearchScreen> {
                   children: [
                     const Text(
                       "From",
-                      style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(
                       width: 140,
                       child: TextField(
-                        style: TextStyle(color: Colors.grey[300]),
                         controller: controllerMinAge,
                         keyboardType: TextInputType.number,
                         textCapitalization: TextCapitalization.none,
                         autocorrect: false,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          labelText: 'Minimum Age',
-                          labelStyle: textFieldStyleWithOpacity,
-                          hintText: 'Minimum Age',
-                          hintStyle: textFieldStyleWithOpacity,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(borderSide: BorderSide()),
+                          labelText: 'Minimum age',
+                          hintText: 'Minimum age',
                           filled: true,
-                          fillColor: Colors.grey[850],
                         ),
                       ),
                     ),
                     const Text(
                       "To",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(),
                     ),
                     SizedBox(
                       width: 140,
                       child: TextField(
-                        style: TextStyle(color: Colors.grey[300]),
                         controller: controllerMaxAge,
                         keyboardType: TextInputType.number,
                         textCapitalization: TextCapitalization.none,
                         autocorrect: false,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                            color: Colors.white,
-                          )),
-                          labelText: 'Maximum Age',
-                          labelStyle: textFieldStyleWithOpacity,
-                          hintText: 'Maximum Age',
-                          hintStyle: textFieldStyleWithOpacity,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                          ),
+                          labelText: 'Maximum age',
+                          hintText: 'Maximum age',
                           filled: true,
-                          fillColor: Colors.grey[850],
                         ),
                       ),
                     ),
@@ -416,8 +398,8 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.indigo,
               borderRadius: BorderRadius.circular(10),
+              color: Colors.blue,
             ),
             child: ListTile(
               onTap: () async {
@@ -437,20 +419,22 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Text(
                   initials(searchResults[index].name),
                   style: const TextStyle(
-                    color: Colors.white,
                     fontSize: 14,
+                    color: Colors.white,
                   ),
                 ),
               ),
               title: Text(
                 searchResults[index].name,
-                style: const TextStyle(color: Colors.white),
               ),
               subtitle: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   "\n${profileDescription(searchResults[index])}\n${profileDescription2(searchResults[index])}\n\nLanguages:\n${searchResultsLanguages(searchResults[index])}\n\nSkills:\n${searchResultsSkills(searchResults[index])}",
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               trailing: IconButton(
@@ -460,7 +444,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
                 icon: Icon(
                   Icons.message_outlined,
-                  color: Colors.white.withOpacity(0.9),
                 ),
               ),
             ),
@@ -538,11 +521,11 @@ class _SearchScreenState extends State<SearchScreen> {
       _myBox.put(lastCityKey, controllerCity.text.trim());
     }
     if (controllerMaxAge.text.toString().isEmpty) {
-      widget.curSearch.maxAge = 99;
+      widget.curSearch.maxAge = 100;
       _myBox.delete(lastMaxAge);
     }
     if (controllerMinAge.text.toString().isEmpty) {
-      widget.curSearch.minAge = 18;
+      widget.curSearch.minAge = 17;
       _myBox.delete(lastMinAge);
     }
     if (controllerMaxAge.text.toString().isNotEmpty &&
@@ -566,7 +549,7 @@ class _SearchScreenState extends State<SearchScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ConversationScreen(
+            builder: (context) => SingleConversationScreen(
                 x, widget.curProfile, widget.curConversations, () {}),
           ),
         );
