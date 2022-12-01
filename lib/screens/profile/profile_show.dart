@@ -5,11 +5,79 @@ import 'package:skillogue/entities/profile.dart';
 class ProfileShow extends StatelessWidget {
   Profile profile;
   String emptyField = "";
-
   ProfileShow(this.profile, {super.key});
+  Color randomColor = getRandomDarkColor();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    return Column(
+      //crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height:200,
+
+            ),
+            Container(
+                //width: 400,
+                height: 150,
+                color: randomColor,
+            ),
+            Column(
+                children: [
+                  const SizedBox(height:10),
+                  Text(
+                    profile.name,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
+            Positioned(
+                top: 50,
+                child: Stack(
+                    alignment: Alignment.center,
+                    children:[
+                      Container(
+                        width: 130,
+                        height: 130,
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: Colors.black,
+                        ),
+                      ),
+                      Container(
+                        width: 120,
+                        height: 120,
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: randomColor,
+                          child: Text(
+                            initials(profile.name),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                            ),
+                          ),
+                        ),
+                      )
+                    ]
+                ),
+            ),
+
+          ],
+        )
+      ],
+    );
+  }
+  /*Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -95,7 +163,7 @@ class ProfileShow extends StatelessWidget {
         ),
       ],
     );
-  }
+  }*/
 
   String formatList(List<String> l) {
     if (l.isNotEmpty) {
