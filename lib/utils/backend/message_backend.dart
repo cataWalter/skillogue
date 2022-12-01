@@ -1,6 +1,9 @@
+import 'dart:collection';
+import 'dart:io';
+
 import '../../entities/conversation.dart';
+import '../../entities/message.dart';
 import 'misc_backend.dart';
-import '../constants.dart';
 
 Future<String> findName(String email) async {
   return (await supabase.from('profile').select('name').eq('email', email))[0]
@@ -22,74 +25,75 @@ Future<List<Conversation>> getMessagesAll(String email) async {
       await supabase.from('message').select().eq('sender', email);
   final List<dynamic> receivedMessages =
       await supabase.from('message').select().eq('receiver', email);
-  bool added;
-  for (var newMessageMap in sentMessages) {
-    var newMessage = parseLinkedMap(newMessageMap);
-    added = false;
-    for (Conversation x in newConversations) {
-      if (x.destEmail == newMessage[3]) {
-        x.messages.add(
-          SingleMessage(
-            newMessage[0],
-            newMessage[4],
-            DateTime.parse(newMessage[1]),
-            true,
-          ),
-        );
-        added = true;
-        break;
+  for (LinkedHashMap x in sentMessages) {
+    newConversations =
+        await addMessage(true, newConversations, await parseMessage(x));
+  }
+  for (LinkedHashMap x in receivedMessages) {
+    newConversations =
+        await addMessage(false, newConversations, await parseMessage(x));
+  }
+  sortConversations(newConversations);
+  return newConversations;
+}
+
+Future<Message> parseMessage(LinkedHashMap x) async {
+  return Message(
+    x.entries.elementAt(0).value,
+    x.entries.elementAt(3).value,
+    x.entries.elementAt(4).value,
+    x.entries.elementAt(2).value,
+    DateTime.parse(x.entries.elementAt(1).value),
+  );
+}
+
+bool existsMessage(Message m, List<Conversation> conversations) {
+  for (Conversation c in conversations) {
+    for (SingleMessage x in c.messages) {
+      if (m.id == x.id) {
+        return true;
       }
-    }
-    if (added == false) {
-      newConversations.add(
-        Conversation(
-          newMessage[3],
-          await findName(newMessage[3]),
-          [
-            SingleMessage(
-              newMessage[0],
-              newMessage[4],
-              DateTime.parse(newMessage[1]),
-              true,
-            )
-          ],
-        ),
-      );
     }
   }
-  for (var newMessageMap in receivedMessages) {
-    var newMessage = parseLinkedMap(newMessageMap);
-    added = false;
-    for (Conversation x in newConversations) {
-      if (x.destEmail == newMessage[4]) {
-        x.messages.add(
-          SingleMessage(
-            newMessage[0],
-            newMessage[3],
-            DateTime.parse(newMessage[1]),
-            true,
-          ),
-        );
+  return false;
+}
+
+Future<List<Conversation>> addMessage(
+    bool outgoing, List<Conversation> conversations, Message m) async {
+  if (existsMessage(m, conversations)) {
+    return conversations;
+  }
+  bool added = false;
+  if (outgoing) {
+    for (Conversation c in conversations) {
+      if (c.destEmail == m.receiverEmail) {
         added = true;
-        break;
+        c.messages.add(SingleMessage(m.id, m.text, m.date, true));
+        return conversations;
       }
     }
     if (added == false) {
-      newConversations.add(
-        Conversation(
-          newMessage[4],
-          await findName(newMessage[3]),
-          [
-            SingleMessage(
-              newMessage[0],
-              newMessage[3],
-              DateTime.parse(newMessage[1]),
-              true,
-            )
-          ],
-        ),
-      );
+      conversations.add(Conversation(
+          m.receiverEmail,
+          await findName(m.receiverEmail),
+          [SingleMessage(m.id, m.text, m.date, true)]));
+      return conversations;
     }
-  }  sortConversations(newConversations);
-  return newConversations;
+  } else {
+    for (Conversation c in conversations) {
+      if (c.destEmail == m.senderEmail) {
+        added = true;
+        c.messages.add(SingleMessage(m.id, m.text, m.date, false));
+        return conversations;
+      }
+    }
+    if (added == false) {
+      conversations.add(Conversation(
+          m.senderEmail,
+          await findName(m.senderEmail),
+          [SingleMessage(m.id, m.text, m.date, false)]));
+      return conversations;
+    }
+  }
+  return conversations;
 }

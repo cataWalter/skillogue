@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../constants.dart';
+import 'misc_backend.dart';
 
 Future<bool> existsUsersWithSameEmail(String email) async {
   final List<dynamic> data =

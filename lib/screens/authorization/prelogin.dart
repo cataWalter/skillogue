@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -33,7 +32,7 @@ class _PreLoginState extends State<PreLogin> {
     if (_myBox.get(loggedProfileKey) != null) {
       Profile loggedProfile =
           await findProfileByEmail(_myBox.get(loggedProfileKey));
-      List<Conversation> c =  await getMessagesAll(_myBox.get(loggedProfileKey));
+      List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
       ProfileSearch s = getOldSearch();
       Navigator.pushReplacement(
         context,
@@ -63,13 +62,9 @@ class _PreLoginState extends State<PreLogin> {
     }
     if (_myBox.get(lastMinAge) != null) {
       oldSearch.minAge = _myBox.get(lastMinAge);
-    } else {
-      oldSearch.minAge = 18;
     }
     if (_myBox.get(lastMaxAge) != null) {
       oldSearch.maxAge = _myBox.get(lastMaxAge);
-    } else {
-      oldSearch.maxAge = 99;
     }
     return oldSearch;
   }
@@ -77,7 +72,6 @@ class _PreLoginState extends State<PreLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.grey[300],
       body: SingleChildScrollView(
         child: SafeArea(
           child: Center(
@@ -91,17 +85,14 @@ class _PreLoginState extends State<PreLogin> {
                   child: Container(
                     height: 80,
                     width: 300,
-                    decoration: BoxDecoration(
-                        color: Colors.blue[400],
-                        borderRadius: BorderRadius.circular(40)),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(40)),
                     child: Center(
                       child: Text(
                         'Sign In',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
                         style: GoogleFonts.bebasNeue(
-                            fontSize: 30,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
+                          fontSize: 30,
+                        ),
                       ),
                     ),
                   ),
@@ -121,17 +112,14 @@ class _PreLoginState extends State<PreLogin> {
                   child: Container(
                     height: 80,
                     width: 300,
-                    decoration: BoxDecoration(
-                        color: Colors.teal.shade300,
-                        borderRadius: BorderRadius.circular(40)),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(40)),
                     child: Center(
                       child: Text(
                         'Sign Up',
-                        //style: TextStyle(color: Colors.white, fontSize: 30),
                         style: GoogleFonts.bebasNeue(
-                            fontSize: 30,
-                            color: Colors
-                                .white), //GoogleFonts.openSans(color: Colors.white),
+                          fontSize: 30,
+                        ),
                       ),
                     ),
                   ),

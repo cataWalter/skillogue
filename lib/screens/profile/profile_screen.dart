@@ -8,6 +8,8 @@ import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/profile/profile_show.dart';
 import 'package:skillogue/screens/profile/settings.dart';
 
+import '../../utils/colors.dart';
+
 class ProfileScreen extends StatelessWidget {
   final Profile profile;
   final List<Conversation> conversations;
@@ -24,10 +26,16 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             AppBar(
-              toolbarHeight: 50,
-              backgroundColor: Colors.black,
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              elevation: 0,
               actions: [
                 PopupMenuButton(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                  ),
                   onSelected: (int item) {
                     switch (item) {
                       case 0:
@@ -35,8 +43,8 @@ class ProfileScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      Settings(profile, conversations, search)));
+                                  builder: (context) => Settings(
+                                      profile, conversations, search)));
                         }
                         break;
                       case 1:
@@ -50,20 +58,19 @@ class ProfileScreen extends StatelessWidget {
                         }
                     }
                   },
-                  color: myGrey,
                   itemBuilder: (BuildContext context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 0,
                       child: Text(
                         "Settings",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(),
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 1,
                       child: Text(
                         "Log Out",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(),
                       ),
                     ),
                   ],
@@ -71,9 +78,6 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             SingleChildScrollView(child: ProfileShow(profile)),
-            const SizedBox(
-              height: 60,
-            ),
           ],
         ),
       ),

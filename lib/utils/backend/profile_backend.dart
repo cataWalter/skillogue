@@ -1,6 +1,5 @@
 import '../../entities/profile.dart';
 import 'misc_backend.dart';
-import '../constants.dart';
 
 Profile parseProfile(List newProfileFields) {
   return Profile(

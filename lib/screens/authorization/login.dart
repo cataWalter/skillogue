@@ -9,6 +9,7 @@ import 'package:skillogue/utils/constants.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/colors.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -75,96 +76,83 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: SizedBox(
-                  height: 300,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                  ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: SizedBox(
+                height: 300,
+                child: Image.asset(
+                  'assets/images/logo.png',
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: TextField(
-                  controller: controllerUsername,
-                  enabled: !isLoggedIn,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.white)),
-                    labelText: 'Username',
-                    hintText: 'Username',
-                    labelStyle: textFieldStyleWithOpacity,
-                    hintStyle: textFieldStyleWithOpacity,
-                    filled: true,
-                    fillColor: Colors.grey[850],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: TextField(
+                controller: controllerUsername,
+                enabled: !isLoggedIn,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
+                  labelText: 'Username',
+                  hintText: 'Username',
+                  filled: true,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: TextField(
-                  controller: controllerPassword,
-                  enabled: !isLoggedIn,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.white)),
-                    labelText: 'Password',
-                    hintText: 'Password',
-                    labelStyle: textFieldStyleWithOpacity,
-                    hintStyle: textFieldStyleWithOpacity,
-                    filled: true,
-                    fillColor: Colors.grey[850],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: TextField(
+                controller: controllerPassword,
+                enabled: !isLoggedIn,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
+                  labelText: 'Password',
+                  hintText: 'Password',
+                  filled: true,
                 ),
               ),
-              const SizedBox(
-                height: 60,
-              ),
-              TextButton(
-                child: Container(
-                  height: 80,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(40)),
-                  child: Center(
-                    child: Text(
-                      'Sign In',
-                      //style: TextStyle(color: Colors.white, fontSize: 30),
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 30,
-                          color: Colors
-                              .white), //GoogleFonts.openSans(color: Colors.white),
+            ),
+            const SizedBox(
+              height: 60,
+            ),
+            TextButton(
+              child: Container(
+                height: 80,
+                width: 300,
+                decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(40)),
+                child: Center(
+                  child: Text(
+                    'Sign In',
+                    style: GoogleFonts.bebasNeue(
+                      fontSize: 30,
                     ),
                   ),
                 ),
-                onPressed: () {
-                  if (isLoggedIn == false) {
-                    doUserLogin();
-                  }
-                },
               ),
-            ],
-          ),
+              onPressed: () {
+                if (isLoggedIn == false) {
+                  doUserLogin();
+                }
+              },
+            ),
+          ],
         ),
       ),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
   }
 }

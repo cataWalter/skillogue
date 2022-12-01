@@ -4,6 +4,7 @@ import 'package:skillogue/screens/authorization/guided_registration.dart';
 import 'package:skillogue/utils/constants.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/authorization_backend.dart';
+import '../../utils/colors.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -18,90 +19,77 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: SizedBox(
-                  height: 300,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                  ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: SizedBox(
+                height: 300,
+                child: Image.asset(
+                  'assets/images/logo.png',
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: TextField(
-                  controller: controllerEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.white)),
-                    labelText: 'Email',
-                    hintText: 'Email',
-                    labelStyle: textFieldStyleWithOpacity,
-                    hintStyle: textFieldStyleWithOpacity,
-                    filled: true,
-                    fillColor: Colors.grey[850],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: TextField(
+                controller: controllerEmail,
+                keyboardType: TextInputType.emailAddress,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
+                  labelText: 'Email',
+                  hintText: 'Email',
+                  filled: true,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: TextField(
-                  controller: controllerPassword,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.white)),
-                    labelText: 'Password',
-                    hintText: 'Password',
-                    labelStyle: textFieldStyleWithOpacity,
-                    hintStyle: textFieldStyleWithOpacity,
-                    filled: true,
-                    fillColor: Colors.grey[850],
-                  ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: TextField(
+                controller: controllerPassword,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide()),
+                  labelText: 'Password',
+                  hintText: 'Password',
+                  filled: true,
                 ),
               ),
-              const SizedBox(
-                height: 60,
-              ),
-              TextButton(
-                onPressed: doUserRegistration,
-                child: Container(
-                  height: 80,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(40)),
-                  child: Center(
-                    child: Text(
-                      'Sign Up',
-                      //style: TextStyle(color: Colors.white, fontSize: 30),
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 30,
-                          color: Colors
-                              .white), //GoogleFonts.openSans(color: Colors.white),
+            ),
+            const SizedBox(
+              height: 60,
+            ),
+            TextButton(
+              onPressed: doUserRegistration,
+              child: Container(
+                height: 80,
+                width: 300,
+                decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(40)),
+                child: Center(
+                  child: Text(
+                    'Sign Up',
+                    style: GoogleFonts.bebasNeue(
+                      fontSize: 30,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
     );
   }
 

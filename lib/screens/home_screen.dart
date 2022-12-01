@@ -10,10 +10,14 @@ import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
 import 'package:skillogue/screens/search/search_screen.dart';
+import 'package:skillogue/utils/appbar.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
+import '../utils/backend/misc_backend.dart';
+import '../utils/colors.dart';
 
 class Home extends StatefulWidget {
   List<Conversation> conversations;
@@ -51,23 +55,19 @@ class _HomeState extends State<Home> {
   parsePayload(LinkedHashMap payload) async {
     String eventType = payload.entries.elementAt(3).value;
     if (eventType == "INSERT") {
-      DateTime date = DateTime.parse(
-          payload.entries.elementAt(4).value.entries.elementAt(0).value);
-      int id = payload.entries.elementAt(4).value.entries.elementAt(1).value;
-      String receiverEmail =
-          payload.entries.elementAt(4).value.entries.elementAt(2).value;
-      String senderEmail =
-          payload.entries.elementAt(4).value.entries.elementAt(3).value;
-      String text =
-          payload.entries.elementAt(4).value.entries.elementAt(4).value;
-      for (Conversation c in widget.conversations) {
-        if (c.destEmail == senderEmail) {
-          c.messages.add(SingleMessage(id, text, date, false));
-          return;
-        }
-      }
-      widget.conversations.add(Conversation(senderEmail,
-          await findName(senderEmail), [SingleMessage(id, text, date, false)]));
+      widget.conversations = await addMessage(
+        payload.entries.elementAt(4).value.entries.elementAt(3).value ==
+            widget.profile.email,
+        widget.conversations,
+        Message(
+          payload.entries.elementAt(4).value.entries.elementAt(1).value,
+          payload.entries.elementAt(4).value.entries.elementAt(3).value,
+          payload.entries.elementAt(4).value.entries.elementAt(2).value,
+          payload.entries.elementAt(4).value.entries.elementAt(4).value,
+          DateTime.parse(
+              payload.entries.elementAt(4).value.entries.elementAt(0).value),
+        ),
+      );
     }
     /*else if (eventType == "DELETE") {
       int oldId = payload.entries.elementAt(5).value.entries.elementAt(0).value;
@@ -85,86 +85,52 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     _myBox.put(loggedProfileKey, widget.profile.email);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(47),
-          child: AppBar(
-            backgroundColor: Colors.black,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      appName,
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 28, fontWeight: FontWeight.w300),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: Image.asset(
-                        'assets/images/logo2.png',
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  widget.profile.name,
-                  style: GoogleFonts.bebasNeue(
-                    fontSize: 24,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
-          key: _bottomNavigationKey,
-          index: 0,
-          height: 60.0,
-          items: const [
-            Icon(
-              Icons.perm_identity,
-              size: 30,
-            ),
-            Icon(
-              Icons.event,
-              size: 30,
-            ),
-            Icon(
-              Icons.groups,
-              size: 30,
-            ),
-            Icon(
-              Icons.message_outlined,
-              size: 30,
-            ),
-          ],
-          color: Colors.white,
-          buttonBackgroundColor: Colors.white,
-          backgroundColor: Colors.black26,
-          animationCurve: Curves.easeInOut,
-          animationDuration: const Duration(milliseconds: 300),
-          onTap: (index) {
-            setState(() {
-              _page = index;
-            });
-          },
-          letIndexChange: (index) => true,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: getScreen(),
-        ),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(47),
+        child: myAppbar(widget.profile.name),
       ),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.black),
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: 0,
+        height: 60.0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        color: Colors.blue,
+        items: navbarIcons([
+          Icons.perm_identity,
+          Icons.event,
+          Icons.groups,
+          Icons.message_outlined,
+        ]),
+        animationCurve: Curves.easeInOut,
+        animationDuration: const Duration(milliseconds: 300),
+        onTap: (index) {
+          setState(() {
+            _page = index;
+          });
+        },
+        letIndexChange: (index) => true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: getScreen(),
+      ),
     );
+  }
+
+  List<Icon> navbarIcons(List<IconData> icons) {
+    List<Icon> res = [];
+    for (var singleIcon in icons) {
+      res.add(
+        Icon(
+          singleIcon,
+          size: 30,
+          color: Colors.white,
+        ),
+      );
+    }
+    return res;
   }
 
   Widget getScreen() {
@@ -196,7 +162,6 @@ class _HomeState extends State<Home> {
           return const Center(
               child: Text(
             newFunctionalityMessage,
-            style: TextStyle(color: Colors.white),
           ));
         }
       default:
