@@ -91,7 +91,7 @@ class _SearchScreenState extends State<SearchScreen> {
         onPressed: () async {
           if (!widget.curProfile.isEmptyProfile()) {
             saveSearch();
-            searchResults = await findUsers(widget.curProfile.name,
+            searchResults = await findUsers(widget.curProfile.email,
                 widget.curSearch, widget.curConversations);
             Comparator<Profile> sortById =
                 (a, b) => b.lastLogin.compareTo(a.lastLogin);
@@ -398,14 +398,13 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(30),
               color: Colors.blue,
             ),
             child: ListTile(
               onTap: () async {
                 lookupProfile =
                     await findProfileByEmail(searchResults[index].email);
-
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -442,9 +441,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   sendNewMessage(
                       searchResults[index].email, searchResults[index].name);
                 },
-                icon: Icon(
-                  Icons.message_outlined,
-                ),
+                icon: Icon(Icons.message_outlined,
+                    color: Colors.white.withOpacity(0.8)),
               ),
             ),
           ),

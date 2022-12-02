@@ -6,6 +6,7 @@ import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 
+import '../../entities/message.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 
@@ -39,6 +40,9 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -66,12 +70,21 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
           child: Text(
             widget.conversation.destName,
             style: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
           ),
         ),
         actions: [
           PopupMenuButton(
             color: Theme.of(context).scaffoldBackgroundColor,
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
             itemBuilder: (BuildContext context) => [
               const PopupMenuItem(
                 value: 0,
@@ -166,7 +179,6 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                             setState(() {
                               widget.conversation.messages.add(SingleMessage(
                                   0, newTextMessage, DateTime.now(), true));
-                              sortConversations(widget.allConversations);
                             });
                           }
                         },

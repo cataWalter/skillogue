@@ -97,12 +97,14 @@ class _HomeState extends State<Home> {
         height: 60.0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         color: Colors.blue,
-        items: navbarIcons([
-          Icons.perm_identity,
-          Icons.event,
-          Icons.groups,
-          Icons.message_outlined,
-        ]),
+        items: navbarIcons(
+          [
+            Icons.perm_identity,
+            Icons.event,
+            Icons.groups,
+            Icons.message_outlined,
+          ],
+        ),
         animationCurve: Curves.easeInOut,
         animationDuration: const Duration(milliseconds: 300),
         onTap: (index) {

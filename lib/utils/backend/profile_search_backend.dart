@@ -9,7 +9,7 @@ import 'misc_backend.dart';
 Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
     List<Conversation> conversations) async {
   PostgrestFilterBuilder query =
-  supabase.from('profile').select().neq('email', searcher);
+      supabase.from('profile').select().neq('email', searcher);
   if (curSearch.skills.isNotEmpty) {
     query = query.contains('skills', curSearch.skills);
   }
@@ -32,5 +32,19 @@ Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
   for (var y in data) {
     res.add(parseProfile(parseLinkedMap(y)));
   }
-  return res;
+  List<Profile> newRes = [];
+  bool fine;
+  for (Profile y in res) {
+    fine = true;
+    for (Conversation c in conversations) {
+      if (c.destEmail == y.email) {
+        fine = false;
+      }
+    }
+    if (fine) {
+      newRes.add(y);
+    }
+  }
+
+  return newRes;
 }

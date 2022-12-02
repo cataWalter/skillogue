@@ -26,7 +26,9 @@ class myAppbar extends StatelessWidget {
                 style: GoogleFonts.bebasNeue(
                   fontSize: 28,
                   fontWeight: FontWeight.w300,
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
             ],
@@ -36,9 +38,10 @@ class myAppbar extends StatelessWidget {
               Text(
                 name,
                 style: GoogleFonts.bebasNeue(
-                  fontSize: 24,
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black
-                ),
+                    fontSize: 24,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black),
               ),
             ],
           )

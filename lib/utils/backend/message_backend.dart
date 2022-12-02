@@ -16,6 +16,7 @@ Future<void> sendMessage(String source, String dest, String text) async {
     'sender': source,
     'receiver': dest,
     'text': text,
+    'date' : DateTime.now().toString(),
   });
 }
 
@@ -52,9 +53,13 @@ bool existsMessage(Message m, List<Conversation> conversations) {
     for (SingleMessage x in c.messages) {
       if (m.id == x.id) {
         return true;
+      } else if (x.date.isAtSameMomentAs(m.date)) {
+        x.id = m.id;
+        return true;
       }
     }
   }
+
   return false;
 }
 
