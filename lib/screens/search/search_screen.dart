@@ -7,10 +7,12 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
+import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
 
+import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/backend/profile_search_backend.dart';
 import '../../utils/colors.dart';
@@ -40,6 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> selectedLanguages = [];
   List<String> selectedGenders = [];
   late Profile lookupProfile;
+  final newMessageController = TextEditingController();
 
   final _myBox = Hive.box("mybox");
 
@@ -401,100 +404,138 @@ class _SearchScreenState extends State<SearchScreen> {
               borderRadius: BorderRadius.circular(30),
               color: Colors.blue,
             ),
-            child: ListTile(
-              onTap: () async {
-                lookupProfile =
-                    await findProfileByEmail(searchResults[index].email);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Scaffold(body: ProfileOverview(lookupProfile))));
-              },
-              dense: true,
-              leading: CircleAvatar(
-                radius: 20,
-                backgroundColor: getRandomDarkColor(),
-                child: Text(
-                  initials(searchResults[index].name),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
+            child: Column(
+              children: [
+                ListTile(
+                  onTap: () async {
+                    lookupProfile =
+                        await findProfileByEmail(searchResults[index].email);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Scaffold(
+                                body: ProfileOverview(lookupProfile))));
+                  },
+                  dense: true,
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: getRandomDarkColor(),
+                    child: Text(
+                      initials(searchResults[index].name),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  title: Row(
+                    children: [
+                      Column(
+                        children: [
+                          addVerticalSpace(5.0),
+                          Icon(
+                            Icons.person,
+                            size: 12,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        " " + searchResults[index].name,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          addVerticalSpace(5.0),
+                          Text(
+                            " " + searchResults[index].age.toString(),
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  subtitle: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_rounded,
+                                size: 12,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                              Text(
+                                "  " +
+                                    searchResults[index].city +
+                                    ", " +
+                                    searchResults[index].country,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                ),
+                              ),
+                            ],
+                          ),
+                          /*Text(
+                            "Skills",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),*/
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Wrap(
+                              spacing: 3.0,
+                              runSpacing: -10,
+                              alignment: WrapAlignment.start,
+                              children:
+                                  chippies(searchResults[index].skills, 11.0),
+                            ),
+                          ),
+                          /*Text(
+                            "Languages",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),*/
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Wrap(
+                              spacing: 3.0,
+                              runSpacing: -10,
+                              children: chippies(
+                                  searchResults[index].languages, 11.0),
+                            ),
+                          ),
+                        ],
+                      )),
+                  trailing: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return sendNewMessage(searchResults[index].email,
+                              searchResults[index].name);
+                        },
+                      );
+                    },
+                    icon: Icon(Icons.message_outlined,
+                        color: Colors.white.withOpacity(0.8)),
                   ),
                 ),
-              ),
-              title: Text(
-                searchResults[index].name,
-              ),
-              subtitle: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  "\n${profileDescription(searchResults[index])}\n${profileDescription2(searchResults[index])}\n\nLanguages:\n${searchResultsLanguages(searchResults[index])}\n\nSkills:\n${searchResultsSkills(searchResults[index])}",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              trailing: IconButton(
-                onPressed: () {
-                  sendNewMessage(
-                      searchResults[index].email, searchResults[index].name);
-                },
-                icon: Icon(Icons.message_outlined,
-                    color: Colors.white.withOpacity(0.8)),
-              ),
+              ],
             ),
           ),
         );
       },
     ); //results
-  }
-
-  String searchResultsLanguages(s) {
-    if (s.languages.length == 1) {
-      return s.languages[0];
-    }
-    String res = "${s.languages[0]}, ";
-    for (var i = 1; i < s.languages.length - 1; i++) {
-      res = "$res${s.languages[i]}, ";
-    }
-    res = res + s.languages[s.languages.length - 1];
-    return res;
-  }
-
-  String searchResultsSkills(s) {
-    if (s.skills.length == 1) {
-      return s.skills[0];
-    }
-    String res = "${s.skills[0]}, ";
-    for (var i = 1; i < s.skills.length - 1; i++) {
-      res = "$res${s.skills[i]}, ";
-    }
-    res = res + s.skills[s.skills.length - 1];
-    return res;
-  }
-
-  String profileDescription(s) {
-    String res = "";
-    if (s.gender.isNotEmpty) {
-      res = "$res${s.gender}, ";
-    }
-    if (s.age > 0) {
-      res = "$res${s.age.toString()}";
-    }
-    return res;
-  }
-
-  String profileDescription2(s) {
-    String res = "";
-    if (s.city.isNotEmpty) {
-      res = "$res${s.city}, ";
-    }
-    if (s.country.isNotEmpty) {
-      res = "$res${s.country}";
-    }
-    return res;
   }
 
   Widget spacer() {
@@ -540,18 +581,73 @@ class _SearchScreenState extends State<SearchScreen> {
     return;
   }
 
-  void sendNewMessage(String destEmail, String destName) {
-    widget.curConversations.add(Conversation(destEmail, destName, []));
-    for (Conversation x in widget.curConversations) {
-      if (x.destEmail == destEmail) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SingleConversationScreen(
-                x, widget.curProfile, widget.curConversations, () {}),
+  sendNewMessage(String destEmail, String destName) {
+    return AlertDialog(
+      title: Text("Send a new message!"),
+      content: TextField(
+        controller: newMessageController,
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: 5,
+        decoration: InputDecoration(
+          hintText: "Type a message...",
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            String newTextMessage = newMessageController.text.trim();
+            if (newTextMessage.isNotEmpty) {
+              newMessageController.clear();
+              DateTime curDate = DateTime.now();
+              databaseInsert('message', {
+                'sender': widget.curProfile.email,
+                'receiver': destEmail,
+                'text': newTextMessage,
+                'date': curDate.toString(),
+              });
+              conversations.add(Conversation(destEmail, destName,
+                  [SingleMessage(0, newTextMessage, curDate, true)]));
+              setState(() {});
+            }
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+  }
+
+  List<Widget> chippies(List<String> toChip, double size) {
+    List<Widget> res = [];
+    if (toChip.length > 5) {
+      for (int i = 0; i < 5; i++) {
+        res.add(
+          Chip(
+            label: Text(
+              toChip[i],
+              style: TextStyle(fontSize: size),
+            ),
           ),
         );
       }
+      res.add(
+        Chip(
+          label: Text(
+            "...and a lot more!",
+            style: TextStyle(fontSize: size),
+          ),
+        ),
+      );
+    } else {
+      for (String s in toChip) {
+        res.add(Chip(
+            label: Text(
+          s,
+          style: TextStyle(fontSize: size),
+        )));
+      }
     }
+    return res;
   }
 }

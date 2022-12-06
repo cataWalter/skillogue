@@ -16,10 +16,18 @@ class SingleMessage {
   SingleMessage(this.id, this.text, this.date, this.outgoing);
 }
 
-void sortConversations(List<Conversation> conversations) {
+List<Conversation> sortConversations(List<Conversation> conversations) {
   Comparator<Conversation> sortConversationsByDate =
-      (a, b) => b.messages.last.date.compareTo(a.messages.last.date);
+      (a, b) => a.messages.isNotEmpty && b.messages.isNotEmpty ? b.messages.last.date.compareTo(a.messages.last.date) : 1;
   conversations.sort(sortConversationsByDate);
+  return conversations.toSet().toList();
+}
+
+List<SingleMessage> sortMessages(List<SingleMessage> messages) {
+  Comparator<SingleMessage> sortConversationsByDate =
+      (a, b) => a.date.compareTo(b.date);
+  messages.sort(sortConversationsByDate);
+  return messages;
 }
 
 String parseTime(DateTime d) {
@@ -52,4 +60,12 @@ String parseDateGroup(DateTime d) {
     return "Yesterday";
   }
   return "${d.day}/${d.month}/${d.year}";
+}
+
+int profileConversationIndex(
+    List<Conversation> conversations, String lookupProfileEmail) {
+  for (int i = 0; i < conversations.length; i++) {
+    if (conversations[i].destEmail == lookupProfileEmail) return i;
+  }
+  return -1;
 }

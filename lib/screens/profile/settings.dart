@@ -50,7 +50,7 @@ class _SettingsState extends State<Settings> {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  Home(widget.conversations, widget.profile, widget.search),
+                  Home(conversations, widget.profile, widget.search),
             ),
           );
         },

@@ -68,7 +68,7 @@ class ProfileShow extends StatelessWidget {
             child: Wrap(
               spacing: 8.0, // gap between adjacent chips
               runSpacing: 4.0, // gap between lines
-              children: chippies(profile.skills),
+              children: chippies(profile.skills, 20.0),
             ),
           ),
           addVerticalSpace(10.0),
@@ -85,7 +85,7 @@ class ProfileShow extends StatelessWidget {
             child: Wrap(
               spacing: 8.0, // gap between adjacent chips
               runSpacing: 4.0, // gap between lines
-              children: chippies(profile.languages),
+              children: chippies(profile.languages, 20.0),
             ),
           ),
         ],
@@ -93,17 +93,7 @@ class ProfileShow extends StatelessWidget {
     );
   }
 
-  List<Widget> chippies(List<String> toChip) {
-    List<Widget> res = [];
-    for (String s in toChip) {
-      res.add(Chip(
-          label: Text(
-        s,
-        style: TextStyle(fontSize: 20),
-      )));
-    }
-    return res;
-  }
+
 /*
   @override
   Widget build(BuildContext context) {
