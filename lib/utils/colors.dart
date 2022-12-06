@@ -30,43 +30,4 @@ ThemeData darkTheme = ThemeData(
     filled: true, //<-- SEE HERE
     fillColor: Color.fromRGBO(20, 20, 20, 1.0), //<-- SEE HERE
   ),
-
 );
-
-/*Color getLightBlue() {
-  return const Color.fromRGBO(179, 217, 248, 0);
-}
-
-Color getBackgroundColor() {
-  if (darkMode == true) {
-    return Colors.black;
-  } else {
-    return Colors.white;
-  }
-}
-
-Color getTextFieldBackgroundColor(){
-  if (darkMode == true) {
-    return Colors.black;
-  } else {
-    return Colors.white;
-  }
-}
-
-Color getTextColor() {
-  if (darkMode == true) {
-    return Colors.white;
-  } else {
-    return Colors.black;
-  }
-}
-
-Color getReversedTextColor() {
-  if (darkMode == true) {
-    return Colors.black;
-  } else {
-    return Colors.white;
-  }
-}
-
-*/

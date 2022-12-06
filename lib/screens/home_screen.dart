@@ -19,12 +19,15 @@ import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
 import '../utils/colors.dart';
 
+late List<Conversation> conversations = [];
+bool newAvailableMessages = false;
+
 class Home extends StatefulWidget {
-  List<Conversation> conversations;
   final Profile profile;
   final ProfileSearch search;
+  late List<Conversation> c;
 
-  Home(this.conversations, this.profile, this.search, {super.key});
+  Home(this.c, this.profile, this.search, {super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -38,52 +41,21 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    updateConversations();
-  }
-
-  updateConversations() {
-    supabase.channel('*').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: '*'),
-      (payload, [ref]) {
-        parsePayload(payload);
-        setState(() {});
-      },
-    ).subscribe();
-  }
-
-  parsePayload(LinkedHashMap payload) async {
-    String eventType = payload.entries.elementAt(3).value;
-    if (eventType == "INSERT") {
-      widget.conversations = await addMessage(
-        payload.entries.elementAt(4).value.entries.elementAt(3).value ==
-            widget.profile.email,
-        widget.conversations,
-        Message(
-          payload.entries.elementAt(4).value.entries.elementAt(1).value,
-          payload.entries.elementAt(4).value.entries.elementAt(3).value,
-          payload.entries.elementAt(4).value.entries.elementAt(2).value,
-          payload.entries.elementAt(4).value.entries.elementAt(4).value,
-          DateTime.parse(
-              payload.entries.elementAt(4).value.entries.elementAt(0).value),
-        ),
-      );
-    }
-    /*else if (eventType == "DELETE") {
-      int oldId = payload.entries.elementAt(5).value.entries.elementAt(0).value;
-      for (Conversation c in widget.conversations) {
-        for (SingleMessage m in c.messages) {
-          if (m.id == oldId) {
-            c.messages.remove(m);
-            return;
-          }
-        }
-      }
-    } */
+    conversationUpdate();
   }
 
   @override
   Widget build(BuildContext context) {
+    conversations = widget.c;
+    /*
+    supabase.channel('a').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(event: '*', schema: '*'),
+      (payload, [ref]) {
+        print('Change received: ${payload.toString()}');
+        parsePayload(payload, widget.profile.email, conversations);
+      },
+    ).subscribe();*/
     _myBox.put(loggedProfileKey, widget.profile.email);
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -139,8 +111,7 @@ class _HomeState extends State<Home> {
     switch (_page) {
       case searchIndex:
         {
-          return SearchScreen(
-              widget.profile, widget.search, widget.conversations);
+          return SearchScreen(widget.profile, widget.search, conversations);
         }
       case profileIndex:
         {
@@ -149,13 +120,12 @@ class _HomeState extends State<Home> {
               print("willpop2");
               return true;
             },
-            child: ProfileScreen(
-                widget.profile, widget.conversations, widget.search),
+            child: ProfileScreen(widget.profile, conversations, widget.search),
           );
         }
       case messagesIndex:
         {
-          return MessageScreen(widget.profile, widget.conversations);
+          return MessageScreen(widget.profile);
         }
       case eventsIndex:
         {
@@ -168,6 +138,35 @@ class _HomeState extends State<Home> {
         }
       default:
         return Container();
+    }
+  }
+
+  conversationUpdate() async {
+    supabase.channel('home_channel').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(event: '*', schema: '*'),
+      (payload, [ref]) async {
+        print('Change received: ${payload.toString()}');
+        conversations = await addMessage(
+          payload.entries.elementAt(4).value.entries.elementAt(3).value ==
+              widget.profile.email,
+          conversations,
+          Message(
+            payload.entries.elementAt(4).value.entries.elementAt(1).value,
+            payload.entries.elementAt(4).value.entries.elementAt(3).value,
+            payload.entries.elementAt(4).value.entries.elementAt(2).value,
+            payload.entries.elementAt(4).value.entries.elementAt(4).value,
+            DateTime.parse(
+                payload.entries.elementAt(4).value.entries.elementAt(0).value),
+          ),
+        );
+        setState(() {});
+      },
+    ).subscribe();
+    while (true) {
+      conversations = await getNewMessages(widget.profile.email, conversations);
+      setState(() {});
+      await Future.delayed(const Duration(seconds: 10));
     }
   }
 }

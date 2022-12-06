@@ -3,23 +3,22 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
-import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../entities/message.dart';
 import '../../utils/backend/message_backend.dart';
+import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/utils.dart';
+import '../home_screen.dart';
 
 class SingleConversationScreen extends StatefulWidget {
-  Conversation conversation;
+  String destEmail;
   Profile profile;
-  List<Conversation> allConversations;
-  late Profile lookupProfile;
-  final dynamic callbackFunction;
+  late List<Conversation> debugConversations;
 
-  SingleConversationScreen(this.conversation, this.profile,
-      this.allConversations, this.callbackFunction,
-      {super.key});
+  SingleConversationScreen(this.destEmail, this.profile);
 
   @override
   State<SingleConversationScreen> createState() =>
@@ -29,6 +28,23 @@ class SingleConversationScreen extends StatefulWidget {
 class _SingleConversationScreenState extends State<SingleConversationScreen> {
   final newMessageController = TextEditingController();
   DateTime loginClickTime = DateTime.fromMicrosecondsSinceEpoch(0);
+  late int curChatIndex;
+
+  checkNewMessages() async {
+    while (true) {
+      if (newAvailableMessages) {
+        print("updated messages in message screen");
+        setState(() {});
+      }
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    curChatIndex = profileConversationIndex(conversations, widget.destEmail);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +64,8 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
         ),
         title: GestureDetector(
           onTap: () async {
-            widget.lookupProfile =
-                await findProfileByEmail(widget.conversation.destEmail);
+            Profile lookupProfile =
+                await findProfileByEmail(conversations[curChatIndex].destEmail);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -62,13 +78,13 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
-                  body: ProfileOverview(widget.lookupProfile),
+                  body: ProfileOverview(lookupProfile),
                 ),
               ),
             );
           },
           child: Text(
-            widget.conversation.destName,
+            conversations[curChatIndex].destName,
             style: TextStyle(
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
@@ -105,7 +121,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                 order: GroupedListOrder.DESC,
                 useStickyGroupSeparators: true,
                 floatingHeader: true,
-                elements: widget.conversation.messages,
+                elements: conversations[curChatIndex].messages,
                 groupBy: (message) => DateTime(
                     message.date.year, message.date.month, message.date.day),
                 groupHeaderBuilder: (message) => SizedBox(
@@ -174,12 +190,17 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                               newMessageController.text.trim();
                           if (newTextMessage.isNotEmpty) {
                             newMessageController.clear();
-                            sendMessage(widget.profile.email,
-                                widget.conversation.destEmail, newTextMessage);
-                            setState(() {
-                              widget.conversation.messages.add(SingleMessage(
-                                  0, newTextMessage, DateTime.now(), true));
+                            DateTime curDate = DateTime.now();
+                            databaseInsert('message', {
+                              'sender': widget.profile.email,
+                              'receiver': conversations[curChatIndex].destEmail,
+                              'text': newTextMessage,
+                              'date': curDate.toString(),
                             });
+                            conversations[curChatIndex].messages.add(
+                                SingleMessage(
+                                    0, newTextMessage, curDate, true));
+                            setState(() {});
                           }
                         },
                         child: const Icon(
