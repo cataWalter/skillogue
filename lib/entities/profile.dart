@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Profile {
   String email;
   String name;
@@ -26,4 +28,46 @@ class Profile {
   }
 }
 
-
+Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
+  return Row(
+    mainAxisAlignment: center ? MainAxisAlignment.center : MainAxisAlignment.start,
+    children: [
+      Icon(
+        Icons.cake_outlined,
+        size: size.toDouble(),
+        color: c,
+      ),
+      Text(
+        "  ${profile.age}  ",
+        style: TextStyle(
+          fontSize: size.toDouble(),
+          color: c,
+        ),
+      ),
+      Icon(
+        Icons.location_on_outlined,
+        size: size.toDouble(),
+        color: c,
+      ),
+      Text(
+        " ${profile.city}  ",
+        style: TextStyle(
+          fontSize: size.toDouble(),
+          color: c,
+        ),
+      ),
+      Icon(
+        Icons.language,
+        size: size.toDouble(),
+        color: c,
+      ),
+      Text(
+        " ${profile.country}",
+        style: TextStyle(
+          fontSize: size.toDouble(),
+          color: c,
+        ),
+      ),
+    ],
+  );
+}

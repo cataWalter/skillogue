@@ -43,11 +43,11 @@ Future<List<Conversation>> getMessagesAll(String email) async {
       await supabase.from('message').select().eq('receiver', email);
   for (LinkedHashMap x in sentMessages) {
     newConversations =
-        await addMessage(true, newConversations, await parseMessage(x));
+        await addMessage(true, newConversations, parseMessage(x));
   }
   for (LinkedHashMap x in receivedMessages) {
     newConversations =
-        await addMessage(false, newConversations, await parseMessage(x));
+        await addMessage(false, newConversations, parseMessage(x));
   }
   sortConversations(newConversations);
   return newConversations;
@@ -151,11 +151,11 @@ Future<List<Conversation>> getNewMessages(
       await supabase.from('message').select().eq('receiver', email);
   for (LinkedHashMap x in sentMessages) {
     newConversations =
-        await addMessage(true, newConversations, await parseMessage(x));
+        await addMessage(true, newConversations, parseMessage(x));
   }
   for (LinkedHashMap x in receivedMessages) {
     newConversations =
-        await addMessage(false, newConversations, await parseMessage(x));
+        await addMessage(false, newConversations, parseMessage(x));
   }
   sortConversations(newConversations);
   return newConversations;

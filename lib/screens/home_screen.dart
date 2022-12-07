@@ -1,8 +1,5 @@
-import 'dart:collection';
-
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
@@ -17,62 +14,57 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
-import '../utils/colors.dart';
 
-late List<Conversation> conversations = [];
+List<Conversation> conversations = [];
 bool newAvailableMessages = false;
+late Profile profile;
+
+late ProfileSearch profileSearch;
 
 class Home extends StatefulWidget {
-  final Profile profile;
-  final ProfileSearch search;
-  late List<Conversation> c;
+  Profile p;
+  ProfileSearch s;
 
-  Home(this.c, this.profile, this.search, {super.key});
+  Home(conversations, this.p, this.s, {super.key});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int _page = 0;
+  int currentPageIndex = 0;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   final _myBox = Hive.box("mybox");
 
   @override
   void initState() {
+    profile = widget.p;
+    profileSearch = widget.s;
     super.initState();
     conversationUpdate();
   }
 
   @override
   Widget build(BuildContext context) {
-    conversations = widget.c;
-    /*
-    supabase.channel('a').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: '*'),
-      (payload, [ref]) {
-        print('Change received: ${payload.toString()}');
-        parsePayload(payload, widget.profile.email, conversations);
-      },
-    ).subscribe();*/
-    _myBox.put(loggedProfileKey, widget.profile.email);
+    _myBox.put(loggedProfileKey, profile.email);
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
-        child: myAppbar(widget.profile.name),
+        child: currentPageIndex == profileIndex
+            ? ThisAppBar(profile.name, true)
+            : ThisAppBar(profile.name, false),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
-        index: 0,
-        height: 60.0,
+        index: profileIndex,
+        height: 50.0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         color: Colors.blue,
         items: navbarIcons(
           [
             Icons.perm_identity,
-            Icons.event,
+            //Icons.event,
             Icons.groups,
             Icons.message_outlined,
           ],
@@ -81,7 +73,7 @@ class _HomeState extends State<Home> {
         animationDuration: const Duration(milliseconds: 300),
         onTap: (index) {
           setState(() {
-            _page = index;
+            currentPageIndex = index;
           });
         },
         letIndexChange: (index) => true,
@@ -108,10 +100,10 @@ class _HomeState extends State<Home> {
   }
 
   Widget getScreen() {
-    switch (_page) {
+    switch (currentPageIndex) {
       case searchIndex:
         {
-          return SearchScreen(widget.profile, widget.search, conversations);
+          return SearchScreen();
         }
       case profileIndex:
         {
@@ -120,14 +112,14 @@ class _HomeState extends State<Home> {
               print("willpop2");
               return true;
             },
-            child: ProfileScreen(widget.profile, conversations, widget.search),
+            child: ProfileScreen(),
           );
         }
       case messagesIndex:
         {
-          return MessageScreen(widget.profile);
+          return MessageScreen();
         }
-      case eventsIndex:
+      /*case eventsIndex:
         {
           /*return EventScreen(
               widget.profile, widget.search, widget.conversations);*/
@@ -135,7 +127,7 @@ class _HomeState extends State<Home> {
               child: Text(
             newFunctionalityMessage,
           ));
-        }
+        }*/
       default:
         return Container();
     }
@@ -149,7 +141,7 @@ class _HomeState extends State<Home> {
         print('Change received: ${payload.toString()}');
         conversations = await addMessage(
           payload.entries.elementAt(4).value.entries.elementAt(3).value ==
-              widget.profile.email,
+              profile.email,
           conversations,
           Message(
             payload.entries.elementAt(4).value.entries.elementAt(1).value,
@@ -164,7 +156,7 @@ class _HomeState extends State<Home> {
       },
     ).subscribe();
     while (true) {
-      conversations = await getNewMessages(widget.profile.email, conversations);
+      conversations = await getNewMessages(profile.email, conversations);
       setState(() {});
       await Future.delayed(const Duration(seconds: 10));
     }

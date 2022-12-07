@@ -11,6 +11,7 @@ import 'package:skillogue/utils/appbar.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/data.dart';
+import '../../utils/utils.dart';
 
 class GuidedRegistration extends StatefulWidget {
   final String email;
@@ -36,10 +37,10 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
-        child: myAppbar(widget.email),
+        child: ThisAppBar(widget.email, false),
       ),
       body: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -117,6 +118,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
                   ),
                 ),
               ),
+              addVerticalSpace(15),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
@@ -135,6 +137,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
                   ),
                 ),
               ),
+              addVerticalSpace(15),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(

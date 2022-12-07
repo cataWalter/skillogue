@@ -1,4 +1,3 @@
-
 const appName = "SKILLOGUE";
 
 const loggedProfileKey = 0;
@@ -12,12 +11,13 @@ const lastMaxAge = 7;
 
 const newFunctionalityMessage = "COMING SOON! :-)";
 
+/*
+const profileIndex = 0;
+const eventsIndex = 1;
 const searchIndex = 2;
 const messagesIndex = 3;
-const eventsIndex = 1;
+*/
+
 const profileIndex = 0;
-
-
-
-
-
+const searchIndex = 1;
+const messagesIndex = 2;

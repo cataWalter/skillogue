@@ -1,24 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 
-import '../../entities/message.dart';
-import '../../utils/backend/message_backend.dart';
-import '../../utils/backend/misc_backend.dart';
 import '../../utils/colors.dart';
 import '../home_screen.dart';
 
 class MessageScreen extends StatefulWidget {
-  final Profile profile;
-
   //List<Conversation> c;
   @override
   State<MessageScreen> createState() => _MessageScreenState();
 
-  MessageScreen(this.profile, {super.key});
+  MessageScreen({super.key});
 }
 
 class _MessageScreenState extends State<MessageScreen> {
@@ -26,8 +20,6 @@ class _MessageScreenState extends State<MessageScreen> {
   Widget build(BuildContext context) {
     return getConversationScreen();
   }
-
-
 
   cleanEmptyConversations() {
     conversations.removeWhere((x) => x.messages.isEmpty);
@@ -57,7 +49,7 @@ class _MessageScreenState extends State<MessageScreen> {
       return ListView.builder(
         itemCount: conversations.length,
         itemBuilder: ((context, index) =>
-            chatCard(widget.profile, conversations[index])),
+            chatCard(profile, conversations[index])),
       );
     } else {
       return Padding(
@@ -76,8 +68,8 @@ class _MessageScreenState extends State<MessageScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SingleConversationScreen(
-                curConversation.destEmail, curProfile),
+            builder: (context) =>
+                SingleConversationScreen(curConversation.destEmail),
           ),
         );
       },

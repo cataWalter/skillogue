@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
-import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/utils/constants.dart';
 
 import '../../utils/appbar.dart';
 import '../../utils/backend/misc_backend.dart';
-import '../../utils/colors.dart';
 import '../../utils/data.dart';
+import '../../utils/utils.dart';
 
-class Settings extends StatefulWidget {
+class UpdateProfileInfoScreen extends StatefulWidget {
   final Profile profile;
-  final List<Conversation> conversations;
   final ProfileSearch search;
 
-  const Settings(this.profile, this.conversations, this.search, {super.key});
+  const UpdateProfileInfoScreen(this.profile, this.search, {super.key});
 
   @override
-  _SettingsState createState() => _SettingsState();
+  _UpdateProfileInfoScreenState createState() =>
+      _UpdateProfileInfoScreenState();
 }
 
-class _SettingsState extends State<Settings> {
+class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
   final controllerCity = TextEditingController();
@@ -57,19 +54,16 @@ class _SettingsState extends State<Settings> {
         icon: const Icon(Icons.save),
         label: const Text("Save"),
       ),
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
-        child: myAppbar(widget.profile.name),
+        child: ThisAppBar(widget.profile.name, false),
       ),
       body: Scaffold(
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              const SizedBox(
-                height: 80,
-              ),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
@@ -92,6 +86,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ),
+              addVerticalSpace(15),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
@@ -115,6 +110,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ),
+              addVerticalSpace(15),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(
