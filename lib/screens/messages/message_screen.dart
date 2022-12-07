@@ -8,7 +8,6 @@ import '../../utils/colors.dart';
 import '../home_screen.dart';
 
 class MessageScreen extends StatefulWidget {
-  //List<Conversation> c;
   @override
   State<MessageScreen> createState() => _MessageScreenState();
 
@@ -21,30 +20,21 @@ class _MessageScreenState extends State<MessageScreen> {
     return getConversationScreen();
   }
 
-  cleanEmptyConversations() {
-    conversations.removeWhere((x) => x.messages.isEmpty);
-  }
-
   checkNewMessages() async {
     while (true) {
-      if (newAvailableMessages) {
-        print("updated messages in message screen");
-        setState(() {});
-      }
-      await Future.delayed(Duration(seconds: 1));
+      setState(() {});
+      await Future.delayed(Duration(seconds: 2));
     }
   }
 
   @override
   void initState() {
     super.initState();
-    cleanEmptyConversations();
     checkNewMessages();
   }
 
   Widget getConversationScreen() {
     if (conversations.isNotEmpty) {
-      List<Conversation> c1 = conversations;
       conversations = sortConversations(conversations);
       return ListView.builder(
         itemCount: conversations.length,
@@ -53,7 +43,7 @@ class _MessageScreenState extends State<MessageScreen> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.only(top: 80, left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 30, right: 30),
         child: Text(
           "No conversations here.\nStart making new friends now! :-)",
           style: TextStyle(fontSize: 20),

@@ -88,16 +88,11 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              const SizedBox(
-                height: 80,
-              ),
               const Text(
                 "Let's make this profile look good!",
                 style: TextStyle(fontSize: 20),
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              addVerticalSpace(30),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: SizedBox(

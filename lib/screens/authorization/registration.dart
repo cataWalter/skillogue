@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/guided_registration.dart';
-import 'package:skillogue/utils/constants.dart';
-import '../../utils/backend/misc_backend.dart';
+import 'package:skillogue/utils/utils.dart';
+
 import '../../utils/backend/authorization_backend.dart';
-import '../../utils/colors.dart';
+import '../../utils/backend/misc_backend.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -28,7 +28,7 @@ class _RegistrationState extends State<Registration> {
               child: SizedBox(
                 height: 300,
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/logo2.png',
                 ),
               ),
             ),
@@ -67,21 +67,22 @@ class _RegistrationState extends State<Registration> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 60,
-            ),
+            addVerticalSpace(60),
             TextButton(
               onPressed: doUserRegistration,
               child: Container(
                 height: 80,
                 width: 300,
-                decoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(40)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  color: Colors.blue,
+                ),
                 child: Center(
                   child: Text(
                     'Sign Up',
                     style: GoogleFonts.bebasNeue(
                       fontSize: 30,
+                      color: Colors.white,
                     ),
                   ),
                 ),
