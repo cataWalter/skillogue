@@ -16,7 +16,6 @@ import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
 
 List<Conversation> conversations = [];
-bool newAvailableMessages = false;
 late Profile profile;
 
 late ProfileSearch profileSearch;
@@ -70,7 +69,7 @@ class _HomeState extends State<Home> {
           ],
         ),
         animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 300),
+        animationDuration: const Duration(milliseconds: 500),
         onTap: (index) {
           setState(() {
             currentPageIndex = index;
@@ -155,6 +154,7 @@ class _HomeState extends State<Home> {
         setState(() {});
       },
     ).subscribe();
+
     while (true) {
       conversations = await getNewMessages(profile.email, conversations);
       setState(() {});

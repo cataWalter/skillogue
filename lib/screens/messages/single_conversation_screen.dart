@@ -26,11 +26,8 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
 
   checkNewMessages() async {
     while (true) {
-      if (newAvailableMessages) {
-        print("updated messages in message screen");
-        setState(() {});
-      }
-      await Future.delayed(Duration(seconds: 1));
+      setState(() {});
+      await Future.delayed(Duration(seconds: 2));
     }
   }
 
@@ -38,6 +35,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
   void initState() {
     super.initState();
     curChatIndex = profileConversationIndex(conversations, widget.destEmail);
+    checkNewMessages();
   }
 
   @override
@@ -181,8 +179,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                             'date': curDate.toString(),
                           });
                           conversations[curChatIndex].messages.add(
-                              SingleMessage(
-                                  0, newTextMessage, curDate, true));
+                              SingleMessage(0, newTextMessage, curDate, true));
                           setState(() {});
                         }
                       },

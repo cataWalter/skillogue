@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skillogue/entities/conversation.dart';
-import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/profile_search.dart';
-import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/utils/constants.dart';
 
+import '../../entities/conversation.dart';
+import '../../entities/profile.dart';
+import '../../entities/profile_search.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
-import '../../utils/colors.dart';
+import '../home_screen.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -85,7 +83,7 @@ class _LoginState extends State<Login> {
               child: SizedBox(
                 height: 300,
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/logo2.png',
                 ),
               ),
             ),
@@ -133,13 +131,16 @@ class _LoginState extends State<Login> {
               child: Container(
                 height: 80,
                 width: 300,
-                decoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(40)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  color: Colors.blue,
+                ),
                 child: Center(
                   child: Text(
                     'Sign In',
                     style: GoogleFonts.bebasNeue(
                       fontSize: 30,
+                      color: Colors.white,
                     ),
                   ),
                 ),

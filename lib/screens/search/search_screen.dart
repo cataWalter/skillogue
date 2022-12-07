@@ -494,13 +494,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
   sendNewMessage(String destEmail, String destName) {
     return AlertDialog(
-      title: Text("Send a message to " + destName + "!"),
+      title: Text("Send a message to $destName!"),
       content: TextField(
         controller: newMessageController,
         keyboardType: TextInputType.multiline,
         minLines: 1,
         maxLines: 5,
         decoration: const InputDecoration(
+          border: OutlineInputBorder(),
           hintText: "Type a message...",
         ),
       ),
