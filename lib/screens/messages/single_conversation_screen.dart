@@ -4,21 +4,15 @@ import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../entities/message.dart';
-import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
-import '../../utils/utils.dart';
 import '../home_screen.dart';
 
 class SingleConversationScreen extends StatefulWidget {
   String destEmail;
-  Profile profile;
-  late List<Conversation> debugConversations;
 
-  SingleConversationScreen(this.destEmail, this.profile);
+  SingleConversationScreen(this.destEmail);
 
   @override
   State<SingleConversationScreen> createState() =>
@@ -69,17 +63,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    leading: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  body: ProfileOverview(lookupProfile),
-                ),
+                builder: (context) => ProfileOverview(lookupProfile),
               ),
             );
           },
@@ -128,7 +112,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                       height: 40,
                       child: Center(
                         child: Card(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.blueGrey.withOpacity(0.7),
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(
@@ -143,76 +127,74 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                   return getSingleMessageWidget(message);
                 }),
           ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextField(
-                          style: TextStyle(color: Colors.grey[300]),
-                          controller: newMessageController,
-                          keyboardType: TextInputType.multiline,
-                          minLines: 1,
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            fillColor: Colors.black,
-                            focusColor: Colors.black,
-                            hoverColor: Colors.black,
-                            hintText: "Type a message...",
-                            hintStyle: TextStyle(color: Colors.grey[300]),
-                            border: InputBorder.none,
-                          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.black,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        style: TextStyle(color: Colors.grey[300]),
+                        controller: newMessageController,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          fillColor: Colors.black,
+                          focusColor: Colors.black,
+                          hoverColor: Colors.black,
+                          hintText: "Type a message...",
+                          hintStyle: TextStyle(color: Colors.grey[300]),
+                          border: InputBorder.none,
                         ),
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: 45,
-                    width: 45,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: FloatingActionButton(
-                        heroTag: null,
-                        onPressed: () async {
-                          String newTextMessage =
-                              newMessageController.text.trim();
-                          if (newTextMessage.isNotEmpty) {
-                            newMessageController.clear();
-                            DateTime curDate = DateTime.now();
-                            databaseInsert('message', {
-                              'sender': widget.profile.email,
-                              'receiver': conversations[curChatIndex].destEmail,
-                              'text': newTextMessage,
-                              'date': curDate.toString(),
-                            });
-                            conversations[curChatIndex].messages.add(
-                                SingleMessage(
-                                    0, newTextMessage, curDate, true));
-                            setState(() {});
-                          }
-                        },
-                        child: const Icon(
-                          Icons.send,
-                          size: 24,
-                        ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 45,
+                  width: 45,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      heroTag: null,
+                      onPressed: () async {
+                        String newTextMessage =
+                            newMessageController.text.trim();
+                        if (newTextMessage.isNotEmpty) {
+                          newMessageController.clear();
+                          DateTime curDate = DateTime.now();
+                          databaseInsert('message', {
+                            'sender': profile.email,
+                            'receiver': conversations[curChatIndex].destEmail,
+                            'text': newTextMessage,
+                            'date': curDate.toString(),
+                          });
+                          conversations[curChatIndex].messages.add(
+                              SingleMessage(
+                                  0, newTextMessage, curDate, true));
+                          setState(() {});
+                        }
+                      },
+                      child: const Icon(
+                        Icons.send,
+                        size: 24,
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ],
       ),

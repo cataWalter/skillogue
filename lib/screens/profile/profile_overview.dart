@@ -3,25 +3,36 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_show.dart';
 
 class ProfileOverview extends StatelessWidget {
-
   Profile profile;
-
 
   ProfileOverview(this.profile, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 60,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
-          ProfileShow(profile),
-          const SizedBox(
-            height: 60,
-          ),
-        ],
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ProfileShow(profile, false),
+            const SizedBox(
+              height: 60,
+            ),
+          ],
+        ),
       ),
     );
   }

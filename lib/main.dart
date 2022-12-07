@@ -5,9 +5,6 @@ import 'package:skillogue/screens/authorization/prelogin.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
 
-import 'entities/profile.dart';
-import 'entities/profile_search.dart';
-
 ThemeManager _themeManager = ThemeManager();
 
 void main() async {
@@ -30,9 +27,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Box _myBox = Hive.box("mybox");
-
-
   @override
   void initState() {
     _themeManager.addListener(themeListener);
@@ -47,7 +41,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
@@ -56,6 +49,4 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         home: PreLogin());
   }
-
-
 }

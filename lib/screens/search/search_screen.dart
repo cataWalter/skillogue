@@ -6,26 +6,17 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
 
 import '../../utils/backend/misc_backend.dart';
-import '../../utils/backend/profile_backend.dart';
 import '../../utils/backend/profile_search_backend.dart';
-import '../../utils/colors.dart';
 import '../../utils/data.dart';
 import '../../utils/utils.dart';
 
 class SearchScreen extends StatefulWidget {
-  Profile curProfile;
-  ProfileSearch curSearch;
-  List<Conversation> curConversations;
-
-  SearchScreen(this.curProfile, this.curSearch, this.curConversations,
-      {super.key});
+  SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -50,18 +41,18 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
 
-    controllerCity = TextEditingController(text: widget.curSearch.city);
-    if (widget.curSearch.minAge == null || widget.curSearch.minAge! < 18) {
+    controllerCity = TextEditingController(text: profileSearch.city);
+    if (profileSearch.minAge == null || profileSearch.minAge! < 18) {
       controllerMinAge = TextEditingController();
     } else {
       controllerMinAge =
-          TextEditingController(text: widget.curSearch.minAge.toString());
+          TextEditingController(text: profileSearch.minAge.toString());
     }
-    if (widget.curSearch.maxAge == null || widget.curSearch.maxAge! > 99) {
+    if (profileSearch.maxAge == null || profileSearch.maxAge! > 99) {
       controllerMaxAge = TextEditingController();
     } else {
       controllerMaxAge =
-          TextEditingController(text: widget.curSearch.maxAge.toString());
+          TextEditingController(text: profileSearch.maxAge.toString());
     }
   }
 
@@ -78,13 +69,9 @@ class _SearchScreenState extends State<SearchScreen> {
     } else if (_searchIndex == 1) {
       return getSearchResults();
     } else if (_searchIndex == 2) {
-      return getProfileLookup();
+      return ProfileOverview(lookupProfile);
     }
     return Container();
-  }
-
-  Widget getProfileLookup() {
-    return ProfileOverview(lookupProfile);
   }
 
   Widget getSearchForm() {
@@ -92,10 +79,10 @@ class _SearchScreenState extends State<SearchScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          if (!widget.curProfile.isEmptyProfile()) {
+          if (!profile.isEmptyProfile()) {
             saveSearch();
-            searchResults = await findUsers(widget.curProfile.email,
-                widget.curSearch, widget.curConversations);
+            searchResults =
+                await findUsers(profile.email, profileSearch, conversations);
             Comparator<Profile> sortById =
                 (a, b) => b.lastLogin.compareTo(a.lastLogin);
             searchResults.sort(sortById);
@@ -144,9 +131,6 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(
-              height: 80,
-            ),
             Column(
               children: [
                 Container(
@@ -159,7 +143,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: <Widget>[
                       MultiSelectBottomSheetField(
                         initialChildSize: 0.4,
-                        initialValue: widget.curSearch.countries,
+                        initialValue: profileSearch.countries,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
                         buttonText: const Text(
@@ -189,7 +173,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                   ),
                 ),
-                spacer(),
+                addVerticalSpace(15),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -200,7 +184,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: <Widget>[
                       MultiSelectBottomSheetField(
                         initialChildSize: 0.4,
-                        initialValue: widget.curSearch.skills,
+                        initialValue: profileSearch.skills,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
                         buttonText: const Text(
@@ -229,7 +213,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                   ),
                 ),
-                spacer(),
+                addVerticalSpace(15),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -240,7 +224,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: <Widget>[
                       MultiSelectBottomSheetField(
                         initialChildSize: 0.4,
-                        initialValue: widget.curSearch.languages,
+                        initialValue: profileSearch.languages,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
                         buttonText:
@@ -270,7 +254,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                   ),
                 ),
-                spacer(),
+                addVerticalSpace(15),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -281,7 +265,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: <Widget>[
                       MultiSelectBottomSheetField(
                         initialChildSize: 0.4,
-                        initialValue: widget.curSearch.genders,
+                        initialValue: profileSearch.genders,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
                         buttonText: const Text(
@@ -310,7 +294,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                   ),
                 ),
-                spacer(),
+                addVerticalSpace(15),
                 Align(
                   alignment: Alignment.bottomLeft,
                   child: SizedBox(
@@ -330,10 +314,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                spacer(),
+                addVerticalSpace(15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -395,8 +376,8 @@ class _SearchScreenState extends State<SearchScreen> {
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(
-            left: 8,
-            right: 8,
+            left: 4,
+            right: 4,
             bottom: 6,
           ),
           child: Container(
@@ -407,127 +388,63 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Column(
               children: [
                 ListTile(
-                  onTap: () async {
-                    lookupProfile =
-                        await findProfileByEmail(searchResults[index].email);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Scaffold(
-                                body: ProfileOverview(lookupProfile))));
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return sendNewMessage(
+                          searchResults[index].email,
+                          searchResults[index].name,
+                        );
+                      },
+                    );
                   },
-                  dense: true,
-                  leading: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: getRandomDarkColor(),
-                    child: Text(
-                      initials(searchResults[index].name),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  title: Row(
+                  title: Column(
                     children: [
-                      Column(
+                      addVerticalSpace(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          addVerticalSpace(5.0),
-                          Icon(
-                            Icons.person,
-                            size: 12,
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        " " + searchResults[index].name,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          addVerticalSpace(5.0),
                           Text(
-                            " " + searchResults[index].age.toString(),
+                            " " + searchResults[index].name,
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
-                      )
+                      ),
+                      addVerticalSpace(4),
                     ],
                   ),
-                  subtitle: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on_rounded,
-                                size: 12,
-                                color: Colors.white.withOpacity(0.8),
-                              ),
-                              Text(
-                                "  " +
-                                    searchResults[index].city +
-                                    ", " +
-                                    searchResults[index].country,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.8),
-                                ),
-                              ),
-                            ],
-                          ),
-                          /*Text(
-                            "Skills",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ),*/
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Wrap(
-                              spacing: 3.0,
-                              runSpacing: -10,
-                              alignment: WrapAlignment.start,
-                              children:
-                                  chippies(searchResults[index].skills, 11.0),
-                            ),
-                          ),
-                          /*Text(
-                            "Languages",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ),*/
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Wrap(
-                              spacing: 3.0,
-                              runSpacing: -10,
-                              children: chippies(
-                                  searchResults[index].languages, 11.0),
-                            ),
-                          ),
-                        ],
-                      )),
-                  trailing: IconButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return sendNewMessage(searchResults[index].email,
-                              searchResults[index].name);
-                        },
-                      );
-                    },
-                    icon: Icon(Icons.message_outlined,
-                        color: Colors.white.withOpacity(0.8)),
+                  subtitle: Column(
+                    children: [
+                      rowProfileInfo(
+                        profile,
+                        12,
+                        Colors.white.withOpacity(0.8),
+                        true,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Wrap(
+                          spacing: 3.0,
+                          runSpacing: -10,
+                          alignment: WrapAlignment.start,
+                          children: chippies(searchResults[index].skills, 12.0),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Wrap(
+                          spacing: 3.0,
+                          runSpacing: -10,
+                          children:
+                              chippies(searchResults[index].languages, 12.0),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -538,33 +455,27 @@ class _SearchScreenState extends State<SearchScreen> {
     ); //results
   }
 
-  Widget spacer() {
-    return const SizedBox(
-      height: 15,
-    );
-  }
-
   void saveSearch() {
-    widget.curSearch.genders = selectedGenders;
+    profileSearch.genders = selectedGenders;
     _myBox.put(lastGendersKey, selectedGenders);
-    widget.curSearch.countries = selectedCountries;
+    profileSearch.countries = selectedCountries;
     _myBox.put(lastCountriesKey, selectedCountries);
-    widget.curSearch.languages = selectedLanguages;
+    profileSearch.languages = selectedLanguages;
     _myBox.put(lastLanguagesKey, selectedLanguages);
-    widget.curSearch.skills = selectedSkills;
+    profileSearch.skills = selectedSkills;
     if (controllerCity.text.toString().isEmpty) {
-      widget.curSearch.city = "";
+      profileSearch.city = "";
       _myBox.delete(lastCityKey);
     } else {
-      widget.curSearch.city = controllerCity.text.trim();
+      profileSearch.city = controllerCity.text.trim();
       _myBox.put(lastCityKey, controllerCity.text.trim());
     }
     if (controllerMaxAge.text.toString().isEmpty) {
-      widget.curSearch.maxAge = 100;
+      profileSearch.maxAge = 100;
       _myBox.delete(lastMaxAge);
     }
     if (controllerMinAge.text.toString().isEmpty) {
-      widget.curSearch.minAge = 17;
+      profileSearch.minAge = 17;
       _myBox.delete(lastMinAge);
     }
     if (controllerMaxAge.text.toString().isNotEmpty &&
@@ -572,8 +483,8 @@ class _SearchScreenState extends State<SearchScreen> {
       int maxAge = int.parse(controllerMaxAge.text.trim());
       int minAge = int.parse(controllerMinAge.text.trim());
       if (maxAge <= 99 && minAge >= 18 && maxAge >= minAge) {
-        widget.curSearch.maxAge = maxAge;
-        widget.curSearch.minAge = minAge;
+        profileSearch.maxAge = maxAge;
+        profileSearch.minAge = minAge;
         _myBox.put(lastMinAge, minAge);
         _myBox.put(lastMaxAge, maxAge);
       }
@@ -583,13 +494,13 @@ class _SearchScreenState extends State<SearchScreen> {
 
   sendNewMessage(String destEmail, String destName) {
     return AlertDialog(
-      title: Text("Send a new message!"),
+      title: Text("Send a message to " + destName + "!"),
       content: TextField(
         controller: newMessageController,
         keyboardType: TextInputType.multiline,
         minLines: 1,
         maxLines: 5,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: "Type a message...",
         ),
       ),
@@ -602,7 +513,7 @@ class _SearchScreenState extends State<SearchScreen> {
               newMessageController.clear();
               DateTime curDate = DateTime.now();
               databaseInsert('message', {
-                'sender': widget.curProfile.email,
+                'sender': profile.email,
                 'receiver': destEmail,
                 'text': newTextMessage,
                 'date': curDate.toString(),
@@ -620,33 +531,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   List<Widget> chippies(List<String> toChip, double size) {
     List<Widget> res = [];
-    if (toChip.length > 5) {
-      for (int i = 0; i < 5; i++) {
-        res.add(
-          Chip(
-            label: Text(
-              toChip[i],
-              style: TextStyle(fontSize: size),
-            ),
-          ),
-        );
-      }
-      res.add(
-        Chip(
+    for (String s in toChip) {
+      res.add(Chip(
           label: Text(
-            "...and a lot more!",
-            style: TextStyle(fontSize: size),
-          ),
-        ),
-      );
-    } else {
-      for (String s in toChip) {
-        res.add(Chip(
-            label: Text(
-          s,
-          style: TextStyle(fontSize: size),
-        )));
-      }
+        s,
+        style: TextStyle(fontSize: size),
+      )));
     }
     return res;
   }

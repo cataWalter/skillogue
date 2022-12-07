@@ -14,15 +14,15 @@ DateTime stringToDatetime(String x) {
   return DateTime.parse(x);
 }
 
-SizedBox addVerticalSpace(height) {
+SizedBox addVerticalSpace(int height) {
   return SizedBox(
-    height: height,
+    height: height.toDouble(),
   );
 }
 
-SizedBox addHorizontalSpace(width) {
+SizedBox addHorizontalSpace(int width) {
   return SizedBox(
-    width: width,
+    width: width.toDouble(),
   );
 }
 
