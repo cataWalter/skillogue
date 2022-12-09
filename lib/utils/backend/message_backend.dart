@@ -1,10 +1,7 @@
 import 'dart:collection';
 
-import 'package:skillogue/screens/home_screen.dart';
-
 import '../../entities/conversation.dart';
 import '../../entities/message.dart';
-import '../utils.dart';
 import 'misc_backend.dart';
 
 Future<String> findName(String email) async {
@@ -60,6 +57,7 @@ Message parseMessage(LinkedHashMap x) {
     x.entries.elementAt(4).value,
     x.entries.elementAt(2).value,
     DateTime.parse(x.entries.elementAt(1).value),
+    x.entries.elementAt(5).value,
   );
 }
 
@@ -92,7 +90,7 @@ Future<List<Conversation>> addMessage(
     for (Conversation c in conversations) {
       if (c.destEmail == m.receiverEmail) {
         added = true;
-        c.messages.add(SingleMessage(m.id, m.text, m.date, true));
+        c.messages.add(SingleMessage(m.id, m.text, m.date, true, false));
         c.messages = sortMessages(c.messages);
         return conversations;
       }
@@ -101,14 +99,14 @@ Future<List<Conversation>> addMessage(
       conversations.add(Conversation(
           m.receiverEmail,
           await findName(m.receiverEmail),
-          [SingleMessage(m.id, m.text, m.date, true)]));
+          [SingleMessage(m.id, m.text, m.date, true, false)]));
       return conversations;
     }
   } else {
     for (Conversation c in conversations) {
       if (c.destEmail == m.senderEmail) {
         added = true;
-        c.messages.add(SingleMessage(m.id, m.text, m.date, false));
+        c.messages.add(SingleMessage(m.id, m.text, m.date, false, false));
         c.messages = sortMessages(c.messages);
         return conversations;
       }
@@ -117,7 +115,7 @@ Future<List<Conversation>> addMessage(
       conversations.add(Conversation(
           m.senderEmail,
           await findName(m.senderEmail),
-          [SingleMessage(m.id, m.text, m.date, false)]));
+          [SingleMessage(m.id, m.text, m.date, false, false)]));
       return conversations;
     }
   }
@@ -138,6 +136,7 @@ parsePayload(payload, String email, List<Conversation> conversations) async {
         payload.entries.elementAt(4).value.entries.elementAt(4).value,
         DateTime.parse(
             payload.entries.elementAt(4).value.entries.elementAt(0).value),
+        false,
       ),
     );
   }

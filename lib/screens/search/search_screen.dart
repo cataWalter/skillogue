@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
@@ -16,7 +18,7 @@ import '../../utils/data.dart';
 import '../../utils/utils.dart';
 
 class SearchScreen extends StatefulWidget {
-  SearchScreen({super.key});
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -24,9 +26,9 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   int _searchIndex = 0;
-  var controllerCity;
-  var controllerMinAge;
-  var controllerMaxAge;
+  late TextEditingController controllerCity;
+  late TextEditingController controllerMinAge;
+  late TextEditingController controllerMaxAge;
   late List<Profile> searchResults;
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
@@ -83,8 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
             saveSearch();
             searchResults =
                 await findUsers(profile.email, profileSearch, conversations);
-            Comparator<Profile> sortById =
-                (a, b) => b.lastLogin.compareTo(a.lastLogin);
+
             searchResults.sort(sortById);
             if (searchResults.isNotEmpty) {
               setState(() {
@@ -187,8 +188,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         initialValue: profileSearch.skills,
                         listType: MultiSelectListType.CHIP,
                         searchable: true,
-                        buttonText: const Text(
-                            'What passions are you are you looking for?'),
+                        buttonText:
+                            const Text('What passions are you looking for?'),
                         title: const Text('Skills'),
                         buttonIcon: const Icon(
                           Icons.sports_tennis,
@@ -300,7 +301,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: SizedBox(
                     width: double.maxFinite,
                     child: TextField(
-                      style: TextStyle(),
                       controller: controllerCity,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.none,
@@ -406,8 +406,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            " " + searchResults[index].name,
-                            style: TextStyle(
+                            " ${searchResults[index].name}",
+                            style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -493,40 +493,43 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   sendNewMessage(String destEmail, String destName) {
-    return AlertDialog(
-      title: Text("Send a message to $destName!"),
-      content: TextField(
-        controller: newMessageController,
-        keyboardType: TextInputType.multiline,
-        minLines: 1,
-        maxLines: 5,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: "Type a message...",
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        title: Text("Send a message to $destName!"),
+        content: TextField(
+          controller: newMessageController,
+          keyboardType: TextInputType.multiline,
+          minLines: 1,
+          maxLines: 5,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: "Type a message...",
+          ),
         ),
+        actions: [
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              String newTextMessage = newMessageController.text.trim();
+              if (newTextMessage.isNotEmpty) {
+                newMessageController.clear();
+                DateTime curDate = DateTime.now();
+                databaseInsert('message', {
+                  'sender': profile.email,
+                  'receiver': destEmail,
+                  'text': newTextMessage,
+                  'date': curDate.toString(),
+                });
+                conversations.add(Conversation(destEmail, destName,
+                    [SingleMessage(0, newTextMessage, curDate, true, false)]));
+                setState(() {});
+              }
+              Navigator.of(context).pop();
+            },
+          )
+        ],
       ),
-      actions: [
-        TextButton(
-          child: Text("OK"),
-          onPressed: () {
-            String newTextMessage = newMessageController.text.trim();
-            if (newTextMessage.isNotEmpty) {
-              newMessageController.clear();
-              DateTime curDate = DateTime.now();
-              databaseInsert('message', {
-                'sender': profile.email,
-                'receiver': destEmail,
-                'text': newTextMessage,
-                'date': curDate.toString(),
-              });
-              conversations.add(Conversation(destEmail, destName,
-                  [SingleMessage(0, newTextMessage, curDate, true)]));
-              setState(() {});
-            }
-            Navigator.of(context).pop();
-          },
-        )
-      ],
     );
   }
 

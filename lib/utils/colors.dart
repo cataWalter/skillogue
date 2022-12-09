@@ -1,6 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 Color getRandomDarkColor() {
@@ -21,11 +19,11 @@ ThemeData lightTheme = ThemeData(
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Colors.blue,
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.blue,
     foregroundColor: Colors.white,
   ),
-  scaffoldBackgroundColor: Color.fromRGBO(20, 20, 20, 1.0),
+  scaffoldBackgroundColor: const Color.fromRGBO(20, 20, 20, 1.0),
   inputDecorationTheme: const InputDecorationTheme(
     filled: true, //<-- SEE HERE
     fillColor: Color.fromRGBO(20, 20, 20, 1.0), //<-- SEE HERE

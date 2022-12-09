@@ -30,7 +30,8 @@ class Profile {
 
 Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
   return Row(
-    mainAxisAlignment: center ? MainAxisAlignment.center : MainAxisAlignment.start,
+    mainAxisAlignment:
+        center ? MainAxisAlignment.center : MainAxisAlignment.start,
     children: [
       Icon(
         Icons.cake_outlined,
@@ -71,3 +72,5 @@ Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
     ],
   );
 }
+
+Comparator<Profile> sortById = (a, b) => b.lastLogin.compareTo(a.lastLogin);

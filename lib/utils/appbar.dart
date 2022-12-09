@@ -82,7 +82,7 @@ class ThisAppBar extends StatelessWidget {
                   }
                 },
                 itemBuilder: (BuildContext context) => [
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: 0,
                     child: Text(
                       "Update profile info",
@@ -96,7 +96,7 @@ class ThisAppBar extends StatelessWidget {
                           style: TextStyle(),
                         ),
                       ),*/
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: 2,
                     child: Text(
                       "Log Out",

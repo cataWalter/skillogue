@@ -18,9 +18,11 @@ class UpdateProfileInfoScreen extends StatefulWidget {
 
   const UpdateProfileInfoScreen(this.profile, this.search, {super.key});
 
+
+
   @override
-  _UpdateProfileInfoScreenState createState() =>
-      _UpdateProfileInfoScreenState();
+  State<UpdateProfileInfoScreen> createState() => _UpdateProfileInfoScreenState();
+
 }
 
 class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {

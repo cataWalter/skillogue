@@ -11,7 +11,7 @@ class MessageScreen extends StatefulWidget {
   @override
   State<MessageScreen> createState() => _MessageScreenState();
 
-  MessageScreen({super.key});
+  const MessageScreen({super.key});
 }
 
 class _MessageScreenState extends State<MessageScreen> {
@@ -21,9 +21,9 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   checkNewMessages() async {
-    while (true) {
+    while (mounted) {
       setState(() {});
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
     }
   }
 
@@ -42,8 +42,8 @@ class _MessageScreenState extends State<MessageScreen> {
             chatCard(profile, conversations[index])),
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.only(left: 30, right: 30),
+      return const Padding(
+        padding: EdgeInsets.only(left: 30, right: 30),
         child: Text(
           "No conversations here.\nStart making new friends now! :-)",
           style: TextStyle(fontSize: 20),
@@ -73,7 +73,7 @@ class _MessageScreenState extends State<MessageScreen> {
               child: Text(
                 curConversation.destName.toString()[0].toUpperCase() +
                     curConversation.destName.toString()[1].toUpperCase(),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -86,7 +86,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   children: [
                     Text(
                       curConversation.destName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -104,7 +104,6 @@ class _MessageScreenState extends State<MessageScreen> {
               opacity: 0.64,
               child: Text(
                 parseDateGroup(curConversation.messages.last.date),
-                style: TextStyle(),
               ),
             )
           ],

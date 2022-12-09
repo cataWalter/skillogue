@@ -12,21 +12,26 @@ class SingleMessage {
   String text;
   DateTime date;
   bool outgoing;
+  bool read;
 
-  SingleMessage(this.id, this.text, this.date, this.outgoing);
+  SingleMessage(this.id, this.text, this.date, this.outgoing, this.read);
 }
 
+Comparator<Conversation> sortConversationsByDate = (a, b) =>
+    a.messages.isNotEmpty && b.messages.isNotEmpty
+        ? b.messages.last.date.compareTo(a.messages.last.date)
+        : 1;
+
 List<Conversation> sortConversations(List<Conversation> conversations) {
-  Comparator<Conversation> sortConversationsByDate =
-      (a, b) => a.messages.isNotEmpty && b.messages.isNotEmpty ? b.messages.last.date.compareTo(a.messages.last.date) : 1;
   conversations.sort(sortConversationsByDate);
   return conversations.toSet().toList();
 }
 
+Comparator<SingleMessage> sortMessagesByDate =
+    (a, b) => a.date.compareTo(b.date);
+
 List<SingleMessage> sortMessages(List<SingleMessage> messages) {
-  Comparator<SingleMessage> sortConversationsByDate =
-      (a, b) => a.date.compareTo(b.date);
-  messages.sort(sortConversationsByDate);
+  messages.sort(sortMessagesByDate);
   return messages;
 }
 

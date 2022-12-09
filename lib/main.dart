@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:skillogue/screens/authorization/prelogin.dart';
-import 'package:skillogue/screens/authorization/splash.dart';
 
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
@@ -49,6 +48,6 @@ class _MyAppState extends State<MyApp> {
         darkTheme: darkTheme,
         themeMode: _themeManager.themeMode,
         title: 'Flutter Demo',
-        home: Splash());
+        home: const PreLogin());
   }
 }

@@ -94,6 +94,15 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
+  void nextScreen(email) async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GuidedRegistration(email),
+      ),
+    );
+  }
+
   void doUserRegistration() async {
     final email = controllerEmail.text.trim();
     controllerEmail.clear();
@@ -104,12 +113,7 @@ class _RegistrationState extends State<Registration> {
       databaseInsert('profile', {'email': email});
       //final AuthResponse res =
       await registration(email, password);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GuidedRegistration(email),
-        ),
-      );
+      nextScreen(email);
     } else {
       showDialog(
         context: context,

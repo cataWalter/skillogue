@@ -44,7 +44,7 @@ class _PreLoginState extends State<PreLogin> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const Login(),
