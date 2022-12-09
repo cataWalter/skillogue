@@ -5,10 +5,10 @@ import '../../utils/colors.dart';
 import '../../utils/utils.dart';
 
 class ProfileShow extends StatelessWidget {
-  Profile profile;
-  bool showSettings;
+  final Profile profile;
+  final bool showSettings;
 
-  ProfileShow(this.profile, this.showSettings, {super.key});
+  const ProfileShow(this.profile, this.showSettings, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class ProfileShow extends StatelessWidget {
             children: [
               Text(
                 profile.name,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -51,7 +51,7 @@ class ProfileShow extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         listName,
-        style: TextStyle(fontSize: 25, fontWeight: FontWeight.w100),
+        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w100),
       ),
     );
   }
@@ -73,7 +73,7 @@ class ProfileShow extends StatelessWidget {
       backgroundColor: getRandomDarkColor(),
       child: Text(
         initials(profile.name),
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 40,
           color: Colors.white,
         ),

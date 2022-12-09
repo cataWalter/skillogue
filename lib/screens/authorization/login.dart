@@ -60,6 +60,10 @@ class _LoginState extends State<Login> {
       isLoggedIn = true;
     });
     List<Conversation> c = await getMessagesAll(email);
+    nextScreen(c);
+  }
+
+  void nextScreen(c) async {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

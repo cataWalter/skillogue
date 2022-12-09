@@ -19,7 +19,7 @@ class GuidedRegistration extends StatefulWidget {
   const GuidedRegistration(this.email, {super.key});
 
   @override
-  _GuidedRegistrationState createState() => _GuidedRegistrationState();
+  State<GuidedRegistration> createState() => _GuidedRegistrationState();
 }
 
 class _GuidedRegistrationState extends State<GuidedRegistration> {
@@ -33,6 +33,19 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
 
   bool changedCountry = false;
   bool changedGender = false;
+
+  void nextScreen(registeredProfile) async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Home(
+          const [],
+          registeredProfile,
+          ProfileSearch(),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +82,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
                   .eq('email', widget.email);
               Profile registeredProfile =
                   await findProfileByEmail(widget.email);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Home(
-                    [],
-                    registeredProfile,
-                    ProfileSearch(),
-                  ),
-                ),
-              );
+              nextScreen(registeredProfile);
             } else {}
           },
           icon: const Icon(Icons.save),
@@ -102,8 +106,8 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.none,
                     autocorrect: false,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(
                         borderSide: BorderSide(),
                       ),
                       hintText: "Full Name",
@@ -123,8 +127,8 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
                     keyboardType: TextInputType.number,
                     textCapitalization: TextCapitalization.none,
                     autocorrect: false,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
                       hintText: "Age",
                       labelText: 'Age',
                       filled: true,
@@ -142,9 +146,8 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.none,
                     autocorrect: false,
-                    decoration: InputDecoration(
-                      border:
-                          const OutlineInputBorder(borderSide: BorderSide()),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide()),
                       hintText:
                           "City (Please use the English Spelling of your city)",
                       labelText: 'City',
@@ -155,7 +158,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
               ),
               Row(
                 children: [
-                  Text(
+                  const Text(
                     "Country:",
                     style: TextStyle(),
                   ),
@@ -187,7 +190,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
               ),
               Row(
                 children: [
-                  Text(
+                  const Text(
                     "Gender:",
                   ),
                   const SizedBox(

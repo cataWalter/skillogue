@@ -10,9 +10,9 @@ import '../../utils/backend/profile_backend.dart';
 import '../home_screen.dart';
 
 class SingleConversationScreen extends StatefulWidget {
-  String destEmail;
+  final String destEmail;
 
-  SingleConversationScreen(this.destEmail);
+  const SingleConversationScreen(this.destEmail, {super.key});
 
   @override
   State<SingleConversationScreen> createState() =>
@@ -25,9 +25,9 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
   late int curChatIndex;
 
   checkNewMessages() async {
-    while (true) {
+    while (mounted) {
       setState(() {});
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
     }
   }
 
@@ -36,6 +36,15 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
     super.initState();
     curChatIndex = profileConversationIndex(conversations, widget.destEmail);
     checkNewMessages();
+  }
+
+  void nextScreenProfileOverview(lookupProfile) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfileOverview(lookupProfile),
+      ),
+    );
   }
 
   @override
@@ -58,12 +67,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
           onTap: () async {
             Profile lookupProfile =
                 await findProfileByEmail(conversations[curChatIndex].destEmail);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfileOverview(lookupProfile),
-              ),
-            );
+            nextScreenProfileOverview(lookupProfile);
           },
           child: Text(
             conversations[curChatIndex].destName,
@@ -179,7 +183,8 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                             'date': curDate.toString(),
                           });
                           conversations[curChatIndex].messages.add(
-                              SingleMessage(0, newTextMessage, curDate, true));
+                              SingleMessage(
+                                  0, newTextMessage, curDate, true, false));
                           setState(() {});
                         }
                       },
@@ -217,14 +222,14 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                 children: [
                   Text(
                     message.text,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   Text(
                     parseTime(message.date),
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: const TextStyle(fontSize: 10, color: Colors.white),
                   ),
                 ],
               ),
@@ -250,14 +255,14 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                 children: [
                   Text(
                     message.text,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   Text(
                     parseTime(message.date),
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: const TextStyle(fontSize: 10, color: Colors.white),
                   ),
                 ],
               ),

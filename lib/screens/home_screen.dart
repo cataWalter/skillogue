@@ -21,10 +21,10 @@ late Profile profile;
 late ProfileSearch profileSearch;
 
 class Home extends StatefulWidget {
-  Profile p;
-  ProfileSearch s;
+  final Profile profile;
+  final ProfileSearch profileSearch;
 
-  Home(conversations, this.p, this.s, {super.key});
+  const Home(conversations, this.profile, this.profileSearch, {super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -37,8 +37,8 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    profile = widget.p;
-    profileSearch = widget.s;
+    profile = widget.profile;
+    profileSearch = widget.profileSearch;
     super.initState();
     conversationUpdate();
   }
@@ -102,21 +102,20 @@ class _HomeState extends State<Home> {
     switch (currentPageIndex) {
       case searchIndex:
         {
-          return SearchScreen();
+          return const SearchScreen();
         }
       case profileIndex:
         {
           return WillPopScope(
             onWillPop: () async {
-              print("willpop2");
               return true;
             },
-            child: ProfileScreen(),
+            child: const ProfileScreen(),
           );
         }
       case messagesIndex:
         {
-          return MessageScreen();
+          return const MessageScreen();
         }
       /*case eventsIndex:
         {
@@ -137,7 +136,7 @@ class _HomeState extends State<Home> {
       RealtimeListenTypes.postgresChanges,
       ChannelFilter(event: '*', schema: '*'),
       (payload, [ref]) async {
-        print('Change received: ${payload.toString()}');
+        //print('Change received: ${payload.toString()}');
         conversations = await addMessage(
           payload.entries.elementAt(4).value.entries.elementAt(3).value ==
               profile.email,
@@ -149,13 +148,14 @@ class _HomeState extends State<Home> {
             payload.entries.elementAt(4).value.entries.elementAt(4).value,
             DateTime.parse(
                 payload.entries.elementAt(4).value.entries.elementAt(0).value),
+            false,
           ),
         );
         setState(() {});
       },
     ).subscribe();
 
-    while (true) {
+    while (mounted) {
       conversations = await getNewMessages(profile.email, conversations);
       setState(() {});
       await Future.delayed(const Duration(seconds: 10));

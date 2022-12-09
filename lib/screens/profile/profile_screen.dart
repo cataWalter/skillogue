@@ -5,7 +5,7 @@ import 'package:skillogue/screens/profile/profile_show.dart';
 import '../home_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

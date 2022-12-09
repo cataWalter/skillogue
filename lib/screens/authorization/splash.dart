@@ -22,8 +22,8 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
+    return const Center(
+      child: SizedBox(
         width: 100,
         height: 100,
         child: CircularProgressIndicator(color: Colors.blue),
@@ -34,29 +34,33 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    f();
+    autologin();
   }
 
-  f() async {
+  autologin() async {
     if (_myBox.get(loggedProfileKey) != null) {
       Profile loggedProfile =
           await findProfileByEmail(_myBox.get(loggedProfileKey));
       List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
       ProfileSearch s = getOldSearch();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(c, loggedProfile, s),
-        ),
-      );
+      nextScreenHome(c, loggedProfile, s);
     } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => PreLogin(),
+          builder: (context) => const PreLogin(),
         ),
       );
     }
+  }
+
+  void nextScreenHome(c, loggedProfile, s) async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Home(c, loggedProfile, s),
+      ),
+    );
   }
 
   ProfileSearch getOldSearch() {

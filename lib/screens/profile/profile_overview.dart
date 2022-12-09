@@ -3,9 +3,9 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_show.dart';
 
 class ProfileOverview extends StatelessWidget {
-  Profile profile;
+  final Profile profile;
 
-  ProfileOverview(this.profile, {super.key});
+  const ProfileOverview(this.profile, {super.key});
 
   @override
   Widget build(BuildContext context) {
