@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 
 import '../../entities/conversation.dart';
 import '../../entities/profile.dart';
@@ -7,6 +8,7 @@ import '../../entities/profile_search.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/constants.dart';
 import '../home_screen.dart';
 
 class Login extends StatefulWidget {
@@ -21,6 +23,7 @@ class _LoginState extends State<Login> {
   final controllerPassword = TextEditingController();
   bool isLoggedIn = false;
   late Profile loggedProfile;
+  final _myBox = Hive.box(localDatabase);
 
   void showSuccess(String message) {
     showDialog(
@@ -64,13 +67,13 @@ class _LoginState extends State<Login> {
   }
 
   void nextScreen(c) async {
+    profile = loggedProfile;
+    profileSearch = getOldSearch(_myBox);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => Home(
           c,
-          loggedProfile,
-          ProfileSearch(),
         ),
       ),
     );

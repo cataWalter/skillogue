@@ -4,25 +4,21 @@ import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 
-import '../../utils/appbar.dart';
-import '../../utils/backend/misc_backend.dart';
+import '../../widgets/appbar.dart';
+import '../../utils/backend/profile_backend.dart';
 import '../../utils/data.dart';
-import '../../utils/utils.dart';
+import '../../utils/misc_functions.dart';
 
 class UpdateProfileInfoScreen extends StatefulWidget {
   final Profile profile;
-  final ProfileSearch search;
 
-  const UpdateProfileInfoScreen(this.profile, this.search, {super.key});
-
-
+  const UpdateProfileInfoScreen(this.profile, {super.key});
 
   @override
-  State<UpdateProfileInfoScreen> createState() => _UpdateProfileInfoScreenState();
-
+  State<UpdateProfileInfoScreen> createState() =>
+      _UpdateProfileInfoScreenState();
 }
 
 class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
@@ -45,11 +41,11 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
         onPressed: () async {
           updateLocalProfileSettings();
           updateDatabaseProfileSettings();
+          profile = widget.profile;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  Home(conversations, widget.profile, widget.search),
+              builder: (context) => Home(conversations),
             ),
           );
         },
@@ -348,10 +344,7 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
         parameters.addAll({'age': newAge});
       }
     }
-    await supabase
-        .from('profile')
-        .update(parameters)
-        .eq('email', widget.profile.email);
+    updateProfile(widget.profile.email, parameters);
   }
 
   String capitalizeFirstLetterString(String s) {

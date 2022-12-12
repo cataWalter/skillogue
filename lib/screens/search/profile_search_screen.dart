@@ -10,28 +10,33 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home_screen.dart';
+import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
 
-import '../../entities/event.dart';
+import '../../localizations/english.dart';
 import '../../utils/backend/misc_backend.dart';
+import '../../utils/backend/profile_search_backend.dart';
 import '../../utils/data.dart';
 import '../../utils/misc_functions.dart';
-import 'event_overview.dart';
 
-class EventScreen extends StatefulWidget {
-  const EventScreen({super.key});
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
 
   @override
-  State<EventScreen> createState() => _EventScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _EventScreenState extends State<EventScreen> {
+class _SearchScreenState extends State<SearchScreen> {
   int _searchIndex = 0;
   late TextEditingController controllerCity;
-  late List<Event> searchResults;
+  late TextEditingController controllerMinAge;
+  late TextEditingController controllerMaxAge;
+  late List<Profile> searchResults;
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
-  late Event lookupEvent;
+  List<String> selectedLanguages = [];
+  List<String> selectedGenders = [];
+  late Profile lookupProfile;
   final newMessageController = TextEditingController();
 
   final _myBox = Hive.box(localDatabase);
@@ -40,6 +45,18 @@ class _EventScreenState extends State<EventScreen> {
   void initState() {
     super.initState();
     controllerCity = TextEditingController(text: profileSearch.city);
+    if (profileSearch.minAge == null || profileSearch.minAge! < 18) {
+      controllerMinAge = TextEditingController();
+    } else {
+      controllerMinAge =
+          TextEditingController(text: profileSearch.minAge.toString());
+    }
+    if (profileSearch.maxAge == null || profileSearch.maxAge! > 99) {
+      controllerMaxAge = TextEditingController();
+    } else {
+      controllerMaxAge =
+          TextEditingController(text: profileSearch.maxAge.toString());
+    }
   }
 
   @override
@@ -55,7 +72,7 @@ class _EventScreenState extends State<EventScreen> {
     } else if (_searchIndex == 1) {
       return getSearchResults();
     } else if (_searchIndex == 2) {
-      return EventOverview(lookupEvent);
+      return ProfileOverview(lookupProfile);
     }
     return Container();
   }
@@ -97,9 +114,51 @@ class _EventScreenState extends State<EventScreen> {
             child: const Icon(Icons.search),
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
-            label: 'Search new events',
+            label: 'Search new friends',
             onTap: () async {
-
+              if (!profile.isEmptyProfile()) {
+                saveSearch();
+                searchResults = await findUsers(
+                    profile.email, profileSearch, conversations);
+                searchResults.sort(sortById);
+                if (searchResults.isNotEmpty) {
+                  if (mounted) {
+                    setState(() {
+                      _searchIndex = 1;
+                    });
+                  }
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text("No users found!"),
+                        content: Text(":'("),
+                      );
+                    },
+                  );
+                }
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text(
+                          "Some details about you are still missing!"),
+                      content: const Text(
+                          "Please, update your info in the SETTINGS before looking for others"),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
             //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
@@ -120,10 +179,10 @@ class _EventScreenState extends State<EventScreen> {
             //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
           SpeedDialChild(
-            child: const Icon(Icons.event_available),
+            child: const Icon(Icons.accessibility),
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
-            label: 'Create event',
+            label: 'Similar to me',
             onTap: () => {},
             //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
@@ -132,8 +191,11 @@ class _EventScreenState extends State<EventScreen> {
             backgroundColor: Colors.lightBlue,
             foregroundColor: Colors.white,
             label: 'Save this search',
-            onTap: () => {},
-            //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(newFunctionalityMessage),
+              ),
+            ), //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
           /*
           SpeedDialChild(
@@ -179,8 +241,7 @@ class _EventScreenState extends State<EventScreen> {
                     initialValue: profileSearch.countries,
                     listType: MultiSelectListType.CHIP,
                     searchable: true,
-                    buttonText:
-                        const Text('In what countries should the event be held?'),
+                    buttonText: const Text(whatCountryPerson),
                     title: const Text('Countries'),
                     buttonIcon: const Icon(
                       Icons.flag,
@@ -218,8 +279,7 @@ class _EventScreenState extends State<EventScreen> {
                     initialValue: profileSearch.skills,
                     listType: MultiSelectListType.CHIP,
                     searchable: true,
-                    buttonText:
-                        const Text('What passions are you looking for?'),
+                    buttonText: const Text(whatPassionPerson),
                     title: const Text('Skills'),
                     buttonIcon: const Icon(
                       Icons.sports_tennis,
@@ -243,6 +303,82 @@ class _EventScreenState extends State<EventScreen> {
               ),
             ),
             addVerticalSpace(15),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 2,
+                ),
+              ),
+              child: Column(
+                children: <Widget>[
+                  MultiSelectBottomSheetField(
+                    initialChildSize: 0.4,
+                    initialValue: profileSearch.languages,
+                    listType: MultiSelectListType.CHIP,
+                    searchable: true,
+                    buttonText: const Text(whatLanguagePerson),
+                    title: const Text("Languages"),
+                    buttonIcon: const Icon(
+                      Icons.abc_outlined,
+                    ),
+                    searchIcon: const Icon(
+                      Icons.search,
+                    ),
+                    items: languages.map((s) => MultiSelectItem(s, s)).toList(),
+                    onConfirm: (values) {
+                      selectedLanguages =
+                          values.map((e) => e.toString()).toList();
+                    },
+                    chipDisplay: MultiSelectChipDisplay(
+                      onTap: (value) {
+                        setState(() {
+                          selectedLanguages.remove(value.toString());
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            addVerticalSpace(15),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 2,
+                ),
+              ),
+              child: Column(
+                children: <Widget>[
+                  MultiSelectBottomSheetField(
+                    initialChildSize: 0.4,
+                    initialValue: profileSearch.genders,
+                    listType: MultiSelectListType.CHIP,
+                    searchable: true,
+                    buttonText: const Text(whatGenderPerson),
+                    title: const Text("Genders"),
+                    buttonIcon: const Icon(
+                      Icons.person,
+                    ),
+                    searchIcon: const Icon(
+                      Icons.search,
+                    ),
+                    items: genders.map((s) => MultiSelectItem(s, s)).toList(),
+                    onConfirm: (values) {
+                      selectedGenders =
+                          values.map((e) => e.toString()).toList();
+                    },
+                    chipDisplay: MultiSelectChipDisplay(
+                      onTap: (value) {
+                        setState(() {
+                          selectedGenders.remove(value.toString());
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            addVerticalSpace(15),
             Align(
               alignment: Alignment.bottomLeft,
               child: SizedBox(
@@ -254,12 +390,57 @@ class _EventScreenState extends State<EventScreen> {
                   autocorrect: false,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(borderSide: BorderSide()),
-                    labelText: "What's the city?",
+                    labelText: whatCityPerson,
                     hintText: 'City',
                     filled: true,
                   ),
                 ),
               ),
+            ),
+            addVerticalSpace(15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Text(
+                  "From",
+                ),
+                SizedBox(
+                  width: 140,
+                  child: TextField(
+                    controller: controllerMinAge,
+                    keyboardType: TextInputType.number,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide()),
+                      labelText: minAge,
+                      hintText: minAge,
+                      filled: true,
+                    ),
+                  ),
+                ),
+                const Text(
+                  "To",
+                  style: TextStyle(),
+                ),
+                SizedBox(
+                  width: 140,
+                  child: TextField(
+                    controller: controllerMaxAge,
+                    keyboardType: TextInputType.number,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(),
+                      ),
+                      labelText: maxAge,
+                      hintText: maxAge,
+                      filled: true,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -286,15 +467,16 @@ class _EventScreenState extends State<EventScreen> {
               children: [
                 ListTile(
                   onTap: () {
-                    /*showDialog(
+                    showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return sendNewMessage(
                           searchResults[index].email,
                           searchResults[index].name,
+                          searchResults[index].color,
                         );
                       },
-                    );*/
+                    );
                   },
                   title: Column(
                     children: [
@@ -329,7 +511,8 @@ class _EventScreenState extends State<EventScreen> {
                           spacing: 3.0,
                           runSpacing: -10,
                           alignment: WrapAlignment.start,
-                          children: chippies(searchResults[index].skills, 12.0),
+                          children: chippies(searchResults[index].skills,
+                              searchResults[index].languages, 12.0),
                         ),
                       ),
                     ],
@@ -344,8 +527,12 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void saveSearch() {
+    profileSearch.genders = selectedGenders;
+    _myBox.put(lastGendersKey, selectedGenders);
     profileSearch.countries = selectedCountries;
     _myBox.put(lastCountriesKey, selectedCountries);
+    profileSearch.languages = selectedLanguages;
+    _myBox.put(lastLanguagesKey, selectedLanguages);
     profileSearch.skills = selectedSkills;
     if (controllerCity.text.toString().isEmpty) {
       profileSearch.city = "";
@@ -354,9 +541,29 @@ class _EventScreenState extends State<EventScreen> {
       profileSearch.city = controllerCity.text.trim();
       _myBox.put(lastCityKey, controllerCity.text.trim());
     }
+    if (controllerMaxAge.text.toString().isEmpty) {
+      profileSearch.maxAge = 100;
+      _myBox.delete(lastMaxAge);
+    }
+    if (controllerMinAge.text.toString().isEmpty) {
+      profileSearch.minAge = 17;
+      _myBox.delete(lastMinAge);
+    }
+    if (controllerMaxAge.text.toString().isNotEmpty &&
+        controllerMinAge.text.toString().isNotEmpty) {
+      int maxAge = int.parse(controllerMaxAge.text.trim());
+      int minAge = int.parse(controllerMinAge.text.trim());
+      if (maxAge <= 99 && minAge >= 18 && maxAge >= minAge) {
+        profileSearch.maxAge = maxAge;
+        profileSearch.minAge = minAge;
+        _myBox.put(lastMinAge, minAge);
+        _myBox.put(lastMaxAge, maxAge);
+      }
+    }
+    return;
   }
 
-  sendNewMessage(String destEmail, String destName) {
+  sendNewMessage(String destEmail, String destName, Color color) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
       child: AlertDialog(
@@ -385,7 +592,7 @@ class _EventScreenState extends State<EventScreen> {
                   'text': newTextMessage,
                   'date': curDate.toString(),
                 });
-                conversations.add(Conversation(destEmail, destName, Color(0),
+                conversations.add(Conversation(destEmail, destName, color,
                     [SingleMessage(0, newTextMessage, curDate, true, false)]));
                 setState(() {});
               }
@@ -397,14 +604,30 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
-  List<Widget> chippies(List<String> toChip, double size) {
+  List<Widget> chippies(
+      List<String> toChip1, List<String> toChip2, double size) {
     List<Widget> res = [];
-    for (String s in toChip) {
-      res.add(Chip(
+    for (String item in toChip1) {
+      res.add(
+        Chip(
+          backgroundColor: Colors.blue[800],
           label: Text(
-        s,
-        style: TextStyle(fontSize: size),
-      )));
+            item,
+            style: TextStyle(fontSize: size, color: Colors.white),
+          ),
+        ),
+      );
+    }
+    for (String item in toChip2) {
+      res.add(
+        Chip(
+          backgroundColor: Colors.green,
+          label: Text(
+            item,
+            style: TextStyle(fontSize: size, color: Colors.white),
+          ),
+        ),
+      );
     }
     return res;
   }

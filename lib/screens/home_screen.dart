@@ -1,30 +1,28 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
+import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
-import 'package:skillogue/screens/search/search_screen.dart';
-import 'package:skillogue/utils/appbar.dart';
+import 'package:skillogue/screens/search/profile_search_screen.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
+import 'events/event_screen.dart';
 
 List<Conversation> conversations = [];
 late Profile profile;
-
 late ProfileSearch profileSearch;
 
 class Home extends StatefulWidget {
-  final Profile profile;
-  final ProfileSearch profileSearch;
-
-  const Home(conversations, this.profile, this.profileSearch, {super.key});
+  const Home(conversations, {super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -32,13 +30,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int currentPageIndex = 0;
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-  final _myBox = Hive.box("mybox");
+  final _myBox = Hive.box(localDatabase);
 
   @override
   void initState() {
-    profile = widget.profile;
-    profileSearch = widget.profileSearch;
     super.initState();
     conversationUpdate();
   }
@@ -54,34 +49,122 @@ class _HomeState extends State<Home> {
             ? ThisAppBar(profile.name, true)
             : ThisAppBar(profile.name, false),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        index: profileIndex,
-        height: 50.0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        color: Colors.blue,
-        items: navbarIcons(
-          [
-            Icons.perm_identity,
-            //Icons.event,
-            Icons.groups,
-            Icons.message_outlined,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          boxShadow: [
+            themeManager.isDarkNow()
+                ? const BoxShadow(
+                    blurRadius: 20,
+                  )
+                : BoxShadow(
+                    blurRadius: 20,
+                    color: Colors.black.withOpacity(.1),
+                  ),
           ],
         ),
-        animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 500),
-        onTap: (index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        letIndexChange: (index) => true,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8,
+              activeColor: Colors.black,
+              iconSize: 24,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              duration: const Duration(milliseconds: 400),
+              tabBackgroundColor: Colors.grey[100]!,
+              tabs: getButtons(),
+              selectedIndex: currentPageIndex,
+              onTabChange: (index) {
+                setState(() {
+                  currentPageIndex = index;
+                });
+              },
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
         child: getScreen(),
       ),
     );
+  }
+
+  List<GButton> getButtons() {
+    if (themeManager.isDarkNow()) {
+      return const [
+        GButton(
+          icon: Icons.person,
+          text: 'Profile',
+          iconColor: Colors.white,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+        GButton(
+          icon: Icons.event,
+          text: 'Events',
+          iconColor: Colors.white,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+        GButton(
+          icon: Icons.group,
+          text: 'Friends',
+          iconColor: Colors.white,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+        GButton(
+          icon: Icons.message,
+          text: 'Chat',
+          iconColor: Colors.white,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+      ];
+    } else {
+      return const [
+        GButton(
+          icon: Icons.person,
+          text: 'Profile',
+          iconColor: Colors.black,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+        GButton(
+          icon: Icons.event,
+          text: 'Events',
+          iconColor: Colors.black,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+        GButton(
+          icon: Icons.group,
+          text: 'Friends',
+          iconColor: Colors.black,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+        GButton(
+          icon: Icons.message,
+          text: 'Chat',
+          iconColor: Colors.black,
+          textColor: Colors.black,
+          hoverColor: Colors.white,
+          iconActiveColor: Colors.black,
+        ),
+      ];
+    }
   }
 
   List<Icon> navbarIcons(List<IconData> icons) {
@@ -117,15 +200,10 @@ class _HomeState extends State<Home> {
         {
           return const MessageScreen();
         }
-      /*case eventsIndex:
+      case eventsIndex:
         {
-          /*return EventScreen(
-              widget.profile, widget.search, widget.conversations);*/
-          return const Center(
-              child: Text(
-            newFunctionalityMessage,
-          ));
-        }*/
+          return const EventScreen();
+        }
       default:
         return Container();
     }

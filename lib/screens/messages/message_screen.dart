@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 
-import '../../utils/colors.dart';
 import '../home_screen.dart';
 
 class MessageScreen extends StatefulWidget {
@@ -38,8 +38,7 @@ class _MessageScreenState extends State<MessageScreen> {
       conversations = sortConversations(conversations);
       return ListView.builder(
         itemCount: conversations.length,
-        itemBuilder: ((context, index) =>
-            chatCard(profile, conversations[index])),
+        itemBuilder: ((context, index) => chatCard(conversations[index])),
       );
     } else {
       return const Padding(
@@ -52,7 +51,7 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
-  Widget chatCard(Profile curProfile, Conversation curConversation) {
+  Widget chatCard(Conversation curConversation) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -67,17 +66,8 @@ class _MessageScreenState extends State<MessageScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: getRandomDarkColor(),
-              child: Text(
-                curConversation.destName.toString()[0].toUpperCase() +
-                    curConversation.destName.toString()[1].toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            getAvatar(
+                curConversation.destName, curConversation.destColor, 24, 16),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -91,7 +81,7 @@ class _MessageScreenState extends State<MessageScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    addVerticalSpace(8),
                     addOutgoingIcon(
                       curConversation.messages.last.outgoing,
                       curConversation.messages.last.text.replaceAll("\n", " "),

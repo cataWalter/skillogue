@@ -6,12 +6,13 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/utils/appbar.dart';
+import 'package:skillogue/widgets/appbar.dart';
+import 'package:skillogue/utils/colors.dart';
 
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/data.dart';
-import '../../utils/utils.dart';
+import '../../utils/misc_functions.dart';
 
 class GuidedRegistration extends StatefulWidget {
   final String email;
@@ -35,13 +36,14 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
   bool changedGender = false;
 
   void nextScreen(registeredProfile) async {
+    profile = registeredProfile;
+    profileSearch = ProfileSearch();
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => Home(
-          const [],
-          registeredProfile,
-          ProfileSearch(),
+        builder: (context) => const Home(
+          [],
         ),
       ),
     );
@@ -76,6 +78,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
               parameters.addAll({'languages': selectedLanguages});
               parameters.addAll({'skills': selectedSkills});
               parameters.addAll({'age': int.parse(controllerAge.text)});
+              parameters.addAll({'color': getRandomDarkColor().toString()});
               await supabase
                   .from('profile')
                   .update(parameters)

@@ -1,36 +1,11 @@
 import 'dart:collection';
 
+import 'package:skillogue/utils/backend/profile_backend.dart';
+
 import '../../entities/conversation.dart';
 import '../../entities/message.dart';
+import '../../entities/profile.dart';
 import 'misc_backend.dart';
-
-Future<String> findName(String email) async {
-  return (await supabase.from('profile').select('name').eq('email', email))[0]
-      .values
-      .first;
-}
-/*
-sendMessage(String sender, String receiver, String text) async {
-  String curDate = DateTime.now().toString();
-  databaseInsert('message', {
-    'sender': sender,
-    'receiver': receiver,
-    'text': text,
-    'date': curDate,
-  });
-  final List<dynamic> sentMessage = await supabase
-      .from('message')
-      .select()
-      .eq('sender', sender)
-      .eq('receiver', receiver)
-      .eq('text', text)
-      .eq('date', curDate);
-  if (sentMessage.isNotEmpty) {
-    LinkedHashMap y = (sentMessage[0]);
-    Message x = parseMessage(y);
-    return x;
-  }
-}*/
 
 Future<List<Conversation>> getMessagesAll(String email) async {
   List<Conversation> newConversations = [];
@@ -96,9 +71,11 @@ Future<List<Conversation>> addMessage(
       }
     }
     if (added == false) {
+      Profile destProfile = await findProfileByEmail(m.receiverEmail);
       conversations.add(Conversation(
           m.receiverEmail,
-          await findName(m.receiverEmail),
+          destProfile.name,
+          destProfile.color,
           [SingleMessage(m.id, m.text, m.date, true, false)]));
       return conversations;
     }
@@ -112,9 +89,11 @@ Future<List<Conversation>> addMessage(
       }
     }
     if (added == false) {
+      Profile destProfile = await findProfileByEmail(m.receiverEmail);
       conversations.add(Conversation(
           m.senderEmail,
-          await findName(m.senderEmail),
+          destProfile.name,
+          destProfile.color,
           [SingleMessage(m.id, m.text, m.date, false, false)]));
       return conversations;
     }

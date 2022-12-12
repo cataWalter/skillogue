@@ -5,8 +5,17 @@ class ThemeManager with ChangeNotifier {
 
   get themeMode => _themeMode;
 
-  toggleTheme(bool isDark) {
-    _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+  bool isDarkNow(){
+    return _themeMode == ThemeMode.dark;
+  }
+
+  toggleDark() {
+    _themeMode = ThemeMode.dark;
+    notifyListeners();
+  }
+
+  toggleLight() {
+    _themeMode = ThemeMode.light;
     notifyListeners();
   }
 }

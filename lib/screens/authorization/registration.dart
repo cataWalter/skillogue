@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/guided_registration.dart';
-import 'package:skillogue/utils/utils.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/misc_backend.dart';
@@ -111,7 +111,6 @@ class _RegistrationState extends State<Registration> {
     bool usersWithSameEmail = await existsUsersWithSameEmail(email);
     if (usersWithSameEmail) {
       databaseInsert('profile', {'email': email});
-      //final AuthResponse res =
       await registration(email, password);
       nextScreen(email);
     } else {

@@ -1,10 +1,17 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+bool isDarkColor(Color myColor) {
+  //return !(myColor.computeLuminance() < 0.250);
+  return !(myColor.computeLuminance() < 0.7);
+
+}
 
 Color getRandomDarkColor() {
   Color randomColor =
       Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
-  if (randomColor.computeLuminance() < 0.250) {
+  if (isDarkColor(randomColor)) {
     return randomColor;
   } else {
     return getRandomDarkColor();
@@ -29,3 +36,11 @@ ThemeData darkTheme = ThemeData(
     fillColor: Color.fromRGBO(20, 20, 20, 1.0), //<-- SEE HERE
   ),
 );
+
+const Color guidePrimary = Color(0xFF6200EE);
+const Color guidePrimaryVariant = Color(0xFF3700B3);
+const Color guideSecondary = Color(0xFF03DAC6);
+const Color guideSecondaryVariant = Color(0xFF018786);
+const Color guideError = Color(0xFFB00020);
+const Color guideErrorDark = Color(0xFFCF6679);
+const Color blueBlues = Color(0xFF174378);

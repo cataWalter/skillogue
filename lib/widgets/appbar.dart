@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:skillogue/screens/authorization/pre_login.dart';
+import 'package:skillogue/screens/profile/profile_settings.dart';
 
-import '../main.dart';
 import '../screens/home_screen.dart';
 import '../screens/profile/update_profile_info_screen.dart';
-import 'constants.dart';
+import '../utils/constants.dart';
 
 class ThisAppBar extends StatelessWidget {
   final String name;
   final bool showSettings;
-  final _myBox = Hive.box("mybox");
+  final _myBox = Hive.box(localDatabase);
 
   ThisAppBar(this.name, this.showSettings, {super.key});
 
@@ -38,7 +39,6 @@ class ThisAppBar extends StatelessWidget {
                     ),
                   ],
                 ),
-
               ],
             ),
             actions: [
@@ -58,16 +58,16 @@ class ThisAppBar extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    UpdateProfileInfoScreen(profile, profileSearch)));
+                                    UpdateProfileInfoScreen(profile)));
                       }
                       break;
                     case 1:
                       {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    UpdateProfileInfoScreen(profile, profileSearch)));
+                                    ProfileSettings()));
                       }
                       break;
                     case 2:
@@ -77,7 +77,12 @@ class ThisAppBar extends StatelessWidget {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyApp()));
+                                builder: (context) => const PreLogin()));
+                      }
+                      break;
+                    case 3:
+                      {
+                        print("suggest new skills");
                       }
                   }
                 },
@@ -85,21 +90,28 @@ class ThisAppBar extends StatelessWidget {
                   const PopupMenuItem(
                     value: 0,
                     child: Text(
-                      "Update profile info",
+                      "Update profile",
                       style: TextStyle(),
                     ),
                   ),
-                  /*PopupMenuItem(
-                        value: 1,
-                        child: Text(
-                          "Settings",
-                          style: TextStyle(),
-                        ),
-                      ),*/
+                  const PopupMenuItem(
+                    value: 1,
+                    child: Text(
+                      "Settings",
+                      style: TextStyle(),
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 3,
+                    child: Text(
+                      "Suggest new skills",
+                      style: TextStyle(),
+                    ),
+                  ),
                   const PopupMenuItem(
                     value: 2,
                     child: Text(
-                      "Log Out",
+                      "Logout",
                       style: TextStyle(),
                     ),
                   ),

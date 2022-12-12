@@ -1,10 +1,12 @@
+import 'dart:ui';
+
 class Conversation {
   String destEmail;
   String destName;
-
+  Color destColor;
   List<SingleMessage> messages;
 
-  Conversation(this.destEmail, this.destName, this.messages);
+  Conversation(this.destEmail, this.destName, this.destColor, this.messages);
 }
 
 class SingleMessage {

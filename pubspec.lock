@@ -148,6 +148,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.4"
+  flex_color_picker:
+    dependency: "direct main"
+    description:
+      name: flex_color_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
+  flex_seed_scheme:
+    dependency: transitive
+    description:
+      name: flex_seed_scheme
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -167,13 +181,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  flutter_staggered_grid_view:
+  flutter_speed_dial:
     dependency: "direct main"
     description:
-      name: flutter_staggered_grid_view
+      name: flutter_speed_dial
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.2"
+    version: "6.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -198,6 +212,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  google_nav_bar:
+    dependency: "direct main"
+    description:
+      name: google_nav_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.6"
   gotrue:
     dependency: transitive
     description:
@@ -604,4 +625,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.18.2 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.3.0"

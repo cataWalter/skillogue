@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:skillogue/utils/colors.dart';
+
+import '../utils/misc_functions.dart';
 
 class Profile {
   String email;
@@ -8,12 +11,13 @@ class Profile {
   String gender;
   int age;
   DateTime lastLogin;
+  Color color;
 
   List<String> languages;
   List<String> skills;
 
   Profile(this.email, this.name, this.country, this.city, this.gender, this.age,
-      this.lastLogin, this.languages, this.skills);
+      this.lastLogin, this.color, this.languages, this.skills);
 
   late bool isLogged;
 
@@ -26,6 +30,20 @@ class Profile {
         skills.isEmpty ||
         languages.isEmpty;
   }
+}
+
+CircleAvatar getAvatar(String name, Color color, int radiusSize, int fontSize) {
+  return CircleAvatar(
+    radius: radiusSize.toDouble(),
+    backgroundColor: color,
+    child: Text(
+      initials(name),
+      style: TextStyle(
+        fontSize: fontSize.toDouble(),
+        color: isDarkColor(color) ? Colors.black : Colors.white,
+      ),
+    ),
+  );
 }
 
 Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
