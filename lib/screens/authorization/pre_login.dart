@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/login.dart';
 import 'package:skillogue/screens/authorization/registration.dart';
-import 'package:skillogue/utils/utils.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 
 class PreLogin extends StatefulWidget {
   const PreLogin({Key? key}) : super(key: key);
@@ -14,7 +14,6 @@ class PreLogin extends StatefulWidget {
 class _PreLoginState extends State<PreLogin> {
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 10));
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(

@@ -1,11 +1,10 @@
 class Event {
-  String objectId;
-  String eventName;
+  String name;
   String country;
   String city;
   DateTime? eventDate;
   List<String> skills = [];
 
-  Event(this.objectId, this.eventName, this.country, this.city, this.eventDate,
+  Event( this.name, this.country, this.city, this.eventDate,
       this.skills);
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/profile.dart';
 
-import '../../utils/colors.dart';
-import '../../utils/utils.dart';
+import '../../utils/misc_functions.dart';
 
 class ProfileShow extends StatelessWidget {
   final Profile profile;
@@ -16,13 +15,19 @@ class ProfileShow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Column(
         children: [
-          getAvatar(),
+          getAvatar(
+            profile.name,
+            profile.color,
+            60,
+            40,
+          ),
           addVerticalSpace(10),
           Row(
             children: [
               Text(
                 profile.name,
-                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -63,20 +68,6 @@ class ProfileShow extends StatelessWidget {
         spacing: 8.0, // gap between adjacent chips
         runSpacing: 4.0, // gap between lines
         children: chippies(listValues, 16.0),
-      ),
-    );
-  }
-
-  CircleAvatar getAvatar() {
-    return CircleAvatar(
-      radius: 60,
-      backgroundColor: getRandomDarkColor(),
-      child: Text(
-        initials(profile.name),
-        style: const TextStyle(
-          fontSize: 40,
-          color: Colors.white,
-        ),
       ),
     );
   }
