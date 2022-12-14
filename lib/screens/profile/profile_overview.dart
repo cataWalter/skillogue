@@ -28,9 +28,6 @@ class ProfileOverview extends StatelessWidget {
         child: Column(
           children: [
             ProfileShow(profile, false),
-            const SizedBox(
-              height: 60,
-            ),
           ],
         ),
       ),

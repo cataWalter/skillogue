@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/guided_registration.dart';
 import 'package:skillogue/utils/misc_functions.dart';
+import 'package:skillogue/widgets/my_text_field.dart';
 
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/misc_backend.dart';
@@ -32,38 +33,35 @@ class _RegistrationState extends State<Registration> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: TextField(
-                controller: controllerEmail,
-                keyboardType: TextInputType.emailAddress,
-                textCapitalization: TextCapitalization.none,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  labelText: 'Email',
-                  hintText: 'Email',
-                  filled: true,
-                ),
-              ),
+            ListTile(
+              title: MyTextField(controllerEmail, "Email", "Email",
+                  TextInputType.emailAddress, Icons.email),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: TextField(
-                controller: controllerPassword,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.none,
-                autocorrect: false,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide()),
-                  labelText: 'Password',
-                  hintText: 'Password',
-                  filled: true,
+            ListTile(
+              title: SizedBox(
+                height: 50,
+                child: TextField(
+                  controller: controllerPassword,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.none,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    fillColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : const Color.fromRGBO(235, 235, 235, 1),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(
+                        fontSize: 16, color: Theme.of(context).hintColor),
+                    hintText: 'Password',
+                    hintStyle: TextStyle(
+                        fontSize: 16, color: Theme.of(context).hintColor),
+                    filled: true,
+                    suffixIcon: const Icon(Icons.password),
+                  ),
                 ),
               ),
             ),

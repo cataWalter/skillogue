@@ -40,3 +40,20 @@ List<Widget> chippies(List<String> toChip, double size) {
   }
   return res;
 }
+
+void showSnackBar(String message, context) {
+  ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(message)));
+}
+
+ListView listViewCreator(List<Widget> widgets) {
+  List<Widget> res = [];
+  for (Widget x in widgets) {
+    res.add(ListTile(
+      title: x,
+    ));
+  }
+  return ListView(
+    children: res,
+  );
+}

@@ -10,9 +10,9 @@ import '../../utils/backend/profile_backend.dart';
 import '../home_screen.dart';
 
 class SingleConversationScreen extends StatefulWidget {
-  final String destEmail;
+  Conversation conversation;
 
-  const SingleConversationScreen(this.destEmail, {super.key});
+  SingleConversationScreen(this.conversation, {super.key});
 
   @override
   State<SingleConversationScreen> createState() =>
@@ -22,7 +22,6 @@ class SingleConversationScreen extends StatefulWidget {
 class _SingleConversationScreenState extends State<SingleConversationScreen> {
   final newMessageController = TextEditingController();
   DateTime loginClickTime = DateTime.fromMicrosecondsSinceEpoch(0);
-  late int curChatIndex;
 
   checkNewMessages() async {
     while (mounted) {
@@ -34,7 +33,6 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
   @override
   void initState() {
     super.initState();
-    curChatIndex = profileConversationIndex(conversations, widget.destEmail);
     checkNewMessages();
   }
 
@@ -66,11 +64,11 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
         title: GestureDetector(
           onTap: () async {
             Profile lookupProfile =
-                await findProfileByEmail(conversations[curChatIndex].destEmail);
+                await findProfileByEmail(widget.conversation.destEmail);
             nextScreenProfileOverview(lookupProfile);
           },
           child: Text(
-            conversations[curChatIndex].destName,
+            widget.conversation.destName,
             style: TextStyle(
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
@@ -107,7 +105,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                 order: GroupedListOrder.DESC,
                 useStickyGroupSeparators: true,
                 floatingHeader: true,
-                elements: conversations[curChatIndex].messages,
+                elements: widget.conversation.messages,
                 groupBy: (message) => DateTime(
                     message.date.year, message.date.month, message.date.day),
                 groupHeaderBuilder: (message) => SizedBox(
@@ -178,11 +176,11 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                           DateTime curDate = DateTime.now();
                           databaseInsert('message', {
                             'sender': profile.email,
-                            'receiver': conversations[curChatIndex].destEmail,
+                            'receiver': widget.conversation.destEmail,
                             'text': newTextMessage,
                             'date': curDate.toString(),
                           });
-                          conversations[curChatIndex].messages.add(
+                          widget.conversation.messages.add(
                               SingleMessage(
                                   0, newTextMessage, curDate, true, false));
                           setState(() {});

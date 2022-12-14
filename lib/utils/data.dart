@@ -2955,7 +2955,6 @@ List<String> countries = [
   'North Macedonia',
   'Norway',
   'Oman',
-  'Other',
   'Pakistan',
   'Palau',
   'Panama',
