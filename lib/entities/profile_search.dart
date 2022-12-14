@@ -12,26 +12,26 @@ class ProfileSearch {
 
 ProfileSearch getOldSearch(myBox) {
   ProfileSearch oldSearch = ProfileSearch();
-  if (myBox.get(lastCountriesKey) != null) {
-    oldSearch.countries = myBox.get(lastCountriesKey);
+  if (myBox.get(lastProfileSearchCountriesKey) != null) {
+    oldSearch.countries = myBox.get(lastProfileSearchCountriesKey);
   }
-  if (myBox.get(lastSkillsKey) != null) {
-    oldSearch.skills = myBox.get(lastSkillsKey);
+  if (myBox.get(lastProfileSearchSkillsKey) != null) {
+    oldSearch.skills = myBox.get(lastProfileSearchSkillsKey);
   }
-  if (myBox.get(lastLanguagesKey) != null) {
-    oldSearch.languages = myBox.get(lastLanguagesKey);
+  if (myBox.get(lastProfileSearchLanguagesKey) != null) {
+    oldSearch.languages = myBox.get(lastProfileSearchLanguagesKey);
   }
-  if (myBox.get(lastGendersKey) != null) {
-    oldSearch.genders = myBox.get(lastGendersKey);
+  if (myBox.get(lastProfileSearchGendersKey) != null) {
+    oldSearch.genders = myBox.get(lastProfileSearchGendersKey);
   }
-  if (myBox.get(lastCityKey) != null) {
-    oldSearch.city = myBox.get(lastCityKey);
+  if (myBox.get(lastProfileSearchCityKey) != null) {
+    oldSearch.city = myBox.get(lastProfileSearchCityKey);
   }
-  if (myBox.get(lastMinAge) != null) {
-    oldSearch.minAge = myBox.get(lastMinAge);
+  if (myBox.get(lastProfileSearchMinAge) != null) {
+    oldSearch.minAge = myBox.get(lastProfileSearchMinAge);
   }
-  if (myBox.get(lastMaxAge) != null) {
-    oldSearch.maxAge = myBox.get(lastMaxAge);
+  if (myBox.get(lastProfileSearchMaxAge) != null) {
+    oldSearch.maxAge = myBox.get(lastProfileSearchMaxAge);
   }
   return oldSearch;
 }

@@ -3,15 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/widgets/my_multi_select_field.dart';
+import 'package:skillogue/widgets/my_text_field.dart';
+import 'package:skillogue/widgets/my_uni_select_field.dart';
 
 import '../../localizations/english.dart';
 import '../../utils/backend/misc_backend.dart';
@@ -27,24 +26,22 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  int _searchIndex = 0;
-  late TextEditingController controllerCity;
+  int profileSearchIndex = 0;
   late TextEditingController controllerMinAge;
   late TextEditingController controllerMaxAge;
-  late List<Profile> searchResults;
+  late List<Profile> profileSearchResults;
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
   List<String> selectedLanguages = [];
   List<String> selectedGenders = [];
+  String selectedCity = "";
   late Profile lookupProfile;
   final newMessageController = TextEditingController();
-
   final _myBox = Hive.box(localDatabase);
 
   @override
   void initState() {
     super.initState();
-    controllerCity = TextEditingController(text: profileSearch.city);
     if (profileSearch.minAge == null || profileSearch.minAge! < 18) {
       controllerMinAge = TextEditingController();
     } else {
@@ -67,11 +64,11 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget getSearch() {
-    if (_searchIndex == 0) {
+    if (profileSearchIndex == 0) {
       return getSearchForm();
-    } else if (_searchIndex == 1) {
+    } else if (profileSearchIndex == 1) {
       return getSearchResults();
-    } else if (_searchIndex == 2) {
+    } else if (profileSearchIndex == 2) {
       return ProfileOverview(lookupProfile);
     }
     return Container();
@@ -81,6 +78,8 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: SpeedDial(
+        activeBackgroundColor: Colors.blue,
+        label: const Text("Start here"),
         icon: Icons.add_outlined,
         activeIcon: Icons.close_outlined,
         spacing: 3,
@@ -102,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
         tooltip: 'Open Speed Dial',
         heroTag: 'speed-dial-hero-tag',
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blue,
         activeForegroundColor: Colors.white,
         //activeBackgroundColor: Colors.yellow,
         elevation: 8.0,
@@ -118,13 +117,13 @@ class _SearchScreenState extends State<SearchScreen> {
             onTap: () async {
               if (!profile.isEmptyProfile()) {
                 saveSearch();
-                searchResults = await findUsers(
+                profileSearchResults = await findUsers(
                     profile.email, profileSearch, conversations);
-                searchResults.sort(sortById);
-                if (searchResults.isNotEmpty) {
+                profileSearchResults.sort(sortById);
+                if (profileSearchResults.isNotEmpty) {
                   if (mounted) {
                     setState(() {
-                      _searchIndex = 1;
+                      profileSearchIndex = 1;
                     });
                   }
                 } else {
@@ -197,260 +196,65 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ), //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
-          /*
-          SpeedDialChild(
-            child: const Icon(Icons.accessibility),
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            label: 'First',
-            onTap: () => {},
-            onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.brush),
-            backgroundColor: Colors.deepOrange,
-            foregroundColor: Colors.white,
-            label: 'Second',
-            onTap: () => {},
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.margin),
-            backgroundColor: Colors.indigo,
-            foregroundColor: Colors.white,
-            label: 'Show Snackbar',
-            visible: true,
-            onTap: () => {},
-            onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
-          ),*/
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                ),
+      body: listViewCreator(
+        [
+          MyMultiSelectField(
+              countries,
+              profileSearch.countries,
+              whatCountryPerson,
+              "Country",
+              selectedCountries,
+              Icons.add_location),
+          MyMultiSelectField(skills, profileSearch.skills, whatPassionPerson,
+              "Passions", selectedSkills, Icons.sports_tennis),
+          MyMultiSelectField(
+            languages,
+            profileSearch.languages,
+            whatLanguagePerson,
+            "Languages",
+            selectedLanguages,
+            Icons.abc,
+          ),
+          MyMultiSelectField(
+            genders,
+            profileSearch.genders,
+            whatGenderPerson,
+            "Genders",
+            selectedGenders,
+            Icons.female,
+          ),
+          MyUniSelectField(cities, "Cities", whatCityPerson, selectedCity,
+              selectedCity, Icons.location_city),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Text(
+                "From",
               ),
-              child: Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    initialValue: profileSearch.countries,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText: const Text(whatCountryPerson),
-                    title: const Text('Countries'),
-                    buttonIcon: const Icon(
-                      Icons.flag,
-                    ),
-                    searchIcon: const Icon(
-                      Icons.search,
-                    ),
-                    items: countries.map((s) => MultiSelectItem(s, s)).toList(),
-                    onConfirm: (values) {
-                      selectedCountries =
-                          values.map((e) => e.toString()).toList();
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedCountries.remove(value.toString());
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addVerticalSpace(15),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    initialValue: profileSearch.skills,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText: const Text(whatPassionPerson),
-                    title: const Text('Skills'),
-                    buttonIcon: const Icon(
-                      Icons.sports_tennis,
-                    ),
-                    searchIcon: const Icon(
-                      Icons.search,
-                    ),
-                    items: skills.map((s) => MultiSelectItem(s, s)).toList(),
-                    onConfirm: (values) {
-                      selectedSkills = values.map((e) => e.toString()).toList();
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedSkills.remove(value.toString());
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addVerticalSpace(15),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    initialValue: profileSearch.languages,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText: const Text(whatLanguagePerson),
-                    title: const Text("Languages"),
-                    buttonIcon: const Icon(
-                      Icons.abc_outlined,
-                    ),
-                    searchIcon: const Icon(
-                      Icons.search,
-                    ),
-                    items: languages.map((s) => MultiSelectItem(s, s)).toList(),
-                    onConfirm: (values) {
-                      selectedLanguages =
-                          values.map((e) => e.toString()).toList();
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedLanguages.remove(value.toString());
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addVerticalSpace(15),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    initialValue: profileSearch.genders,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText: const Text(whatGenderPerson),
-                    title: const Text("Genders"),
-                    buttonIcon: const Icon(
-                      Icons.person,
-                    ),
-                    searchIcon: const Icon(
-                      Icons.search,
-                    ),
-                    items: genders.map((s) => MultiSelectItem(s, s)).toList(),
-                    onConfirm: (values) {
-                      selectedGenders =
-                          values.map((e) => e.toString()).toList();
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedGenders.remove(value.toString());
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addVerticalSpace(15),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: SizedBox(
-                width: double.maxFinite,
-                child: TextField(
-                  controller: controllerCity,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide()),
-                    labelText: whatCityPerson,
-                    hintText: 'City',
-                    filled: true,
-                  ),
-                ),
-              ),
-            ),
-            addVerticalSpace(15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Text(
-                  "From",
-                ),
-                SizedBox(
+              SizedBox(
                   width: 140,
-                  child: TextField(
-                    controller: controllerMinAge,
-                    keyboardType: TextInputType.number,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderSide: BorderSide()),
-                      labelText: minAge,
-                      hintText: minAge,
-                      filled: true,
-                    ),
-                  ),
-                ),
-                const Text(
-                  "To",
-                  style: TextStyle(),
-                ),
-                SizedBox(
+                  child: MyTextField(
+                      controllerMinAge, minAge, minAge, TextInputType.number)),
+              const Text(
+                "To",
+                style: TextStyle(),
+              ),
+              SizedBox(
                   width: 140,
-                  child: TextField(
-                    controller: controllerMaxAge,
-                    keyboardType: TextInputType.number,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                      ),
-                      labelText: maxAge,
-                      hintText: maxAge,
-                      filled: true,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+                  child: MyTextField(
+                      controllerMaxAge, maxAge, maxAge, TextInputType.number)),
+            ],
+          ),
+        ],
       ),
     );
   }
 
   Widget getSearchResults() {
     return ListView.builder(
-      itemCount: searchResults.length,
+      itemCount: profileSearchResults.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(
@@ -471,9 +275,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return sendNewMessage(
-                          searchResults[index].email,
-                          searchResults[index].name,
-                          searchResults[index].color,
+                          profileSearchResults[index].email,
+                          profileSearchResults[index].name,
+                          profileSearchResults[index].color,
                         );
                       },
                     );
@@ -485,7 +289,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            " ${searchResults[index].name}",
+                            " ${profileSearchResults[index].name}",
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,
@@ -511,8 +315,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           spacing: 3.0,
                           runSpacing: -10,
                           alignment: WrapAlignment.start,
-                          children: chippies(searchResults[index].skills,
-                              searchResults[index].languages, 12.0),
+                          children: chippies(profileSearchResults[index].skills,
+                              profileSearchResults[index].languages, 12.0),
                         ),
                       ),
                     ],
@@ -528,26 +332,25 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void saveSearch() {
     profileSearch.genders = selectedGenders;
-    _myBox.put(lastGendersKey, selectedGenders);
+    _myBox.put(lastProfileSearchGendersKey, selectedGenders);
     profileSearch.countries = selectedCountries;
-    _myBox.put(lastCountriesKey, selectedCountries);
+    _myBox.put(lastProfileSearchCountriesKey, selectedCountries);
     profileSearch.languages = selectedLanguages;
-    _myBox.put(lastLanguagesKey, selectedLanguages);
+    _myBox.put(lastProfileSearchLanguagesKey, selectedLanguages);
     profileSearch.skills = selectedSkills;
-    if (controllerCity.text.toString().isEmpty) {
+    if (selectedCity.isEmpty) {
       profileSearch.city = "";
-      _myBox.delete(lastCityKey);
+      _myBox.delete(lastProfileSearchCityKey);
     } else {
-      profileSearch.city = controllerCity.text.trim();
-      _myBox.put(lastCityKey, controllerCity.text.trim());
+      _myBox.put(lastProfileSearchCityKey, selectedCity);
     }
     if (controllerMaxAge.text.toString().isEmpty) {
       profileSearch.maxAge = 100;
-      _myBox.delete(lastMaxAge);
+      _myBox.delete(lastProfileSearchMaxAge);
     }
     if (controllerMinAge.text.toString().isEmpty) {
       profileSearch.minAge = 17;
-      _myBox.delete(lastMinAge);
+      _myBox.delete(lastProfileSearchMinAge);
     }
     if (controllerMaxAge.text.toString().isNotEmpty &&
         controllerMinAge.text.toString().isNotEmpty) {
@@ -556,8 +359,8 @@ class _SearchScreenState extends State<SearchScreen> {
       if (maxAge <= 99 && minAge >= 18 && maxAge >= minAge) {
         profileSearch.maxAge = maxAge;
         profileSearch.minAge = minAge;
-        _myBox.put(lastMinAge, minAge);
-        _myBox.put(lastMaxAge, maxAge);
+        _myBox.put(lastProfileSearchMinAge, minAge);
+        _myBox.put(lastProfileSearchMaxAge, maxAge);
       }
     }
     return;
