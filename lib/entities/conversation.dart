@@ -69,10 +69,4 @@ String parseDateGroup(DateTime d) {
   return "${d.day}/${d.month}/${d.year}";
 }
 
-int profileConversationIndex(
-    List<Conversation> conversations, String lookupProfileEmail) {
-  for (int i = 0; i < conversations.length; i++) {
-    if (conversations[i].destEmail == lookupProfileEmail) return i;
-  }
-  return -1;
-}
+

@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+
+
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/widgets/my_multi_select_field.dart';
+import 'package:skillogue/widgets/my_uni_select_field.dart';
 
 import '../../entities/event.dart';
 import '../../utils/backend/misc_backend.dart';
@@ -26,21 +26,17 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-  int _searchIndex = 0;
-  late TextEditingController controllerCity;
+  final int _searchIndex = 0;
+
   late List<Event> searchResults;
   List<String> selectedCountries = [];
   List<String> selectedSkills = [];
+  String selectedCity = "";
   late Event lookupEvent;
   final newMessageController = TextEditingController();
 
   final _myBox = Hive.box(localDatabase);
 
-  @override
-  void initState() {
-    super.initState();
-    controllerCity = TextEditingController(text: profileSearch.city);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +60,7 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: SpeedDial(
+        label: const Text("Start here"),
         icon: Icons.add_outlined,
         activeIcon: Icons.close_outlined,
         spacing: 3,
@@ -85,7 +82,7 @@ class _EventScreenState extends State<EventScreen> {
         tooltip: 'Open Speed Dial',
         heroTag: 'speed-dial-hero-tag',
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blue,
         activeForegroundColor: Colors.white,
         //activeBackgroundColor: Colors.yellow,
         elevation: 8.0,
@@ -162,7 +159,13 @@ class _EventScreenState extends State<EventScreen> {
           ),*/
         ],
       ),
-      body: SingleChildScrollView(
+      body: listViewCreator([
+        MyMultiSelectField(countries, const [], 'In what countries should the event be held?', "Countries", selectedCountries, Icons.flag),
+        MyMultiSelectField(skills, const [], 'What passions are you looking for?', "Skills", selectedSkills, Icons.sports_tennis),
+        MyUniSelectField(cities, "Cities", "What's the city?", "City", selectedCity, Icons.location_city),
+
+      ]),
+      /*body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           children: [
@@ -263,7 +266,7 @@ class _EventScreenState extends State<EventScreen> {
             ),
           ],
         ),
-      ),
+      ),*/
     );
   }
 
@@ -345,14 +348,14 @@ class _EventScreenState extends State<EventScreen> {
 
   void saveSearch() {
     profileSearch.countries = selectedCountries;
-    _myBox.put(lastCountriesKey, selectedCountries);
+    _myBox.put(lastProfileSearchCountriesKey, selectedCountries);
     profileSearch.skills = selectedSkills;
-    if (controllerCity.text.toString().isEmpty) {
+    if (selectedCity.isEmpty) {
       profileSearch.city = "";
-      _myBox.delete(lastCityKey);
+      _myBox.delete(lastProfileSearchCityKey);
     } else {
-      profileSearch.city = controllerCity.text.trim();
-      _myBox.put(lastCityKey, controllerCity.text.trim());
+      profileSearch.city = selectedCity;
+      _myBox.put(lastProfileSearchCityKey, selectedCity);
     }
   }
 
@@ -385,7 +388,7 @@ class _EventScreenState extends State<EventScreen> {
                   'text': newTextMessage,
                   'date': curDate.toString(),
                 });
-                conversations.add(Conversation(destEmail, destName, Color(0),
+                conversations.add(Conversation(destEmail, destName, const Color(0x00000000),
                     [SingleMessage(0, newTextMessage, curDate, true, false)]));
                 setState(() {});
               }

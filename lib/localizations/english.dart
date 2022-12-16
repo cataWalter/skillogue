@@ -3,7 +3,7 @@ const whatPassionPerson = 'What passions are you looking for?';
 const whatLanguagePerson = 'What languages should they speak?';
 const whatGenderPerson = "Are you looking for a specific gender?";
 const whatCityPerson = "What's their city?";
-const minAge = "Minimum age";
-const maxAge = "Maximum age";
+const minAge = "Min age";
+const maxAge = "Max age";
 
 
