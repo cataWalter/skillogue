@@ -51,8 +51,8 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           Expanded(
             child: Column(
-              children: [
-                Center(
+              children: const [
+                /*Center(
                   child: Text(
                     "by",
                     style: GoogleFonts.bebasNeue(
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       color: Colors.black,
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

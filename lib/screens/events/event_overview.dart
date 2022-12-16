@@ -4,9 +4,9 @@ import '../../entities/event.dart';
 
 class EventOverview extends StatelessWidget {
 
-  Event e;
+  final Event e;
 
-  EventOverview(this.e, {super.key});
+  const EventOverview(this.e, {super.key});
 
   @override
   Widget build(BuildContext context) {

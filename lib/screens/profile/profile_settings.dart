@@ -65,7 +65,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           updateLocalProfileSettings();

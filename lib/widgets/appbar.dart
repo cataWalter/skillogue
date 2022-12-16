@@ -67,7 +67,7 @@ class ThisAppBar extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    ProfileSettings()));
+                                    const ProfileSettings()));
                       }
                       break;
                     case 2:
@@ -82,7 +82,7 @@ class ThisAppBar extends StatelessWidget {
                       break;
                     case 3:
                       {
-                        print("suggest new skills");
+                        debugPrint("suggest new skills");
                       }
                   }
                 },

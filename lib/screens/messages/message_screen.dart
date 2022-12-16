@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
@@ -41,12 +42,37 @@ class _MessageScreenState extends State<MessageScreen> {
         itemBuilder: ((context, index) => chatCard(conversations[index])),
       );
     } else {
-      return const Padding(
-        padding: EdgeInsets.only(left: 30, right: 30),
-        child: Text(
-          "No conversations here.\nStart making new friends now! :-)",
-          style: TextStyle(fontSize: 20),
-        ),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "It's cold here!",
+                style: GoogleFonts.bebasNeue(
+                    fontSize: 20,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Start making new friends now! :-)",
+                style: GoogleFonts.bebasNeue(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black),
+              ),
+            ],
+          ),
+        ],
       );
     }
   }
@@ -57,8 +83,7 @@ class _MessageScreenState extends State<MessageScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                SingleConversationScreen(curConversation.destEmail),
+            builder: (context) => SingleConversationScreen(curConversation),
           ),
         );
       },
