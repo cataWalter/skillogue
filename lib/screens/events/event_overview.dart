@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+/*import 'package:flutter/cupertino.dart';
 
 import '../../entities/event.dart';
 
@@ -12,4 +12,4 @@ class EventOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container();
   }
-}
+}*/

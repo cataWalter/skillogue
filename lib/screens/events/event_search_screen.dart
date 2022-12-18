@@ -1,22 +1,20 @@
-import 'dart:ui';
+/*import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
-
-
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/my_multi_select_field.dart';
-import 'package:skillogue/widgets/my_uni_select_field.dart';
 
 import '../../entities/event.dart';
+import '../../localizations/english.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/data.dart';
 import '../../utils/misc_functions.dart';
-import 'event_overview.dart';
+import '../../widgets/mono_dropdown.dart';
+import '../../widgets/multi_dropdown.dart';
 
 class EventScreen extends StatefulWidget {
   const EventScreen({super.key});
@@ -28,15 +26,16 @@ class EventScreen extends StatefulWidget {
 class _EventScreenState extends State<EventScreen> {
   final int _searchIndex = 0;
 
-  late List<Event> searchResults;
-  List<String> selectedCountries = [];
-  List<String> selectedSkills = [];
-  String selectedCity = "";
-  late Event lookupEvent;
-  final newMessageController = TextEditingController();
+  late List<Event> eventSearchResults;
 
+  TextEditingController dateInput = TextEditingController();
+  final newMessageController = TextEditingController();
   final _myBox = Hive.box(localDatabase);
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +49,6 @@ class _EventScreenState extends State<EventScreen> {
       return getSearchForm();
     } else if (_searchIndex == 1) {
       return getSearchResults();
-    } else if (_searchIndex == 2) {
-      return EventOverview(lookupEvent);
     }
     return Container();
   }
@@ -92,17 +89,15 @@ class _EventScreenState extends State<EventScreen> {
         children: [
           SpeedDialChild(
             child: const Icon(Icons.search),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.purpleAccent,
             foregroundColor: Colors.white,
             label: 'Search new events',
-            onTap: () async {
-
-            },
+            onTap: () async {},
             //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
           SpeedDialChild(
             child: const Icon(Icons.star),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.blue[900],
             foregroundColor: Colors.white,
             label: 'Saved searches',
             onTap: () => {},
@@ -110,7 +105,7 @@ class _EventScreenState extends State<EventScreen> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.radar),
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.lightBlue,
             foregroundColor: Colors.white,
             label: 'Around me',
             onTap: () => {},
@@ -126,153 +121,115 @@ class _EventScreenState extends State<EventScreen> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.save),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: Colors.yellow,
             foregroundColor: Colors.white,
             label: 'Save this search',
             onTap: () => {},
             //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
-          /*
           SpeedDialChild(
-            child: const Icon(Icons.accessibility),
+            child: const Icon(Icons.cleaning_services),
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
+            label: 'Clean current search',
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(newFunctionalityMessage),
+              ),
+            ), //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.settings_suggest_outlined),
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
-            label: 'First',
-            onTap: () => {},
-            onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
+            label: 'Suggest search',
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(newFunctionalityMessage),
+              ),
+            ), //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
-          SpeedDialChild(
-            child: const Icon(Icons.brush),
-            backgroundColor: Colors.deepOrange,
-            foregroundColor: Colors.white,
-            label: 'Second',
-            onTap: () => {},
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.margin),
-            backgroundColor: Colors.indigo,
-            foregroundColor: Colors.white,
-            label: 'Show Snackbar',
-            visible: true,
-            onTap: () => {},
-            onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
-          ),*/
         ],
       ),
       body: listViewCreator([
-        MyMultiSelectField(countries, const [], 'In what countries should the event be held?', "Countries", selectedCountries, Icons.flag),
-        MyMultiSelectField(skills, const [], 'What passions are you looking for?', "Skills", selectedSkills, Icons.sports_tennis),
-        MyUniSelectField(cities, "Cities", "What's the city?", "City", selectedCity, Icons.location_city),
-
-      ]),
-      /*body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    initialValue: profileSearch.countries,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText:
-                        const Text('In what countries should the event be held?'),
-                    title: const Text('Countries'),
-                    buttonIcon: const Icon(
-                      Icons.flag,
-                    ),
-                    searchIcon: const Icon(
-                      Icons.search,
-                    ),
-                    items: countries.map((s) => MultiSelectItem(s, s)).toList(),
-                    onConfirm: (values) {
-                      selectedCountries =
-                          values.map((e) => e.toString()).toList();
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedCountries.remove(value.toString());
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addVerticalSpace(15),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField(
-                    initialChildSize: 0.4,
-                    initialValue: profileSearch.skills,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText:
-                        const Text('What passions are you looking for?'),
-                    title: const Text('Skills'),
-                    buttonIcon: const Icon(
-                      Icons.sports_tennis,
-                    ),
-                    searchIcon: const Icon(
-                      Icons.search,
-                    ),
-                    items: skills.map((s) => MultiSelectItem(s, s)).toList(),
-                    onConfirm: (values) {
-                      selectedSkills = values.map((e) => e.toString()).toList();
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedSkills.remove(value.toString());
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addVerticalSpace(15),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: SizedBox(
-                width: double.maxFinite,
-                child: TextField(
-                  controller: controllerCity,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide()),
-                    labelText: "What's the city?",
-                    hintText: 'City',
-                    filled: true,
-                  ),
-                ),
-              ),
-            ),
-          ],
+        MultiDropdown(
+          countries,
+          whatCountryEvent,
+          "Country",
+          activeEventSearch.countries,
+          Icons.add_location,
+          (value) {
+            setState(() {
+              activeEventSearch.countries = value;
+            });
+          },
         ),
-      ),*/
+        MultiDropdown(
+          skills,
+          whatPassionPerson,
+          "Passions",
+          activeEventSearch.skills,
+          Icons.sports_tennis,
+          (value) {
+            setState(() {
+              activeEventSearch.skills = value;
+            });
+          },
+        ),
+        MonoDropdown(
+          cities,
+          "Cities",
+          activeEventSearch.city.isNotEmpty
+              ? activeEventSearch.city
+              : whatCityEvent,
+          Icons.location_city,
+          (value) {
+            setState(() {
+              activeEventSearch.city = value;
+            });
+          },
+        ),
+        SizedBox(
+          height: 50,
+          child: TextField(
+            controller: dateInput,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : const Color.fromRGBO(235, 235, 235, 1),
+              hintText: "Data",
+              hintStyle:
+                  TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
+              filled: true,
+              suffixIcon: const Icon(Icons.date_range,
+                  color: Color.fromRGBO(129, 129, 129, 1)),
+            ),
+            readOnly: true,
+            onTap: () async {
+              DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(DateTime.now().year + 5));
+              if (pickedDate != null) {
+                setState(() {
+                  dateInput.text = parseDate(pickedDate);
+                });
+              } else {}
+            },
+          ),
+        )
+      ]),
     );
   }
 
   Widget getSearchResults() {
     return ListView.builder(
-      itemCount: searchResults.length,
+      itemCount: eventSearchResults.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(
@@ -306,7 +263,7 @@ class _EventScreenState extends State<EventScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            " ${searchResults[index].name}",
+                            " ${eventSearchResults[index].name}",
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,
@@ -332,7 +289,8 @@ class _EventScreenState extends State<EventScreen> {
                           spacing: 3.0,
                           runSpacing: -10,
                           alignment: WrapAlignment.start,
-                          children: chippies(searchResults[index].skills, 12.0),
+                          children:
+                              chippies(eventSearchResults[index].skills, 12.0),
                         ),
                       ),
                     ],
@@ -347,15 +305,12 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void saveSearch() {
-    profileSearch.countries = selectedCountries;
-    _myBox.put(lastProfileSearchCountriesKey, selectedCountries);
-    profileSearch.skills = selectedSkills;
-    if (selectedCity.isEmpty) {
-      profileSearch.city = "";
-      _myBox.delete(lastProfileSearchCityKey);
+    _myBox.put(lastEventSearchCountriesKey, activeEventSearch.countries);
+    if (activeEventSearch.city.isEmpty) {
+      activeEventSearch.city = "";
+      _myBox.delete(lastEventSearchCityKey);
     } else {
-      profileSearch.city = selectedCity;
-      _myBox.put(lastProfileSearchCityKey, selectedCity);
+      _myBox.put(lastEventSearchCityKey, activeEventSearch.city);
     }
   }
 
@@ -388,7 +343,10 @@ class _EventScreenState extends State<EventScreen> {
                   'text': newTextMessage,
                   'date': curDate.toString(),
                 });
-                conversations.add(Conversation(destEmail, destName, const Color(0x00000000),
+                conversations.add(Conversation(
+                    destEmail,
+                    destName,
+                    const Color(0x00000000),
                     [SingleMessage(0, newTextMessage, curDate, true, false)]));
                 setState(() {});
               }
@@ -403,12 +361,16 @@ class _EventScreenState extends State<EventScreen> {
   List<Widget> chippies(List<String> toChip, double size) {
     List<Widget> res = [];
     for (String s in toChip) {
-      res.add(Chip(
+      res.add(
+        Chip(
           label: Text(
-        s,
-        style: TextStyle(fontSize: size),
-      )));
+            s,
+            style: TextStyle(fontSize: size),
+          ),
+        ),
+      );
     }
     return res;
   }
 }
+*/

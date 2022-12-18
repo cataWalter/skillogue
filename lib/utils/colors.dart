@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 bool isDarkColor(Color myColor) {
   //return !(myColor.computeLuminance() < 0.250);
-  return !(myColor.computeLuminance() < 0.7);
-
+  return (myColor.computeLuminance() < 0.1);
 }
 
 Color getRandomDarkColor() {
@@ -32,7 +31,7 @@ ThemeData darkTheme = ThemeData(
   ),
   scaffoldBackgroundColor: const Color.fromRGBO(20, 20, 20, 1.0),
   inputDecorationTheme: const InputDecorationTheme(
-    filled: true, //<-- SEE HERE
+    filled: true,
     fillColor: Color.fromRGBO(20, 20, 20, 1.0), //<-- SEE HERE
   ),
 );
@@ -44,3 +43,13 @@ const Color guideSecondaryVariant = Color(0xFF018786);
 const Color guideError = Color(0xFFB00020);
 const Color guideErrorDark = Color(0xFFCF6679);
 const Color blueBlues = Color(0xFF174378);
+
+const List<Color> rainbowColors = [
+  Color.fromRGBO(148, 0, 211, 1),
+  Color.fromRGBO(75, 0, 130, 1),
+  Color.fromRGBO(0, 0, 255, 1),
+  Color.fromRGBO(0, 255, 0, 1),
+  Color.fromRGBO(255, 255, 0, 1),
+  Color.fromRGBO(255, 127, 0, 1),
+  Color.fromRGBO(255, 0, 0, 1),
+];

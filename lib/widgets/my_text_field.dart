@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
-  TextEditingController controller;
-  String label;
-  String hint;
-  TextInputType textInputType;
-  IconData? iconData;
+  final TextEditingController controller;
+  final String hint;
+  final TextInputType textInputType;
+  final IconData iconData;
 
-  MyTextField(this.controller, this.label, this.hint, this.textInputType,
-      [this.iconData]);
+  const MyTextField(
+      this.controller, this.hint, this.textInputType, this.iconData,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +27,12 @@ class MyTextField extends StatelessWidget {
           fillColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.black
               : const Color.fromRGBO(235, 235, 235, 1),
-          labelText: label,
-          labelStyle:
-              TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
           hintText: hint,
           hintStyle:
               TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
           filled: true,
-          suffixIcon: Icon(iconData),
+          suffixIcon:
+              Icon(iconData, color: const Color.fromRGBO(129, 129, 129, 1)),
         ),
       ),
     );

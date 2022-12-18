@@ -32,7 +32,6 @@ Message parseMessage(LinkedHashMap x) {
     x.entries.elementAt(4).value,
     x.entries.elementAt(2).value,
     DateTime.parse(x.entries.elementAt(1).value),
-    x.entries.elementAt(5).value,
   );
 }
 
@@ -89,7 +88,7 @@ Future<List<Conversation>> addMessage(
       }
     }
     if (added == false) {
-      Profile destProfile = await findProfileByEmail(m.receiverEmail);
+      Profile destProfile = await findProfileByEmail(m.senderEmail);
       conversations.add(Conversation(
           m.senderEmail,
           destProfile.name,
@@ -115,7 +114,6 @@ parsePayload(payload, String email, List<Conversation> conversations) async {
         payload.entries.elementAt(4).value.entries.elementAt(4).value,
         DateTime.parse(
             payload.entries.elementAt(4).value.entries.elementAt(0).value),
-        false,
       ),
     );
   }

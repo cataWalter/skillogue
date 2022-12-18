@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:skillogue/screens/authorization/pre_login.dart';
 import 'package:skillogue/screens/profile/profile_settings.dart';
+import 'package:skillogue/utils/backend/misc_backend.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/profile/update_profile_info_screen.dart';
@@ -14,6 +16,10 @@ class ThisAppBar extends StatelessWidget {
   final _myBox = Hive.box(localDatabase);
 
   ThisAppBar(this.name, this.showSettings, {super.key});
+
+  signOut() async {
+    await supabase.auth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +72,16 @@ class ThisAppBar extends StatelessWidget {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const ProfileSettings()));
+                                builder: (context) => const ProfileSettings()));
                       }
                       break;
                     case 2:
                       {
+                        signOut();
                         _myBox.delete(loggedProfileKey);
-                        profile.isLogged = false;
+                        conversations = [];
+                        activeProfileSearch.clean();
+
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -84,6 +92,13 @@ class ThisAppBar extends StatelessWidget {
                       {
                         debugPrint("suggest new skills");
                       }
+                      break;
+                    case 4:
+                      {
+                        getBlurDialog(context, "Acknowledgments",
+                            "Thanks to everyone that had the patience to give me their opinion.");
+                      }
+                      break;
                   }
                 },
                 itemBuilder: (BuildContext context) => [
@@ -101,10 +116,17 @@ class ThisAppBar extends StatelessWidget {
                       style: TextStyle(),
                     ),
                   ),
-                  const PopupMenuItem(
+                  /*const PopupMenuItem(
                     value: 3,
                     child: Text(
                       "Suggest new skills",
+                      style: TextStyle(),
+                    ),
+                  ),*/
+                  const PopupMenuItem(
+                    value: 4,
+                    child: Text(
+                      "Acknowledgments",
                       style: TextStyle(),
                     ),
                   ),

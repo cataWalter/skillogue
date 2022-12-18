@@ -9,8 +9,6 @@ import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../entities/conversation.dart';
-import '../../entities/profile.dart';
-import '../../entities/profile_search.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -24,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 3), () async {
+    Future.delayed(const Duration(milliseconds: 100), () async {
       getHome();
     });
     return Scaffold(
@@ -51,8 +49,8 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           Expanded(
             child: Column(
-              children: const [
-                /*Center(
+              children: [
+                Center(
                   child: Text(
                     "by",
                     style: GoogleFonts.bebasNeue(
@@ -71,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       color: Colors.black,
                     ),
                   ),
-                ),*/
+                ),
               ],
             ),
           ),
@@ -80,9 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void nextScreenHome(c, loggedProfile, s) async {
-    profile = loggedProfile;
-    profileSearch = s;
+  void nextScreenHome(c) async {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Home(c)),
@@ -103,12 +99,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   getHome() async {
     if (_myBox.get(loggedProfileKey) != null) {
-      Profile loggedProfile =
-          await findProfileByEmail(_myBox.get(loggedProfileKey));
+      profile = await findProfileByEmail(_myBox.get(loggedProfileKey));
       List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
-      ProfileSearch s = getOldSearch(_myBox);
       pause();
-      nextScreenHome(c, loggedProfile, s);
+      nextScreenHome(c);
     } else {
       pause();
       nextScreenPreLogin();

@@ -25,8 +25,25 @@ Future<Profile> findProfileByEmail(String email) async {
 }
 
 void updateProfile(String email, parameters) async {
-  await supabase
-      .from('profile')
-      .update(parameters)
-      .eq('email', email);
+  await supabase.from('profile').update(parameters).eq('email', email);
+}
+
+Future<List<String>> getBlocked(String email) async {
+  final List<dynamic> data =
+      await supabase.from('block').select().eq('blocker', email);
+  List<String> res = [];
+  for (var el in data) {
+    res.add(parseLinkedMap(el)[2]);
+  }
+  return res;
+}
+
+Future<List<String>> getBlockedBy(String email) async {
+  final List<dynamic> data =
+      await supabase.from('block').select().eq('blocked', email);
+  List<String> res = [];
+  for (var el in data) {
+    res.add(parseLinkedMap(el)[1]);
+  }
+  return res;
 }

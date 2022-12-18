@@ -4,23 +4,26 @@ import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
-class MyMultiSelectField extends StatefulWidget {
-  List<String> allValues;
-  List<String> curValues;
+class MultiDropdown extends StatefulWidget {
+  final List<String> allValues;
 
-  String question;
-  String title;
-  List<String> selectedValues;
-  IconData iconData;
+  final String question;
+  final String title;
+  final List<String> initialValues;
+  final IconData iconData;
+  final Function(List<String>) setValues;
 
-  MyMultiSelectField(this.allValues, this.curValues, this.question, this.title,
-      this.selectedValues, this.iconData, {super.key});
+  const MultiDropdown(this.allValues, this.question, this.title, this.initialValues,
+      this.iconData, this.setValues,
+      {super.key});
 
   @override
-  State<MyMultiSelectField> createState() => _MyMultiSelectFieldState();
+  State<MultiDropdown> createState() => _MultiDropdownState();
 }
 
-class _MyMultiSelectFieldState extends State<MyMultiSelectField> {
+class _MultiDropdownState extends State<MultiDropdown> {
+  late List<String> selectedValues;
+
   @override
   Widget build(BuildContext context) {
     return MultiSelectBottomSheetField(
@@ -31,7 +34,7 @@ class _MyMultiSelectFieldState extends State<MyMultiSelectField> {
             : const Color.fromRGBO(235, 235, 235, 1),
       ),
       initialChildSize: 0.4,
-      initialValue: widget.curValues,
+      initialValue: widget.initialValues,
       listType: MultiSelectListType.CHIP,
       searchable: true,
       buttonText: Text(
@@ -45,15 +48,17 @@ class _MyMultiSelectFieldState extends State<MyMultiSelectField> {
       ),
       items: widget.allValues.map((s) => MultiSelectItem(s, s)).toList(),
       onConfirm: (values) {
-        widget.selectedValues = values.map((e) => e.toString()).toList();
+        selectedValues = values.map((e) => e.toString()).toList();
+        widget.setValues(selectedValues);
       },
       chipDisplay: MultiSelectChipDisplay(
         chipColor: Colors.blue,
         textStyle: const TextStyle(color: Colors.white),
         onTap: (value) {
           setState(() {
-            widget.selectedValues.remove(value.toString());
+            selectedValues.remove(value.toString());
           });
+          widget.setValues(selectedValues);
         },
       ),
     );

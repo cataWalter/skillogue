@@ -2,21 +2,19 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:hive/hive.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/screens/profile/profile_overview.dart';
-import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/my_multi_select_field.dart';
-import 'package:skillogue/widgets/my_text_field.dart';
-import 'package:skillogue/widgets/my_uni_select_field.dart';
+import 'package:skillogue/utils/colors.dart';
 
 import '../../localizations/english.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_search_backend.dart';
 import '../../utils/data.dart';
 import '../../utils/misc_functions.dart';
+import '../../widgets/mono_dropdown.dart';
+import '../../widgets/multi_dropdown.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -27,32 +25,18 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   int profileSearchIndex = 0;
-  late TextEditingController controllerMinAge;
-  late TextEditingController controllerMaxAge;
+
+  RangeValues _currentRangeValues = const RangeValues(18, 99);
   late List<Profile> profileSearchResults;
-  List<String> selectedCountries = [];
-  List<String> selectedSkills = [];
-  List<String> selectedLanguages = [];
-  List<String> selectedGenders = [];
-  String selectedCity = "";
-  late Profile lookupProfile;
   final newMessageController = TextEditingController();
-  final _myBox = Hive.box(localDatabase);
 
   @override
   void initState() {
     super.initState();
-    if (profileSearch.minAge == null || profileSearch.minAge! < 18) {
-      controllerMinAge = TextEditingController();
-    } else {
-      controllerMinAge =
-          TextEditingController(text: profileSearch.minAge.toString());
-    }
-    if (profileSearch.maxAge == null || profileSearch.maxAge! > 99) {
-      controllerMaxAge = TextEditingController();
-    } else {
-      controllerMaxAge =
-          TextEditingController(text: profileSearch.maxAge.toString());
+    if (activeProfileSearch.minAge != null &&
+        activeProfileSearch.maxAge != null) {
+      _currentRangeValues = RangeValues(activeProfileSearch.minAge!.toDouble(),
+          activeProfileSearch.maxAge!.toDouble());
     }
   }
 
@@ -68,15 +52,17 @@ class _SearchScreenState extends State<SearchScreen> {
       return getSearchForm();
     } else if (profileSearchIndex == 1) {
       return getSearchResults();
-    } else if (profileSearchIndex == 2) {
-      return ProfileOverview(lookupProfile);
     }
     return Container();
   }
 
+  f() {
+    getBlurDialog(context, "No users found!", ":'(");
+  }
+
   Widget getSearchForm() {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: SpeedDial(
         activeBackgroundColor: Colors.blue,
         label: const Text("Start here"),
@@ -95,15 +81,12 @@ class _SearchScreenState extends State<SearchScreen> {
         renderOverlay: true,
         overlayColor: Colors.black,
         overlayOpacity: 0.5,
-        onOpen: () => debugPrint('OPENING DIAL'),
-        onClose: () => debugPrint('DIAL CLOSED'),
         useRotationAnimation: true,
         tooltip: 'Open Speed Dial',
         heroTag: 'speed-dial-hero-tag',
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue,
         activeForegroundColor: Colors.white,
-        //activeBackgroundColor: Colors.yellow,
         elevation: 8.0,
         animationCurve: Curves.elasticInOut,
         isOpenOnStart: false,
@@ -111,71 +94,62 @@ class _SearchScreenState extends State<SearchScreen> {
         children: [
           SpeedDialChild(
             child: const Icon(Icons.search),
-            backgroundColor: Colors.red,
+            backgroundColor: rainbowColors[0],
             foregroundColor: Colors.white,
             label: 'Search new friends',
             onTap: () async {
-              if (!profile.isEmptyProfile()) {
-                saveSearch();
-                profileSearchResults = await findUsers(
-                    profile.email, profileSearch, conversations);
-                profileSearchResults.sort(sortById);
-                if (profileSearchResults.isNotEmpty) {
-                  if (mounted) {
-                    setState(() {
-                      profileSearchIndex = 1;
-                    });
-                  }
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        title: Text("No users found!"),
-                        content: Text(":'("),
-                      );
-                    },
-                  );
+              profileSearchResults = await findUsers(
+                  profile.email, activeProfileSearch, conversations);
+              profileSearchResults.sort(sortById);
+              if (profileSearchResults.isNotEmpty) {
+                if (mounted) {
+                  setState(() {
+                    profileSearchIndex = 1;
+                  });
                 }
               } else {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text(
-                          "Some details about you are still missing!"),
-                      content: const Text(
-                          "Please, update your info in the SETTINGS before looking for others"),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text("OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
+                f();
               }
             },
-            //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
           SpeedDialChild(
             child: const Icon(Icons.star),
-            backgroundColor: Colors.orange,
+            backgroundColor: rainbowColors[1],
             foregroundColor: Colors.white,
             label: 'Saved searches',
-            onTap: () => {},
-            //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ClipRect(
+                    // <-- clips to the 200x200 [Container] below
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 10.0,
+                        sigmaY: 10.0,
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 200.0,
+                        height: 200.0,
+                        child: Wrap(
+                          spacing: 20.0,
+                          runSpacing: 20,
+                          children: f1(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
-          SpeedDialChild(
+          /*SpeedDialChild(
             child: const Icon(Icons.radar),
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.lightBlue,
             foregroundColor: Colors.white,
             label: 'Around me',
             onTap: () => {},
-            //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
           ),
           SpeedDialChild(
             child: const Icon(Icons.accessibility),
@@ -183,73 +157,240 @@ class _SearchScreenState extends State<SearchScreen> {
             foregroundColor: Colors.white,
             label: 'Similar to me',
             onTap: () => {},
-            //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
-          ),
+          ),*/
           SpeedDialChild(
-            child: const Icon(Icons.save),
-            backgroundColor: Colors.lightBlue,
+              child: const Icon(Icons.save),
+              backgroundColor: rainbowColors[2],
+              foregroundColor: Colors.white,
+              label: 'Save this search',
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: AlertDialog(
+                        title: Text("Do you want to save this search?"),
+                        content: TextField(
+                          controller: newMessageController,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.none,
+                          autocorrect: false,
+                          minLines: 1,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            fillColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? const Color.fromRGBO(30, 30, 30, 1)
+                                    : const Color.fromRGBO(235, 235, 235, 1),
+                            hintText: "How do you want to name it?",
+                            hintStyle: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).hintColor),
+                            filled: true,
+                            //suffixIcon: const Icon(Icons.message,color: Color.fromRGBO(129, 129, 129, 1)),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text("No"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: const Text("Yes"),
+                            onPressed: () {
+                              if (newMessageController.text.isNotEmpty) {
+                                var z = activeProfileSearch;
+                                savedProfileSearch.add(
+                                  SavedProfileSearch(
+                                    newMessageController.text,
+                                    activeProfileSearch.copy(),
+                                  ),
+                                );
+                                newMessageController.clear();
+                                var x = savedProfileSearch;
+                                Navigator.of(context).pop();
+                              } else {
+                                showSnackBar(
+                                    "Give it a name cowboy! 🤠", context);
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }),
+          SpeedDialChild(
+              child: const Icon(Icons.cleaning_services),
+              backgroundColor: rainbowColors[3],
+              foregroundColor: Colors.white,
+              label: 'Clean current search',
+              onTap: () {
+                setState(() {
+                  activeProfileSearch.clean();
+                  _currentRangeValues =
+                      RangeValues(18.toDouble(), 99.toDouble());
+                });
+              }),
+          /*SpeedDialChild(
+            child: const Icon(Icons.settings_suggest_outlined),
+            backgroundColor: Colors.red,
             foregroundColor: Colors.white,
-            label: 'Save this search',
+            label: 'Suggest search',
             onTap: () => ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text(newFunctionalityMessage),
               ),
-            ), //onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
-          ),
+            ),
+          ),*/
         ],
       ),
       body: listViewCreator(
         [
-          MyMultiSelectField(
-              countries,
-              profileSearch.countries,
-              whatCountryPerson,
-              "Country",
-              selectedCountries,
-              Icons.add_location),
-          MyMultiSelectField(skills, profileSearch.skills, whatPassionPerson,
-              "Passions", selectedSkills, Icons.sports_tennis),
-          MyMultiSelectField(
+          MultiDropdown(
+            countries,
+            whatCountryPerson,
+            "Country",
+            activeProfileSearch.countries,
+            Icons.add_location,
+            (value) {
+              setState(() {
+                activeProfileSearch.countries = value;
+              });
+            },
+          ),
+          MultiDropdown(
+            skills,
+            whatPassionPerson,
+            "Passions",
+            activeProfileSearch.skills,
+            Icons.sports_tennis,
+            (value) {
+              setState(() {
+                activeProfileSearch.skills = value;
+              });
+            },
+          ),
+          MultiDropdown(
             languages,
-            profileSearch.languages,
             whatLanguagePerson,
             "Languages",
-            selectedLanguages,
+            activeProfileSearch.languages,
             Icons.abc,
+            (value) {
+              setState(() {
+                activeProfileSearch.languages = value;
+              });
+            },
           ),
-          MyMultiSelectField(
+          MultiDropdown(
             genders,
-            profileSearch.genders,
             whatGenderPerson,
             "Genders",
-            selectedGenders,
+            activeProfileSearch.genders,
             Icons.female,
+            (value) {
+              setState(() {
+                activeProfileSearch.genders = value;
+              });
+            },
           ),
-          MyUniSelectField(cities, "Cities", whatCityPerson, selectedCity,
-              selectedCity, Icons.location_city),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const Text(
-                "From",
+          MonoDropdown(
+            cities,
+            "Cities",
+            activeProfileSearch.city.isNotEmpty
+                ? activeProfileSearch.city
+                : whatCityPerson,
+            Icons.location_city,
+            (value) {
+              setState(() {
+                activeProfileSearch.city = value;
+              });
+            },
+          ),
+          Container(
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40.0),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : const Color.fromRGBO(235, 235, 235, 1),
+            ),
+            child: TextFormField(
+              style: const TextStyle(color: Color.fromRGBO(94, 94, 94, 1)),
+              initialValue: "What's their age?",
+              readOnly: true,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                suffixIcon: Icon(Icons.mail),
               ),
-              SizedBox(
-                  width: 140,
-                  child: MyTextField(
-                      controllerMinAge, minAge, minAge, TextInputType.number)),
-              const Text(
-                "To",
-                style: TextStyle(),
-              ),
-              SizedBox(
-                  width: 140,
-                  child: MyTextField(
-                      controllerMaxAge, maxAge, maxAge, TextInputType.number)),
-            ],
+            ),
+          ),
+          RangeSlider(
+            activeColor: Colors.black,
+            inactiveColor: Colors.grey,
+            values: _currentRangeValues,
+            max: 99,
+            min: 18,
+            divisions: 80,
+            labels: RangeLabels(
+              _currentRangeValues.start.round().toString(),
+              _currentRangeValues.end.round().toString(),
+            ),
+            onChanged: (RangeValues values) {
+              setState(() {
+                _currentRangeValues = values;
+                activeProfileSearch.minAge = _currentRangeValues.start.toInt();
+                activeProfileSearch.maxAge = _currentRangeValues.end.toInt();
+              });
+            },
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> f1() {
+    List<Widget> res = [];
+    for (int i = 0; i < savedProfileSearch.length; i++) {
+      res.add(FloatingActionButton(
+        backgroundColor: rainbowColors[i % 7],
+        onPressed: () {
+          int min = activeProfileSearch.minAge ?? 18;
+          int max = activeProfileSearch.maxAge ?? 99;
+          setState(() {
+            activeProfileSearch = savedProfileSearch[i].search.copy();
+            _currentRangeValues = RangeValues(min.toDouble(), max.toDouble());
+          });
+          Navigator.of(context).pop();
+        },
+        child: Text(savedProfileSearch[i].name),
+      ));
+      res.add(TextButton(
+
+        onPressed: () {
+          int min = activeProfileSearch.minAge ?? 18;
+          int max = activeProfileSearch.maxAge ?? 99;
+          setState(() {
+            activeProfileSearch = savedProfileSearch[i].search.copy();
+            _currentRangeValues = RangeValues(min.toDouble(), max.toDouble());
+          });
+          Navigator.of(context).pop();
+        },
+        child: Text(savedProfileSearch[i].name),
+      ));
+    }
+    return res;
   }
 
   Widget getSearchResults() {
@@ -291,10 +432,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           Text(
                             " ${profileSearchResults[index].name}",
                             style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -304,7 +444,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   subtitle: Column(
                     children: [
                       rowProfileInfo(
-                        profile,
+                        profileSearchResults[index],
                         12,
                         Colors.white.withOpacity(0.8),
                         true,
@@ -330,42 +470,6 @@ class _SearchScreenState extends State<SearchScreen> {
     ); //results
   }
 
-  void saveSearch() {
-    profileSearch.genders = selectedGenders;
-    _myBox.put(lastProfileSearchGendersKey, selectedGenders);
-    profileSearch.countries = selectedCountries;
-    _myBox.put(lastProfileSearchCountriesKey, selectedCountries);
-    profileSearch.languages = selectedLanguages;
-    _myBox.put(lastProfileSearchLanguagesKey, selectedLanguages);
-    profileSearch.skills = selectedSkills;
-    if (selectedCity.isEmpty) {
-      profileSearch.city = "";
-      _myBox.delete(lastProfileSearchCityKey);
-    } else {
-      _myBox.put(lastProfileSearchCityKey, selectedCity);
-    }
-    if (controllerMaxAge.text.toString().isEmpty) {
-      profileSearch.maxAge = 100;
-      _myBox.delete(lastProfileSearchMaxAge);
-    }
-    if (controllerMinAge.text.toString().isEmpty) {
-      profileSearch.minAge = 17;
-      _myBox.delete(lastProfileSearchMinAge);
-    }
-    if (controllerMaxAge.text.toString().isNotEmpty &&
-        controllerMinAge.text.toString().isNotEmpty) {
-      int maxAge = int.parse(controllerMaxAge.text.trim());
-      int minAge = int.parse(controllerMinAge.text.trim());
-      if (maxAge <= 99 && minAge >= 18 && maxAge >= minAge) {
-        profileSearch.maxAge = maxAge;
-        profileSearch.minAge = minAge;
-        _myBox.put(lastProfileSearchMinAge, minAge);
-        _myBox.put(lastProfileSearchMaxAge, maxAge);
-      }
-    }
-    return;
-  }
-
   sendNewMessage(String destEmail, String destName, Color color) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -373,12 +477,25 @@ class _SearchScreenState extends State<SearchScreen> {
         title: Text("Send a message to $destName!"),
         content: TextField(
           controller: newMessageController,
-          keyboardType: TextInputType.multiline,
+          keyboardType: TextInputType.text,
+          textCapitalization: TextCapitalization.none,
+          autocorrect: false,
           minLines: 1,
           maxLines: 5,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(40.0),
+            ),
+            fillColor: Theme.of(context).brightness == Brightness.dark
+                ? const Color.fromRGBO(30, 30, 30, 1)
+                : const Color.fromRGBO(235, 235, 235, 1),
             hintText: "Type a message...",
+            hintStyle:
+                TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
+            filled: true,
+            suffixIcon: const Icon(Icons.message,
+                color: Color.fromRGBO(129, 129, 129, 1)),
           ),
         ),
         actions: [

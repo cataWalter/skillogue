@@ -25,6 +25,7 @@ dependencies:
   flex_color_picker: ^3.0.0
   flutter_speed_dial: ^6.2.0
   drop_down_list: ^0.0.4
+  numberpicker: ^2.1.1
 
 dev_dependencies:
   flutter_test:

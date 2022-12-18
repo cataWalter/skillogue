@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 String initials(String fullName) {
@@ -34,16 +36,15 @@ List<Widget> chippies(List<String> toChip, double size) {
   for (String s in toChip) {
     res.add(Chip(
         label: Text(
-          s,
-          style: TextStyle(fontSize: size),
-        )));
+      s,
+      style: TextStyle(fontSize: size),
+    )));
   }
   return res;
 }
 
 void showSnackBar(String message, context) {
-  ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text(message)));
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
 
 ListView listViewCreator(List<Widget> widgets) {
@@ -55,5 +56,54 @@ ListView listViewCreator(List<Widget> widgets) {
   }
   return ListView(
     children: res,
+  );
+}
+
+void getBlurDialog(context, title, message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void getBlurDialogImage(context, title, image, exit) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          title: Text(title),
+          content: SizedBox(
+
+            child: Image.asset(image),
+          ),
+          actions: [
+            TextButton(
+              child: Text(exit, style: const TextStyle(fontSize: 18),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ),
+      );
+    },
   );
 }

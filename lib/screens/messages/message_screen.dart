@@ -49,7 +49,7 @@ class _MessageScreenState extends State<MessageScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "It's cold here!",
+                "It's cold here! 🥶",
                 style: GoogleFonts.bebasNeue(
                     fontSize: 20,
                     color: Theme.of(context).brightness == Brightness.dark
@@ -80,12 +80,19 @@ class _MessageScreenState extends State<MessageScreen> {
   Widget chatCard(Conversation curConversation) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SingleConversationScreen(curConversation),
-          ),
-        );
+        profile.blockedBy.contains(curConversation.destEmail)
+            ? getBlurDialogImage(
+                context,
+                "We want to be sincere. ${curConversation.destName} blocked you. We are sorry for the inconvenience but no worries, luckily the world is big! 🙊",
+                'assets/images/fuckAround.jpg',
+                "Fuck ${curConversation.destName} ?")
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      SingleConversationScreen(curConversation),
+                ),
+              );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -107,10 +114,10 @@ class _MessageScreenState extends State<MessageScreen> {
                       ),
                     ),
                     addVerticalSpace(8),
-                    addOutgoingIcon(
-                      curConversation.messages.last.outgoing,
-                      curConversation.messages.last.text.replaceAll("\n", " "),
-                    ),
+                    getOverflowReplacement(
+                        curConversation.messages.last.text
+                            .replaceAll("\n", " "),
+                        curConversation.messages.last.outgoing),
                   ],
                 ),
               ),
@@ -127,16 +134,8 @@ class _MessageScreenState extends State<MessageScreen> {
     );
   }
 
-  addOutgoingIcon(bool outgoing, String t) {
-    if (!outgoing) {
-      return getOverflowReplacement(t, true);
-    } else {
-      return getOverflowReplacement(t, false);
-    }
-  }
-
-  AutoSizeText getOverflowReplacement(String t, bool bold) {
-    if (bold) {
+  AutoSizeText getOverflowReplacement(String t, bool normal) {
+    if (normal) {
       return AutoSizeText(
         t,
         overflow: TextOverflow.ellipsis,
@@ -146,6 +145,7 @@ class _MessageScreenState extends State<MessageScreen> {
     } else {
       return AutoSizeText(
         t,
+        style: const TextStyle(fontWeight: FontWeight.bold),
         overflow: TextOverflow.ellipsis,
         minFontSize: 14,
         maxLines: 1,
