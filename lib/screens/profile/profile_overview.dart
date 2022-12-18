@@ -24,13 +24,7 @@ class ProfileOverview extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProfileShow(profile, false),
-          ],
-        ),
-      ),
+      body: ProfileShow(profile, false),
     );
   }
 }

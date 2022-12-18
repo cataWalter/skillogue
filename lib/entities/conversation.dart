@@ -68,5 +68,3 @@ String parseDateGroup(DateTime d) {
   }
   return "${d.day}/${d.month}/${d.year}";
 }
-
-

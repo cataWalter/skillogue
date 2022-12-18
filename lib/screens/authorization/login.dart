@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
 
 import '../../entities/conversation.dart';
 import '../../entities/profile.dart';
-import '../../entities/profile_search.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
-import '../../utils/constants.dart';
 import '../../utils/misc_functions.dart';
 import '../home_screen.dart';
 
@@ -23,29 +20,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
-  bool isLoggedIn = false;
   late Profile loggedProfile;
-  final _myBox = Hive.box(localDatabase);
 
-  void showSuccess(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Success!"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void doUserLogin() async {
     if (controllerUsername.text.trim().isEmpty ||
@@ -59,18 +35,13 @@ class _LoginState extends State<Login> {
     //final AuthResponse res =
     await login(email, password);
     loggedProfile = await findProfileByEmail(email);
-    loggedProfile.isLogged = true;
     loginDateUpdate(email);
-    setState(() {
-      isLoggedIn = true;
-    });
     List<Conversation> c = await getMessagesAll(email);
     nextScreen(c);
   }
 
   void nextScreen(c) async {
     profile = loggedProfile;
-    profileSearch = getOldSearch(_myBox);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -96,7 +67,7 @@ class _LoginState extends State<Login> {
             ),
           ),
           MyTextField(
-              controllerUsername, 'Username', 'Username', TextInputType.text, Icons.person),
+              controllerUsername, 'Username', TextInputType.text, Icons.person),
           SizedBox(
             height: 50,
             child: TextField(
@@ -146,9 +117,8 @@ class _LoginState extends State<Login> {
               ),
             ),
             onPressed: () {
-              if (isLoggedIn == false) {
                 doUserLogin();
-              }
+
             },
           ),
         ],

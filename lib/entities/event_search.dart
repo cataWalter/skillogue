@@ -1,11 +1,11 @@
-class EventSearch {
-  String? country;
-  String? city;
-  DateTime? eventDate;
+/*class EventSearch {
+  List<String> countries = [];
+  String city = "";
+  DateTime eventDate = DateTime(1990);
   List<String> skills = [];
 }
 
-EventSearch getOldSearch(myBox) {
+EventSearch getOldEventSearch(myBox) {
   EventSearch oldSearch = EventSearch();/*
   if (myBox.get(lastCountriesKey) != null) {
     oldSearch.countries = myBox.get(lastCountriesKey);
@@ -29,4 +29,4 @@ EventSearch getOldSearch(myBox) {
     oldSearch.maxAge = myBox.get(lastMaxAge);
   }*/
   return oldSearch;
-}
+}*/

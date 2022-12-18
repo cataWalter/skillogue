@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skillogue/entities/event_search.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/misc_functions.dart';
-import 'package:skillogue/widgets/my_multi_select_field.dart';
+import 'package:skillogue/widgets/mono_dropdown.dart';
+import 'package:skillogue/widgets/multi_dropdown.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
-import 'package:skillogue/widgets/my_uni_select_field.dart';
 
+import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/data.dart';
 
 class GuidedRegistration extends StatefulWidget {
   final String email;
+  final String password;
 
-  const GuidedRegistration(this.email, {super.key});
+  const GuidedRegistration(this.email, this.password, {super.key});
 
   @override
   State<GuidedRegistration> createState() => _GuidedRegistrationState();
@@ -29,13 +32,13 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
   List<String> selectedLanguages = [];
   List<String> selectedSkills = [];
   String selectedGender = "";
-  String selectedCity = "";
   String selectedCountry = "";
+  String selectedCity = "";
 
   void nextScreen(registeredProfile) async {
     profile = registeredProfile;
-    profileSearch = ProfileSearch();
-
+    activeProfileSearch = ProfileSearch();
+    //activeEventSearch = EventSearch();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -49,10 +52,10 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: false,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         elevation: 0,
         title: Center(
           child: Text(
@@ -79,6 +82,8 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
               controllerAge.text.isNotEmpty &&
               int.parse(controllerAge.text) >= 18 &&
               int.parse(controllerAge.text) <= 99) {
+            await registration(widget.email, widget.password);
+            databaseInsert('profile', {'email': widget.email});
             parameters.addAll({'country': selectedCountry});
             parameters.addAll({'gender': selectedGender});
             parameters.addAll({'city': selectedCity});
@@ -103,57 +108,68 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
       ),
       body: listViewCreator(
         [
+          MyTextField(controllerFullName, "Full Name", TextInputType.text,
+              Icons.person),
           MyTextField(
-            controllerFullName,
-            "Full Name",
-            "Full Name",
-            TextInputType.text,
-          ),
-          MyTextField(
-            controllerAge,
-            "Age",
-            "Age",
-            TextInputType.number,
-          ),
-          MyUniSelectField(
+              controllerAge, "Age", TextInputType.number, Icons.numbers),
+          MonoDropdown(
             cities,
             "Cities",
-            "What's your city?",
-            "City",
-            selectedCity,
+            selectedCity.isNotEmpty ? selectedCity : "What's your city?",
             Icons.location_city,
+            (value) {
+              setState(() {
+                selectedCity = value;
+              });
+            },
           ),
-          MyUniSelectField(
+          MonoDropdown(
             countries,
             "Countries",
-            "What's your country?",
-            "Country",
-            selectedCountry,
+            selectedCountry.isNotEmpty
+                ? selectedCountry
+                : "What's your country?",
             Icons.flag,
+            (value) {
+              setState(() {
+                selectedCountry = value;
+              });
+            },
           ),
-          MyUniSelectField(
+          MonoDropdown(
             genders,
             "Genders",
-            "What's your gender?",
-            "Gender",
-            selectedGender,
+            selectedGender.isNotEmpty ? selectedGender : "What's your gender?",
             Icons.female,
+            (value) {
+              setState(() {
+                selectedGender = value;
+              });
+            },
           ),
-          MyMultiSelectField(
+          MultiDropdown(
             skills,
-            selectedSkills,
             "What are your passions?",
             "Passions",
             selectedSkills,
             Icons.sports_tennis,
+            (value) {
+              setState(() {
+                selectedSkills = value;
+              });
+            },
           ),
-          MyMultiSelectField(
+          MultiDropdown(
             languages,
-            selectedLanguages,
             "What languages do you speak?",
             "Languages",
             selectedLanguages,
             Icons.abc,
+            (value) {
+              setState(() {
+                selectedLanguages = value;
+              });
+            },
           ),
         ],
       ),

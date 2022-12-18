@@ -1,37 +1,45 @@
-import '../utils/constants.dart';
+
+import 'dart:ui';
 
 class ProfileSearch {
   List<String> skills = [];
   List<String> countries = [];
   List<String> languages = [];
   List<String> genders = [];
-  String? city;
+  String city = "";
   int? minAge;
   int? maxAge;
+
+  ProfileSearch();
+
+  void clean() {
+    skills = [];
+    countries = [];
+    languages = [];
+    genders = [];
+    city = "";
+    minAge = null;
+    maxAge = null;
+  }
+
+  copy(){
+    ProfileSearch res = ProfileSearch();
+    res.skills = skills;
+    res.countries = countries;
+    res.languages = languages;
+    res.genders = genders;
+    res.city = city;
+    res.minAge = minAge;
+    res.maxAge = maxAge;
+    return res;
+  }
 }
 
-ProfileSearch getOldSearch(myBox) {
-  ProfileSearch oldSearch = ProfileSearch();
-  if (myBox.get(lastProfileSearchCountriesKey) != null) {
-    oldSearch.countries = myBox.get(lastProfileSearchCountriesKey);
-  }
-  if (myBox.get(lastProfileSearchSkillsKey) != null) {
-    oldSearch.skills = myBox.get(lastProfileSearchSkillsKey);
-  }
-  if (myBox.get(lastProfileSearchLanguagesKey) != null) {
-    oldSearch.languages = myBox.get(lastProfileSearchLanguagesKey);
-  }
-  if (myBox.get(lastProfileSearchGendersKey) != null) {
-    oldSearch.genders = myBox.get(lastProfileSearchGendersKey);
-  }
-  if (myBox.get(lastProfileSearchCityKey) != null) {
-    oldSearch.city = myBox.get(lastProfileSearchCityKey);
-  }
-  if (myBox.get(lastProfileSearchMinAge) != null) {
-    oldSearch.minAge = myBox.get(lastProfileSearchMinAge);
-  }
-  if (myBox.get(lastProfileSearchMaxAge) != null) {
-    oldSearch.maxAge = myBox.get(lastProfileSearchMaxAge);
-  }
-  return oldSearch;
+class SavedProfileSearch{
+  String name;
+  ProfileSearch search;
+
+  SavedProfileSearch(this.name, this.search);
 }
+
+

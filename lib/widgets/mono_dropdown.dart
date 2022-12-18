@@ -2,23 +2,24 @@ import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 
-class MyUniSelectField extends StatefulWidget {
+
+
+class MonoDropdown extends StatefulWidget {
   final List<String> toShow;
   final String title;
-  String label;
   final String hint;
-  String curCity;
   final IconData iconData;
+  final Function(String) setValue;
 
-  MyUniSelectField(this.toShow, this.title, this.label, this.hint, this.curCity,
-      this.iconData,
-      {super.key});
+
+  const MonoDropdown(this.toShow, this.title, this.hint,
+      this.iconData, this.setValue, {super.key});
 
   @override
-  State<MyUniSelectField> createState() => _MyUniSelectFieldState();
+  State<MonoDropdown> createState() => _MyUniSelectFieldState2();
 }
 
-class _MyUniSelectFieldState extends State<MyUniSelectField> {
+class _MyUniSelectFieldState2 extends State<MonoDropdown> {
   List<SelectedListItem> listToSelectedItemList() {
     List<SelectedListItem> res = [];
     for (String c in widget.toShow) {
@@ -54,10 +55,8 @@ class _MyUniSelectFieldState extends State<MyUniSelectField> {
               ),
               data: listToSelectedItemList(),
               selectedItems: (List<dynamic> selectedList) {
-                setState(() {
-                  widget.curCity = selectedList[0].name;
-                  widget.label = widget.curCity;
-                });
+                String selected = selectedList[0].name;
+                widget.setValue(selected);
               },
               enableMultipleSelection: false,
             ),
@@ -71,12 +70,9 @@ class _MyUniSelectFieldState extends State<MyUniSelectField> {
           fillColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.black
               : const Color.fromRGBO(235, 235, 235, 1),
-          labelText: widget.label,
-          labelStyle:
-              TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
           hintText: widget.hint,
           hintStyle:
-              TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
+          TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
           filled: true,
           suffixIcon: Icon(widget.iconData),
         ),

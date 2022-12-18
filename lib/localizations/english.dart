@@ -7,3 +7,6 @@ const minAge = "Min age";
 const maxAge = "Max age";
 
 
+const whatCountryEvent = "In what countries should the event be held in?";
+const whatPassionEvent = 'What passions are you looking for?';
+const whatCityEvent = "What's the city of the event?";

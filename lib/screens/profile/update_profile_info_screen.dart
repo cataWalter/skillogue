@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/home_screen.dart';
-import 'package:skillogue/widgets/my_multi_select_field.dart';
+import 'package:skillogue/widgets/mono_dropdown.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
-import 'package:skillogue/widgets/my_uni_select_field.dart';
 
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/data.dart';
 import '../../utils/misc_functions.dart';
 import '../../widgets/appbar.dart';
+import '../../widgets/multi_dropdown.dart';
 
 class UpdateProfileInfoScreen extends StatefulWidget {
   final Profile profile;
@@ -30,7 +30,15 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
   String selectedCity = "";
   String selectedGender = "";
 
-  //String selectedGender = "";
+  @override
+  void initState() {
+    super.initState();
+    selectedCountry = widget.profile.country;
+    selectedCity = widget.profile.city;
+    selectedGender = widget.profile.gender;
+    selectedSkills = widget.profile.skills;
+    selectedLanguages = widget.profile.languages;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +68,6 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
         [
           MyTextField(
               controllerFullName,
-              'Full Name',
               widget.profile.name.isNotEmpty
                   ? widget.profile.name
                   : "Full Name",
@@ -68,143 +75,71 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
               Icons.person),
           MyTextField(
               controllerAge,
-              'Age',
               widget.profile.age.toString().isNotEmpty &&
                       widget.profile.age <= 99
                   ? widget.profile.age.toString()
                   : "Age",
               TextInputType.number,
               Icons.numbers),
-          MyUniSelectField(
-              cities,
-              "City",
-              'City',
-              widget.profile.city.isNotEmpty ? widget.profile.city : "City",
-              selectedCity,
-              Icons.location_city),
-          MyUniSelectField(
+          MonoDropdown(
+            cities,
+            "City",
+            selectedCity,
+            Icons.location_city,
+            (value) {
+              setState(() {
+                selectedCity = value;
+              });
+            },
+          ),
+          MonoDropdown(
             countries,
             "Country",
-            "Country",
-            widget.profile.country.isNotEmpty
-                ? widget.profile.country
-                : selectedCountry,
             selectedCountry,
             Icons.flag,
+            (value) {
+              setState(() {
+                selectedCountry = value;
+              });
+            },
           ),
-          MyUniSelectField(
+          MonoDropdown(
             genders,
             "Gender",
-            "Gender",
-            widget.profile.gender.isNotEmpty
-                ? widget.profile.gender
-                : selectedGender,
             selectedGender,
             Icons.female,
+            (value) {
+              setState(() {
+                selectedGender = value;
+              });
+            },
           ),
-          MyMultiSelectField(
-              skills,
-              widget.profile.skills,
-              "What are your passions?",
-              "Skills",
-              selectedSkills,
-              Icons.sports_tennis),
-          MyMultiSelectField(
-              languages,
-              widget.profile.languages,
-              "What languages do you speak?",
-              "Languages",
-              selectedLanguages,
-              Icons.abc),
+          MultiDropdown(
+            skills,
+            "What are your passions?",
+            "Skills",
+            selectedSkills,
+            Icons.sports_tennis,
+            (value) {
+              setState(() {
+                selectedSkills = value;
+              });
+            },
+          ),
+          MultiDropdown(
+            languages,
+            "What languages do you speak?",
+            "Languages",
+            selectedLanguages,
+            Icons.abc,
+            (value) {
+              setState(() {
+                selectedLanguages = value;
+              });
+            },
+          ),
         ],
       ),
-
-      /*Scaffold(
-
-                    }).toList(),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-
-                ),
-                child: Column(
-                  children: <Widget>[
-                    MultiSelectBottomSheetField(
-                      initialChildSize: 0.4,
-                      initialValue: widget.profile.languages,
-                      listType: MultiSelectListType.CHIP,
-                      searchable: true,
-                      buttonText: const Text("Languages"),
-                      title: const Text("Languages"),
-                      buttonIcon: const Icon(
-                        Icons.flag,
-                      ),
-                      searchIcon: const Icon(
-                        Icons.search,
-                      ),
-                      items:
-                          languages.map((s) => MultiSelectItem(s, s)).toList(),
-                      onConfirm: (values) {
-                        selectedLanguages =
-                            values.map((e) => e.toString()).toList();
-                      },
-                      chipDisplay: MultiSelectChipDisplay(
-                        onTap: (value) {
-                          setState(() {
-                            selectedLanguages.remove(value.toString());
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    MultiSelectBottomSheetField(
-                      initialChildSize: 0.4,
-                      initialValue: widget.profile.skills,
-                      listType: MultiSelectListType.CHIP,
-                      searchable: true,
-                      buttonText: const Text("Skills"),
-                      title: const Text("Skills"),
-                      buttonIcon: const Icon(
-                        Icons.sports_tennis,
-                      ),
-                      searchIcon: const Icon(
-                        Icons.search,
-                      ),
-                      items: skills.map((s) => MultiSelectItem(s, s)).toList(),
-                      onConfirm: (values) {
-                        selectedSkills =
-                            values.map((e) => e.toString()).toList();
-                      },
-                      chipDisplay: MultiSelectChipDisplay(
-                        onTap: (value) {
-                          setState(() {
-                            selectedSkills.remove(value.toString());
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),*/
     );
   }
 

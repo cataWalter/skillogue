@@ -26,9 +26,12 @@ Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
   if (curSearch.city != "") {
     query = query.eq("city", curSearch.city);
   }
-  query = query.gte('age', curSearch.minAge);
-  query = query.lte('age', curSearch.maxAge);
-
+  if (curSearch.maxAge != null) {
+    query = query.lte('age', curSearch.maxAge);
+  }
+  if (curSearch.minAge != null) {
+    query = query.gte('age', curSearch.minAge);
+  }
   final List<dynamic> data = await query;
   List<Profile> res = [];
   for (var y in data) {

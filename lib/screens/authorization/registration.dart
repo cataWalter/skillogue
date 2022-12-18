@@ -5,7 +5,6 @@ import 'package:skillogue/utils/misc_functions.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
 
 import '../../utils/backend/authorization_backend.dart';
-import '../../utils/backend/misc_backend.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -34,7 +33,7 @@ class _RegistrationState extends State<Registration> {
               ),
             ),
             ListTile(
-              title: MyTextField(controllerEmail, "Email", "Email",
+              title: MyTextField(controllerEmail, "Email",
                   TextInputType.emailAddress, Icons.email),
             ),
             ListTile(
@@ -45,6 +44,7 @@ class _RegistrationState extends State<Registration> {
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
+                  obscureText: true,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -92,11 +92,11 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  void nextScreen(email) async {
+  void nextScreen(email, password) async {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => GuidedRegistration(email),
+        builder: (context) => GuidedRegistration(email, password),
       ),
     );
   }
@@ -106,30 +106,16 @@ class _RegistrationState extends State<Registration> {
     controllerEmail.clear();
     final password = controllerPassword.text.trim();
     controllerPassword.clear();
-    bool usersWithSameEmail = await existsUsersWithSameEmail(email);
-    if (usersWithSameEmail) {
-      databaseInsert('profile', {'email': email});
-      await registration(email, password);
-      nextScreen(email);
+    bool noUsersSameEmail = await notExistsUsersWithSameEmail(email);
+    if (noUsersSameEmail) {
+      nextScreen(email, password);
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Error!"),
-            content: const Text(
-                "The email is already associated with an existing account!"),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      f();
     }
+  }
+
+  f() {
+    getBlurDialog(context, "Error!",
+        "The email is already associated with an existing account!");
   }
 }

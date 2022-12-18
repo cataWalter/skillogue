@@ -16,20 +16,15 @@ class Profile {
   List<String> languages;
   List<String> skills;
 
+  List<String> blocked = [];
+
+  List<String> blockedBy = [];
+
   Profile(this.email, this.name, this.country, this.city, this.gender, this.age,
       this.lastLogin, this.color, this.languages, this.skills);
 
-  late bool isLogged;
 
-  bool isEmptyProfile() {
-    return name.isEmpty ||
-        country.isEmpty ||
-        city.isEmpty ||
-        gender.isEmpty ||
-        age.toString().isEmpty ||
-        skills.isEmpty ||
-        languages.isEmpty;
-  }
+
 }
 
 CircleAvatar getAvatar(String name, Color color, int radiusSize, int fontSize) {
@@ -46,7 +41,7 @@ CircleAvatar getAvatar(String name, Color color, int radiusSize, int fontSize) {
   );
 }
 
-Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
+Row rowProfileInfo(Profile p, int size, Color c, bool center) {
   return Row(
     mainAxisAlignment:
         center ? MainAxisAlignment.center : MainAxisAlignment.start,
@@ -57,7 +52,7 @@ Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
         color: c,
       ),
       Text(
-        "  ${profile.age}  ",
+        "  ${p.age}  ",
         style: TextStyle(
           fontSize: size.toDouble(),
           color: c,
@@ -69,7 +64,7 @@ Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
         color: c,
       ),
       Text(
-        " ${profile.city}  ",
+        " ${p.city}  ",
         style: TextStyle(
           fontSize: size.toDouble(),
           color: c,
@@ -81,7 +76,7 @@ Row rowProfileInfo(Profile profile, int size, Color c, bool center) {
         color: c,
       ),
       Text(
-        " ${profile.country}",
+        " ${p.country}",
         style: TextStyle(
           fontSize: size.toDouble(),
           color: c,

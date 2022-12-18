@@ -1,18 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
-import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 import '../home_screen.dart';
 
 class SingleConversationScreen extends StatefulWidget {
-  Conversation conversation;
+  final Conversation conversation;
 
-  SingleConversationScreen(this.conversation, {super.key});
+  const SingleConversationScreen(this.conversation, {super.key});
 
   @override
   State<SingleConversationScreen> createState() =>
@@ -21,7 +22,6 @@ class SingleConversationScreen extends StatefulWidget {
 
 class _SingleConversationScreenState extends State<SingleConversationScreen> {
   final newMessageController = TextEditingController();
-  DateTime loginClickTime = DateTime.fromMicrosecondsSinceEpoch(0);
 
   checkNewMessages() async {
     while (mounted) {
@@ -67,13 +67,20 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                 await findProfileByEmail(widget.conversation.destEmail);
             nextScreenProfileOverview(lookupProfile);
           },
-          child: Text(
-            widget.conversation.destName,
-            style: TextStyle(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
+          child: Row(
+            children: [
+              getAvatar(widget.conversation.destName,
+                  widget.conversation.destColor, 20, 15),
+              addHorizontalSpace(10),
+              Text(
+                widget.conversation.destName,
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+            ],
           ),
         ),
         actions: [
@@ -85,13 +92,44 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                   ? Colors.white
                   : Colors.black,
             ),
+            onSelected: (int item) async {
+              switch (item) {
+                case 0:
+                  {
+                    if (profile.blocked
+                        .contains(widget.conversation.destEmail)) {
+                      await supabase
+                          .from('block')
+                          .delete()
+                          .eq('blocker', profile.email);
+                      profile.blocked.remove(widget.conversation.destEmail);
+                      setState(() {});
+                    } else {
+                      databaseInsert('block', {
+                        'blocker': profile.email,
+                        'blocked': widget.conversation.destEmail
+                      });
+                      profile.blocked.add(widget.conversation.destEmail);
+                      setState(() {});
+                    }
+                  }
+                  break;
+              }
+            },
             itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: 0,
-                child: Text(
-                  newFunctionalityMessage,
-                ),
-              ),
+              profile.blocked.contains(widget.conversation.destEmail)
+                  ? const PopupMenuItem(
+                      value: 0,
+                      child: Text(
+                        "Unblock",
+                      ),
+                    )
+                  : const PopupMenuItem(
+                      value: 0,
+                      child: Text(
+                        "Block",
+                      ),
+                    ),
             ],
           ),
         ],
@@ -180,9 +218,8 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                             'text': newTextMessage,
                             'date': curDate.toString(),
                           });
-                          widget.conversation.messages.add(
-                              SingleMessage(
-                                  0, newTextMessage, curDate, true, false));
+                          widget.conversation.messages.add(SingleMessage(
+                              0, newTextMessage, curDate, true, false));
                           setState(() {});
                         }
                       },

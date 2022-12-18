@@ -1,4 +1,4 @@
-class Event {
+/*class Event {
   String name;
   String country;
   String city;
@@ -7,4 +7,4 @@ class Event {
 
   Event( this.name, this.country, this.city, this.eventDate,
       this.skills);
-}
+}*/

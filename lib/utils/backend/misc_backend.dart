@@ -11,10 +11,10 @@ Future<void> databaseInsert(String tableName, dynamic parameters) async {
 
 List parseLinkedMap(l) {
   var newProfileFields = [];
-  for (var profileField in l.values) {
-    if (profileField != null) {
-      newProfileFields.add(profileField);
-    } else if (profileField == "") {
+  for (var field in l.values) {
+    if (field != null) {
+      newProfileFields.add(field);
+    } else if (field == "") {
       newProfileFields.add("");
     } else {
       newProfileFields.add([]);

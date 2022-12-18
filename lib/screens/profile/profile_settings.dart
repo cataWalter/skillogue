@@ -1,7 +1,9 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
+import 'package:skillogue/utils/constants.dart';
 
 import '../../main.dart';
 import '../../utils/colors.dart';
@@ -17,6 +19,7 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   late bool isDark = themeManager.isDarkNow();
   late Color selectedColor = profile.color;
+  final _myBox = Hive.box(localDatabase);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               color: selectedColor,
               onSelectFocus: false,
               onSelect: () async {
-                // Store current color before we open the dialog.
                 final Color colorBeforeDialog = selectedColor;
                 // Wait for the picker to close, if dialog was dismissed,
                 // then restore the color we had before it was opened.
@@ -56,6 +58,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             value: isDark,
             onChanged: (bool value) {
               setState(() {
+                _myBox.put(darkModeKey, value);
                 isDark = value;
                 (isDark
                     ? themeManager.toggleDark()
