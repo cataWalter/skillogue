@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skillogue/entities/event_search.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
@@ -42,8 +41,9 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const Home(
-          [],
+        builder: (context) => Home(
+          const [],
+          0,
         ),
       ),
     );
@@ -115,7 +115,9 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
           MonoDropdown(
             cities,
             "Cities",
-            selectedCity.isNotEmpty ? selectedCity : "What's your city?",
+            selectedCity.isNotEmpty
+                ? selectedCity
+                : "What's your current city?",
             Icons.location_city,
             (value) {
               setState(() {
@@ -128,7 +130,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
             "Countries",
             selectedCountry.isNotEmpty
                 ? selectedCountry
-                : "What's your country?",
+                : "From what country are you from?",
             Icons.flag,
             (value) {
               setState(() {

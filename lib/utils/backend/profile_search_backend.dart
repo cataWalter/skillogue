@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:skillogue/utils/backend/profile_backend.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -53,4 +55,36 @@ Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
   }
 
   return newRes;
+}
+
+getSavedSearches(String searcher) async {
+  PostgrestFilterBuilder query =
+      supabase.from("search").select().eq("user", searcher);
+  final List<dynamic> data = await query;
+  List<SavedProfileSearch> res = [];
+  for (LinkedHashMap x in data) {
+    res.add(SavedProfileSearch(x.values.elementAt(9), parseSearch(x)));
+  }
+
+  return res;
+}
+
+parseSearch(x) {
+  ProfileSearch s = ProfileSearch();
+  s.maxAge = x.values.elementAt(2);
+  s.minAge = x.values.elementAt(3);
+  s.countries = parseList(x.values.elementAt(4));
+  s.skills = parseList(x.values.elementAt(5));
+  s.languages = parseList(x.values.elementAt(6));
+  s.genders = parseList(x.values.elementAt(7));
+  s.city = x.values.elementAt(8);
+  return s;
+}
+
+parseList(x) {
+  List<String> res = [];
+  for (String y in x) {
+    res.add(y);
+  }
+  return res;
 }

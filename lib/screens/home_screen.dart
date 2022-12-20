@@ -16,22 +16,24 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
+import '../utils/backend/profile_search_backend.dart';
 
 List<Conversation> conversations = [];
 late Profile profile;
 ProfileSearch activeProfileSearch = ProfileSearch();
 //late EventSearch activeEventSearch;
-List<SavedProfileSearch> savedProfileSearch = [];
+late List<SavedProfileSearch> savedProfileSearch;
 
 class Home extends StatefulWidget {
-  const Home(conversations, {super.key});
+  Home(conversations, this.currentPageIndex, {super.key});
+
+  int currentPageIndex;
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int currentPageIndex = 0;
   final _myBox = Hive.box(localDatabase);
 
   @override
@@ -39,6 +41,11 @@ class _HomeState extends State<Home> {
     super.initState();
     conversationUpdate();
     findBlocked();
+    savedSearchesUpdate();
+  }
+
+  savedSearchesUpdate() async {
+    savedProfileSearch = await getSavedSearches(profile.email);
   }
 
   findBlocked() async {
@@ -53,7 +60,7 @@ class _HomeState extends State<Home> {
       extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
-        child: currentPageIndex == profileIndex
+        child: widget.currentPageIndex == profileIndex
             ? ThisAppBar(profile.name, true)
             : ThisAppBar(profile.name, false),
       ),
@@ -84,10 +91,10 @@ class _HomeState extends State<Home> {
               duration: const Duration(milliseconds: 400),
               tabBackgroundColor: Colors.grey[100]!,
               tabs: getButtons(),
-              selectedIndex: currentPageIndex,
+              selectedIndex: widget.currentPageIndex,
               onTabChange: (index) {
                 setState(() {
-                  currentPageIndex = index;
+                  widget.currentPageIndex = index;
                 });
               },
             ),
@@ -172,7 +179,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget getScreen() {
-    switch (currentPageIndex) {
+    switch (widget.currentPageIndex) {
       case searchIndex:
         {
           return const SearchScreen();

@@ -99,7 +99,7 @@ class _MessageScreenState extends State<MessageScreen> {
         child: Row(
           children: [
             getAvatar(
-                curConversation.destName, curConversation.destColor, 24, 16),
+                curConversation.destName, 24, 2),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),

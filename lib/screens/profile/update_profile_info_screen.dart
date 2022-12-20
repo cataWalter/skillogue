@@ -52,7 +52,7 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => Home(conversations),
+              builder: (context) => Home(conversations, 0),
             ),
           );
         },

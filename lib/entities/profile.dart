@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skillogue/utils/colors.dart';
-
-import '../utils/misc_functions.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 class Profile {
   String email;
@@ -12,7 +10,7 @@ class Profile {
   int age;
   DateTime lastLogin;
   Color color;
-
+  int? points;
   List<String> languages;
   List<String> skills;
 
@@ -22,22 +20,24 @@ class Profile {
 
   Profile(this.email, this.name, this.country, this.city, this.gender, this.age,
       this.lastLogin, this.color, this.languages, this.skills);
-
-
-
 }
 
-CircleAvatar getAvatar(String name, Color color, int radiusSize, int fontSize) {
-  return CircleAvatar(
+getAvatar(String name, int radiusSize, double multiplier) {
+  /*return CircleAvatar(
     radius: radiusSize.toDouble(),
     backgroundColor: color,
     child: Text(
       initials(name),
       style: TextStyle(
         fontSize: fontSize.toDouble(),
-        color: isDarkColor(color) ? Colors.black : Colors.white,
+        color: Colors.white,
       ),
     ),
+  );*/
+  return randomAvatar(
+    name,
+    height: radiusSize.toDouble() * multiplier,
+    width: radiusSize.toDouble() * multiplier,
   );
 }
 

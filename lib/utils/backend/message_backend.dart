@@ -74,7 +74,6 @@ Future<List<Conversation>> addMessage(
       conversations.add(Conversation(
           m.receiverEmail,
           destProfile.name,
-          destProfile.color,
           [SingleMessage(m.id, m.text, m.date, true, false)]));
       return conversations;
     }
@@ -92,7 +91,6 @@ Future<List<Conversation>> addMessage(
       conversations.add(Conversation(
           m.senderEmail,
           destProfile.name,
-          destProfile.color,
           [SingleMessage(m.id, m.text, m.date, false, false)]));
       return conversations;
     }

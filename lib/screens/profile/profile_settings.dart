@@ -32,7 +32,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
         children: <Widget>[
           ListTile(
-            title: const Text('Set your color'),
+            title: const Text('Set your chat background color'),
             subtitle: Text(ColorTools.nameThatColor(selectedColor)),
             trailing: ColorIndicator(
               width: 44,
@@ -73,12 +73,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         onPressed: () {
           updateLocalProfileSettings();
           updateDatabaseProfileSettings();
-
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => Home(
-                conversations,
+                conversations, 0
               ),
             ),
           );

@@ -6,7 +6,9 @@ import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/screens/home_screen.dart';
+import 'package:skillogue/screens/search/saved_search_screen.dart';
 import 'package:skillogue/utils/colors.dart';
+import 'package:skillogue/utils/constants.dart';
 
 import '../../localizations/english.dart';
 import '../../utils/backend/misc_backend.dart';
@@ -54,10 +56,6 @@ class _SearchScreenState extends State<SearchScreen> {
       return getSearchResults();
     }
     return Container();
-  }
-
-  f() {
-    getBlurDialog(context, "No users found!", ":'(");
   }
 
   Widget getSearchForm() {
@@ -108,7 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   });
                 }
               } else {
-                f();
+                getBlurDialog(context, "No users found!", ":'(");
               }
             },
           ),
@@ -118,46 +116,14 @@ class _SearchScreenState extends State<SearchScreen> {
             foregroundColor: Colors.white,
             label: 'Saved searches',
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return ClipRect(
-                    // <-- clips to the 200x200 [Container] below
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 10.0,
-                        sigmaY: 10.0,
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: 200.0,
-                        height: 200.0,
-                        child: Wrap(
-                          spacing: 20.0,
-                          runSpacing: 20,
-                          children: f1(),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SavedSearchScreen(),
+                ),
               );
             },
           ),
-          /*SpeedDialChild(
-            child: const Icon(Icons.radar),
-            backgroundColor: Colors.lightBlue,
-            foregroundColor: Colors.white,
-            label: 'Around me',
-            onTap: () => {},
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.accessibility),
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-            label: 'Similar to me',
-            onTap: () => {},
-          ),*/
           SpeedDialChild(
               child: const Icon(Icons.save),
               backgroundColor: rainbowColors[2],
@@ -167,63 +133,75 @@ class _SearchScreenState extends State<SearchScreen> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: AlertDialog(
-                        title: Text("Do you want to save this search?"),
-                        content: TextField(
-                          controller: newMessageController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.none,
-                          autocorrect: false,
-                          minLines: 1,
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(40.0),
-                            ),
-                            fillColor:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? const Color.fromRGBO(30, 30, 30, 1)
-                                    : const Color.fromRGBO(235, 235, 235, 1),
-                            hintText: "How do you want to name it?",
-                            hintStyle: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).hintColor),
-                            filled: true,
-                            //suffixIcon: const Icon(Icons.message,color: Color.fromRGBO(129, 129, 129, 1)),
+                    return AlertDialog(
+                      title: const Text("Do you want to save this search?"),
+                      content: TextField(
+                        controller: newMessageController,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.none,
+                        autocorrect: false,
+                        minLines: 1,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(40.0),
                           ),
+                          fillColor:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? const Color.fromRGBO(30, 30, 30, 1)
+                                  : const Color.fromRGBO(235, 235, 235, 1),
+                          hintText: "How do you want to name it?",
+                          hintStyle: TextStyle(
+                              fontSize: 16, color: Theme.of(context).hintColor),
+                          filled: true,
+                          //suffixIcon: const Icon(Icons.message,color: Color.fromRGBO(129, 129, 129, 1)),
                         ),
-                        actions: [
-                          TextButton(
-                            child: const Text("No"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          TextButton(
-                            child: const Text("Yes"),
-                            onPressed: () {
-                              if (newMessageController.text.isNotEmpty) {
-                                var z = activeProfileSearch;
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text("No"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text("Yes"),
+                          onPressed: () {
+                            String newName = newMessageController.text;
+                            newMessageController.clear();
+                            if (newName.isNotEmpty) {
+                              if (savedProfileSearch
+                                  .any((element) => element.name == newName)) {
+                                showSnackBar(
+                                    "Give it a NEW name cowboy! 🤠", context);
+                              } else {
                                 savedProfileSearch.add(
                                   SavedProfileSearch(
-                                    newMessageController.text,
+                                    newName,
                                     activeProfileSearch.copy(),
                                   ),
                                 );
-                                newMessageController.clear();
-                                var x = savedProfileSearch;
+                                databaseInsert('search', {
+                                  'user': profile.email,
+                                  'maxAge': activeProfileSearch.maxAge,
+                                  'minAge': activeProfileSearch.minAge,
+                                  'countries': activeProfileSearch.countries,
+                                  'skills': activeProfileSearch.skills,
+                                  'languages': activeProfileSearch.languages,
+                                  'genders': activeProfileSearch.genders,
+                                  'city': activeProfileSearch.city,
+                                  'name': newName,
+                                });
                                 Navigator.of(context).pop();
-                              } else {
-                                showSnackBar(
-                                    "Give it a name cowboy! 🤠", context);
                               }
-                            },
-                          )
-                        ],
-                      ),
+                            } else if (newName.isEmpty) {
+                              showSnackBar(
+                                  "Give it a name cowboy! 🤠", context);
+                            }
+                          },
+                        )
+                      ],
                     );
                   },
                 );
@@ -240,17 +218,66 @@ class _SearchScreenState extends State<SearchScreen> {
                       RangeValues(18.toDouble(), 99.toDouble());
                 });
               }),
-          /*SpeedDialChild(
-            child: const Icon(Icons.settings_suggest_outlined),
-            backgroundColor: Colors.red,
+          SpeedDialChild(
+            child: const Icon(Icons.sports_tennis),
+            backgroundColor: rainbowColors[4],
             foregroundColor: Colors.white,
-            label: 'Suggest search',
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(newFunctionalityMessage),
-              ),
-            ),
-          ),*/
+            label: 'Suggest new skills',
+            onTap: () {
+              for (String s in suggestFeature(
+                  profile.skills, 3, skills, skillSimilarity)) {
+                if (!activeProfileSearch.skills.contains(s)) {
+                  activeProfileSearch.skills.add(s);
+                }
+              }
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Home(conversations, searchIndex),
+                ),
+              );
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.abc),
+            backgroundColor: rainbowColors[5],
+            foregroundColor: Colors.white,
+            label: 'Suggest new languages',
+            onTap: () {
+              for (String s in suggestFeature(
+                  profile.languages, 3, languages, languageSimilarity)) {
+                if (!activeProfileSearch.languages.contains(s)) {
+                  activeProfileSearch.languages.add(s);
+                }
+              }
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Home(conversations, searchIndex),
+                ),
+              );
+            },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.language),
+            backgroundColor: rainbowColors[6],
+            foregroundColor: Colors.white,
+            label: 'Suggest new countries',
+            onTap: () {
+              for (String s in suggestFeature(
+                  [profile.country], 10, countries, countrySimilarity)) {
+                if (!activeProfileSearch.countries.contains(s)) {
+                  activeProfileSearch.countries.add(s);
+                }
+              }
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Home(conversations, searchIndex),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: listViewCreator(
@@ -316,23 +343,24 @@ class _SearchScreenState extends State<SearchScreen> {
               });
             },
           ),
-          Container(
+          SizedBox(
             height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40.0),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : const Color.fromRGBO(235, 235, 235, 1),
-            ),
-            child: TextFormField(
-              style: const TextStyle(color: Color.fromRGBO(94, 94, 94, 1)),
-              initialValue: "What's their age?",
-              readOnly: true,
-              decoration: const InputDecoration(
+            child: TextField(
+              enabled: false,
+              decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(40.0),
                 ),
-                suffixIcon: Icon(Icons.mail),
+                fillColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : const Color.fromRGBO(235, 235, 235, 1),
+                hintText: "What's their age?",
+                hintStyle:
+                    TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
+                filled: true,
+                suffixIcon: const Icon(Icons.numbers,
+                    color: Color.fromRGBO(129, 129, 129, 1)),
               ),
             ),
           ),
@@ -360,11 +388,10 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  List<Widget> f1() {
+  List<Widget> showSavedSearches() {
     List<Widget> res = [];
     for (int i = 0; i < savedProfileSearch.length; i++) {
-      res.add(FloatingActionButton(
-        backgroundColor: rainbowColors[i % 7],
+      res.add(ElevatedButton(
         onPressed: () {
           int min = activeProfileSearch.minAge ?? 18;
           int max = activeProfileSearch.maxAge ?? 99;
@@ -374,19 +401,16 @@ class _SearchScreenState extends State<SearchScreen> {
           });
           Navigator.of(context).pop();
         },
-        child: Text(savedProfileSearch[i].name),
-      ));
-      res.add(TextButton(
-
-        onPressed: () {
-          int min = activeProfileSearch.minAge ?? 18;
-          int max = activeProfileSearch.maxAge ?? 99;
-          setState(() {
-            activeProfileSearch = savedProfileSearch[i].search.copy();
-            _currentRangeValues = RangeValues(min.toDouble(), max.toDouble());
-          });
-          Navigator.of(context).pop();
-        },
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)),
+          backgroundColor:
+              MaterialStateProperty.all<Color>(rainbowColors[i % 7]),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            ),
+          ),
+        ),
         child: Text(savedProfileSearch[i].name),
       ));
     }
@@ -512,7 +536,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   'text': newTextMessage,
                   'date': curDate.toString(),
                 });
-                conversations.add(Conversation(destEmail, destName, color,
+                conversations.add(Conversation(destEmail, destName,
                     [SingleMessage(0, newTextMessage, curDate, true, false)]));
                 setState(() {});
               }
@@ -525,9 +549,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<Widget> chippies(
-      List<String> toChip1, List<String> toChip2, double size) {
+      List<String> skills, List<String> languages, double size) {
     List<Widget> res = [];
-    for (String item in toChip1) {
+    for (String item in skills) {
       res.add(
         Chip(
           backgroundColor: Colors.blue[800],
@@ -538,7 +562,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       );
     }
-    for (String item in toChip2) {
+    for (String item in languages) {
       res.add(
         Chip(
           backgroundColor: Colors.green,

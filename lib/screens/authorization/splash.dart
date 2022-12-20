@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 100), () async {
+    Future.delayed(const Duration(microseconds: 0), () async {
       getHome();
     });
     return Scaffold(
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ],
             ),
           ),
-          Expanded(
+          /*Expanded(
             child: Column(
               children: [
                 Center(
@@ -72,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ],
             ),
-          ),
+          ),*/
         ],
       ),
     );
@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void nextScreenHome(c) async {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Home(c)),
+      MaterialPageRoute(builder: (context) => Home(c, 0)),
     );
   }
 
@@ -101,10 +101,10 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_myBox.get(loggedProfileKey) != null) {
       profile = await findProfileByEmail(_myBox.get(loggedProfileKey));
       List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
-      pause();
+      //pause();
       nextScreenHome(c);
     } else {
-      pause();
+      //pause();
       nextScreenPreLogin();
     }
   }
