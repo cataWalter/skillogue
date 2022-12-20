@@ -22,7 +22,6 @@ class _LoginState extends State<Login> {
   final controllerPassword = TextEditingController();
   late Profile loggedProfile;
 
-
   void doUserLogin() async {
     if (controllerUsername.text.trim().isEmpty ||
         controllerPassword.text.trim().isEmpty) {
@@ -45,9 +44,7 @@ class _LoginState extends State<Login> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => Home(
-          c,
-        ),
+        builder: (context) => Home(c, 0),
       ),
     );
   }
@@ -117,8 +114,7 @@ class _LoginState extends State<Login> {
               ),
             ),
             onPressed: () {
-                doUserLogin();
-
+              doUserLogin();
             },
           ),
         ],

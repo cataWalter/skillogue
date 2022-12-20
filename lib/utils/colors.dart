@@ -49,7 +49,7 @@ const List<Color> rainbowColors = [
   Color.fromRGBO(75, 0, 130, 1),
   Color.fromRGBO(0, 0, 255, 1),
   Color.fromRGBO(0, 255, 0, 1),
-  Color.fromRGBO(255, 255, 0, 1),
+  Color.fromRGBO(210, 210, 0, 1),
   Color.fromRGBO(255, 127, 0, 1),
   Color.fromRGBO(255, 0, 0, 1),
 ];

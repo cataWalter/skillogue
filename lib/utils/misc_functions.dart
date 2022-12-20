@@ -44,7 +44,13 @@ List<Widget> chippies(List<String> toChip, double size) {
 }
 
 void showSnackBar(String message, context) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    backgroundColor: Colors.black,
+    content: Text(
+      message,
+      style: const TextStyle(color: Colors.white),
+    ),
+  ));
 }
 
 ListView listViewCreator(List<Widget> widgets) {
@@ -57,6 +63,10 @@ ListView listViewCreator(List<Widget> widgets) {
   return ListView(
     children: res,
   );
+}
+
+popScreen(context) {
+  Navigator.of(context).pop();
 }
 
 void getBlurDialog(context, title, message) {
@@ -91,12 +101,14 @@ void getBlurDialogImage(context, title, image, exit) {
         child: AlertDialog(
           title: Text(title),
           content: SizedBox(
-
             child: Image.asset(image),
           ),
           actions: [
             TextButton(
-              child: Text(exit, style: const TextStyle(fontSize: 18),),
+              child: Text(
+                exit,
+                style: const TextStyle(fontSize: 18),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -105,5 +117,13 @@ void getBlurDialogImage(context, title, image, exit) {
         ),
       );
     },
+  );
+}
+
+Container limitMaxWidth(Widget x, int minWidth, int maxWidth) {
+  return Container(
+    constraints: BoxConstraints(
+        minWidth: minWidth.toDouble(), maxWidth: maxWidth.toDouble()),
+    child: x,
   );
 }

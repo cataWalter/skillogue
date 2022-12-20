@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test/test.dart';
 import 'package:skillogue/entities/profile.dart';
-
+/*
 void main(){
   group('Profile', (){
 
@@ -20,4 +20,4 @@ void main(){
     });
   });
 
-}
+}*/

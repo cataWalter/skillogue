@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -14,6 +16,7 @@ class ThisAppBar extends StatelessWidget {
   final String name;
   final bool showSettings;
   final _myBox = Hive.box(localDatabase);
+  TextEditingController newSuggestionController = TextEditingController();
 
   ThisAppBar(this.name, this.showSettings, {super.key});
 
@@ -81,7 +84,6 @@ class ThisAppBar extends StatelessWidget {
                         _myBox.delete(loggedProfileKey);
                         conversations = [];
                         activeProfileSearch.clean();
-
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -90,7 +92,66 @@ class ThisAppBar extends StatelessWidget {
                       break;
                     case 3:
                       {
-                        debugPrint("suggest new skills");
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: AlertDialog(
+                                title: Text("Suggestion"),
+                                content: TextField(
+                                  controller: newSuggestionController,
+                                  keyboardType: TextInputType.text,
+                                  textCapitalization: TextCapitalization.none,
+                                  autocorrect: false,
+                                  minLines: 1,
+                                  maxLines: 5,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(40.0),
+                                    ),
+                                    fillColor: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? const Color.fromRGBO(30, 30, 30, 1)
+                                        : const Color.fromRGBO(
+                                            235, 235, 235, 1),
+                                    hintText: "What's your suggestion",
+                                    hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).hintColor),
+                                    filled: true,
+                                    suffixIcon: const Icon(Icons.message,
+                                        color:
+                                            Color.fromRGBO(129, 129, 129, 1)),
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("OK"),
+                                    onPressed: () {
+                                      String newTextMessage =
+                                          newSuggestionController.text.trim();
+                                      if (newTextMessage.isNotEmpty) {
+                                        newSuggestionController.clear();
+                                        DateTime curDate = DateTime.now();
+                                        databaseInsert('suggestion', {
+                                          'user': profile.email,
+                                          'advice': newTextMessage,
+                                          'date': curDate.toString(),
+                                        });
+                                        showSnackBar("Thank you! 🥰", context);
+
+                                      }
+                                      Navigator.of(context).pop();
+                                      //showSnackBar("Thank you! 🥰", context);
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       }
                       break;
                     case 4:
@@ -116,13 +177,13 @@ class ThisAppBar extends StatelessWidget {
                       style: TextStyle(),
                     ),
                   ),
-                  /*const PopupMenuItem(
+                  const PopupMenuItem(
                     value: 3,
                     child: Text(
-                      "Suggest new skills",
+                      "Reach us",
                       style: TextStyle(),
                     ),
-                  ),*/
+                  ),
                   const PopupMenuItem(
                     value: 4,
                     child: Text(

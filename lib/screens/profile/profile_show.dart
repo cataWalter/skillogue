@@ -18,9 +18,8 @@ class ProfileShow extends StatelessWidget {
           children: [
             getAvatar(
               profile.name,
-              profile.color,
               60,
-              40,
+              2.5,
             ),
             addVerticalSpace(10),
             Row(

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:skillogue/entities/conversation.dart';
@@ -51,7 +50,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
-        elevation: 0,
+        elevation: 10,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -69,8 +68,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
           },
           child: Row(
             children: [
-              getAvatar(widget.conversation.destName,
-                  widget.conversation.destColor, 20, 15),
+              getAvatar(widget.conversation.destName, 20, 2),
               addHorizontalSpace(10),
               Text(
                 widget.conversation.destName,
@@ -134,106 +132,121 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: GroupedListView(
-                padding: const EdgeInsets.all(8),
-                reverse: true,
-                order: GroupedListOrder.DESC,
-                useStickyGroupSeparators: true,
-                floatingHeader: true,
-                elements: widget.conversation.messages,
-                groupBy: (message) => DateTime(
-                    message.date.year, message.date.month, message.date.day),
-                groupHeaderBuilder: (message) => SizedBox(
-                      height: 40,
-                      child: Center(
-                        child: Card(
-                          color: Colors.blueGrey.withOpacity(0.7),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              parseDate(message.date),
-                              style: const TextStyle(color: Colors.white),
+      body: Container(
+        /*decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: const [0.02, 0.9],
+            colors: [
+              Colors.blue,
+              profile.color,
+            ],
+          ),
+        ),*/
+        color: profile.color,
+        child: Column(
+          children: [
+            addVerticalSpace(10),
+            Expanded(
+              child: GroupedListView(
+                  padding: const EdgeInsets.all(8),
+                  reverse: true,
+                  order: GroupedListOrder.DESC,
+                  useStickyGroupSeparators: true,
+                  floatingHeader: true,
+                  elements: widget.conversation.messages,
+                  groupBy: (message) => DateTime(
+                      message.date.year, message.date.month, message.date.day),
+                  groupHeaderBuilder: (message) => SizedBox(
+                        height: 40,
+                        child: Center(
+                          child: Card(
+                            color: Colors.black.withOpacity(0.7),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(
+                                parseDate(message.date),
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                itemBuilder: (context, message) {
-                  return getSingleMessageWidget(message);
-                }),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextField(
-                        style: TextStyle(color: Colors.grey[300]),
-                        controller: newMessageController,
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          fillColor: Colors.black,
-                          focusColor: Colors.black,
-                          hoverColor: Colors.black,
-                          hintText: "Type a message...",
-                          hintStyle: TextStyle(color: Colors.grey[300]),
-                          border: InputBorder.none,
+                  itemBuilder: (context, message) {
+                    return getSingleMessageWidget(message);
+                  }),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: TextField(
+                          style: TextStyle(color: Colors.grey[300]),
+                          controller: newMessageController,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 1,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                            fillColor: Colors.black,
+                            focusColor: Colors.black,
+                            hoverColor: Colors.black,
+                            hintText: "Type a message...",
+                            hintStyle: TextStyle(color: Colors.grey[300]),
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  height: 45,
-                  width: 45,
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: FloatingActionButton(
-                      heroTag: null,
-                      onPressed: () async {
-                        String newTextMessage =
-                            newMessageController.text.trim();
-                        if (newTextMessage.isNotEmpty) {
-                          newMessageController.clear();
-                          DateTime curDate = DateTime.now();
-                          databaseInsert('message', {
-                            'sender': profile.email,
-                            'receiver': widget.conversation.destEmail,
-                            'text': newTextMessage,
-                            'date': curDate.toString(),
-                          });
-                          widget.conversation.messages.add(SingleMessage(
-                              0, newTextMessage, curDate, true, false));
-                          setState(() {});
-                        }
-                      },
-                      child: const Icon(
-                        Icons.send,
-                        size: 24,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: 45,
+                    width: 45,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: FloatingActionButton(
+                        heroTag: null,
+                        onPressed: () async {
+                          String newTextMessage =
+                              newMessageController.text.trim();
+                          if (newTextMessage.isNotEmpty) {
+                            newMessageController.clear();
+                            DateTime curDate = DateTime.now();
+                            databaseInsert('message', {
+                              'sender': profile.email,
+                              'receiver': widget.conversation.destEmail,
+                              'text': newTextMessage,
+                              'date': curDate.toString(),
+                            });
+                            widget.conversation.messages.add(SingleMessage(
+                                0, newTextMessage, curDate, true, false));
+                            setState(() {});
+                          }
+                        },
+                        child: const Icon(
+                          Icons.send,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
