@@ -13,9 +13,11 @@ import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
+import '../utils/backend/notifications.dart';
 import '../utils/backend/profile_search_backend.dart';
 
 List<Conversation> conversations = [];
@@ -42,6 +44,7 @@ class _HomeState extends State<Home> {
     conversationUpdate();
     findBlocked();
     savedSearchesUpdate();
+    pushNotifications();
   }
 
   savedSearchesUpdate() async {
@@ -234,5 +237,16 @@ class _HomeState extends State<Home> {
       if (mounted) setState(() {});
       await Future.delayed(const Duration(seconds: 10));
     }
+  }
+
+  void pushNotifications(){
+      Notifications().addNotification(
+        'New messages',
+        'You have ${countUnanswered()} unread messages',
+        DateTime.now().millisecondsSinceEpoch + 1000,
+        channel: 'testing',
+      );
+
+
   }
 }
