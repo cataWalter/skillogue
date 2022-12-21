@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:skillogue/screens/authorization/splash.dart';
+import 'package:skillogue/utils/backend/notifications.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
@@ -16,7 +17,7 @@ void main() async {
   //Hive
   await Hive.initFlutter();
   await Hive.openBox(localDatabase);
-
+  await Notifications().setup();
   runApp(const MyApp());
 }
 
