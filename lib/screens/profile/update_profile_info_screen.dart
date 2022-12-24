@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/widgets/mono_dropdown.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
 
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/constants.dart';
 import '../../utils/data.dart';
+import '../../utils/localization.dart';
 import '../../utils/misc_functions.dart';
-import '../../widgets/appbar.dart';
 import '../../widgets/multi_dropdown.dart';
 
 class UpdateProfileInfoScreen extends StatefulWidget {
@@ -45,110 +49,141 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          updateLocalProfileSettings();
-          updateDatabaseProfileSettings();
-          profile = widget.profile;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Home(conversations, 0),
-            ),
-          );
-        },
-        icon: const Icon(Icons.save),
-        label: const Text("Save"),
-      ),
+          onPressed: () async {
+            updateLocalProfileSettings();
+            updateDatabaseProfileSettings();
+            profile = widget.profile;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Home(conversations, 0),
+              ),
+            );
+          },
+          icon: const Icon(Icons.save),
+          label: Text(AppLocale.save.getString(context))),
       extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
-        child: ThisAppBar(widget.profile.name, false),
+        child: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    appName,
+                    style: GoogleFonts.bebasNeue(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    widget.profile.name,
+                    style: GoogleFonts.bebasNeue(
+                        fontSize: 24,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
-      body: listViewCreator(
-        [
-          MyTextField(
-              controllerFullName,
-              widget.profile.name.isNotEmpty
-                  ? widget.profile.name
-                  : "Full Name",
-              TextInputType.text,
-              Icons.person),
-          MyTextField(
-              controllerAge,
-              widget.profile.age.toString().isNotEmpty &&
-                      widget.profile.age <= 99
-                  ? widget.profile.age.toString()
-                  : "Age",
-              TextInputType.number,
-              Icons.numbers),
-          MonoDropdown(
-            cities,
-            "City",
-            selectedCity,
-            Icons.location_city,
-            (value) {
-              setState(() {
-                selectedCity = value;
-              });
-            },
-          ),
-          MonoDropdown(
-            countries,
-            "Country",
-            selectedCountry,
-            Icons.flag,
-            (value) {
-              setState(() {
-                selectedCountry = value;
-              });
-            },
-          ),
-          MonoDropdown(
-            genders,
-            "Gender",
-            selectedGender,
-            Icons.female,
-            (value) {
-              setState(() {
-                selectedGender = value;
-              });
-            },
-          ),
-          MultiDropdown(
-            skills,
-            "What are your passions?",
-            "Skills",
-            selectedSkills,
-            Icons.sports_tennis,
-            (value) {
-              setState(() {
-                selectedSkills = value;
-              });
-            },
-          ),
-          MultiDropdown(
-            languages,
-            "What languages do you speak?",
-            "Languages",
-            selectedLanguages,
-            Icons.abc,
-            (value) {
-              setState(() {
-                selectedLanguages = value;
-              });
-            },
-          ),
-        ],
+      body: Padding(
+        padding: tabletMode
+            ? tabletEdgeInsets
+            : const EdgeInsets.symmetric(horizontal: 8.0),
+        child: listViewCreator(
+          [
+            MyTextField(
+                controllerFullName,
+                widget.profile.name.isNotEmpty
+                    ? widget.profile.name
+                    : AppLocale.personalName.getString(context),
+                TextInputType.text,
+                Icons.person),
+            MyTextField(
+                controllerAge,
+                widget.profile.age.toString().isNotEmpty &&
+                        widget.profile.age <= 99
+                    ? widget.profile.age.toString()
+                    : AppLocale.age.getString(context),
+                TextInputType.number,
+                Icons.numbers),
+            MonoDropdown(
+              cities,
+              AppLocale.city.getString(context),
+              selectedCity,
+              Icons.location_city,
+              (value) {
+                setState(() {
+                  selectedCity = value;
+                });
+              },
+            ),
+            MonoDropdown(
+              countries,
+              AppLocale.country.getString(context),
+              selectedCountry,
+              Icons.flag,
+              (value) {
+                setState(() {
+                  selectedCountry = value;
+                });
+              },
+            ),
+            MonoDropdown(
+              genders,
+              AppLocale.gender.getString(context),
+              selectedGender,
+              Icons.female,
+              (value) {
+                setState(() {
+                  selectedGender = value;
+                });
+              },
+            ),
+            MultiDropdown(
+              skills,
+              AppLocale.yourPassions.getString(context),
+              AppLocale.skills.getString(context),
+              selectedSkills,
+              Icons.sports_tennis,
+              (value) {
+                setState(() {
+                  selectedSkills = value;
+                });
+              },
+            ),
+            MultiDropdown(
+              languages,
+              AppLocale.yourLanguages.getString(context),
+              AppLocale.languages.getString(context),
+              selectedLanguages,
+              Icons.abc,
+              (value) {
+                setState(() {
+                  selectedLanguages = value;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  String? validateName(String s) {
-    if (s == "error") {
-      return "error1";
-    } else {
-      return null;
-    }
   }
 
   void updateLocalProfileSettings() {
@@ -206,17 +241,5 @@ class _UpdateProfileInfoScreenState extends State<UpdateProfileInfoScreen> {
       }
     }
     updateProfile(widget.profile.email, parameters);
-  }
-
-  String capitalizeFirstLetterString(String s) {
-    return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
-  }
-
-  String dropdownCountry() {
-    if (widget.profile.country.isNotEmpty) {
-      return widget.profile.country;
-    } else {
-      return "";
-    }
   }
 }

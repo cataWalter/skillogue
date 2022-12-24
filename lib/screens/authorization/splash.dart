@@ -22,67 +22,74 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(microseconds: 0), () async {
+    Future.delayed(
+        const Duration(
+          microseconds: 0,
+        ), () async {
       getHome();
     });
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            flex: 8,
-            child: Column(
-              children: [
-                addVerticalSpace(100),
-                Image.asset(
-                  'assets/images/logo2.png',
-                ),
-                Text(
-                  appName,
-                  style: GoogleFonts.bebasNeue(
-                    fontSize: 80,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.blue,
+      body: Center(
+        child: Column(
+          children: [
+            Expanded(
+              flex: 8,
+              child: Column(
+                children: [
+                  addVerticalSpace(100),
+                  Image.asset(
+                    'assets/images/logo2.png',
                   ),
-                ),
-              ],
-            ),
-          ),
-          /*Expanded(
-            child: Column(
-              children: [
-                Center(
-                  child: Text(
-                    "by",
+                  Text(
+                    appName,
                     style: GoogleFonts.bebasNeue(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w100,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "Walter Catalfamo",
-                    style: GoogleFonts.bebasNeue(
-                      fontSize: 26,
+                      fontSize: 80,
                       fontWeight: FontWeight.w300,
-                      color: Colors.black,
+                      color: Colors.blue,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),*/
-        ],
+            /*Expanded(
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(
+                      "by",
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w100,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "Walter Catalfamo",
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),*/
+          ],
+        ),
       ),
     );
   }
 
   void nextScreenHome(c) async {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Home(c, 0)),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home(c, 0)),
+      );
+    }
   }
 
   void nextScreenPreLogin() async {
@@ -92,10 +99,6 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   getHome() async {
     if (_myBox.get(loggedProfileKey) != null) {

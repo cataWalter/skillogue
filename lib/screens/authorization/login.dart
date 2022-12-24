@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
 
 import '../../entities/conversation.dart';
 import '../../entities/profile.dart';
+import '../../main.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
@@ -31,12 +33,15 @@ class _LoginState extends State<Login> {
     controllerUsername.clear();
     String password = controllerPassword.text.trim();
     controllerPassword.clear();
-    //final AuthResponse res =
-    await login(email, password);
-    loggedProfile = await findProfileByEmail(email);
-    loginDateUpdate(email);
-    List<Conversation> c = await getMessagesAll(email);
-    nextScreen(c);
+    try {
+      await login(email, password);
+      loggedProfile = await findProfileByEmail(email);
+      loginDateUpdate(email);
+      List<Conversation> c = await getMessagesAll(email);
+      nextScreen(c);
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
   }
 
   void nextScreen(c) async {
@@ -52,72 +57,73 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: listViewCreator(
-        [
-          Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: SizedBox(
-              height: 300,
-              child: Image.asset(
-                'assets/images/logo2.png',
-              ),
-            ),
-          ),
-          MyTextField(
-              controllerUsername, 'Username', TextInputType.text, Icons.person),
-          SizedBox(
-            height: 50,
-            child: TextField(
-              controller: controllerPassword,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.none,
-              autocorrect: false,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(40.0),
+      body: Padding(
+        padding: tabletMode ? tabletEdgeInsets : phoneEdgeInsets,
+        child: listViewCreator(
+          [
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: SizedBox(
+                height: 300,
+                child: Image.asset(
+                  'assets/images/logo2.png',
                 ),
-                fillColor: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black
-                    : const Color.fromRGBO(235, 235, 235, 1),
-                labelText: 'Password',
-                labelStyle:
-                    TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
-                hintText: 'Password',
-                hintStyle:
-                    TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
-                filled: true,
-                suffixIcon: const Icon(Icons.password),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 60,
-          ),
-          TextButton(
-            child: Container(
-              height: 80,
-              width: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                color: Colors.blue,
+            MyTextField(controllerUsername, 'Username', TextInputType.text,
+                Icons.person),
+            SizedBox(
+              height: 50,
+              child: TextField(
+                controller: controllerPassword,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  fillColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : const Color.fromRGBO(235, 235, 235, 1),
+                  labelText: 'Password',
+                  labelStyle: TextStyle(
+                      fontSize: 16, color: Theme.of(context).hintColor),
+                  hintText: 'Password',
+                  hintStyle: TextStyle(
+                      fontSize: 16, color: Theme.of(context).hintColor),
+                  filled: true,
+                  suffixIcon: const Icon(Icons.password),
+                ),
               ),
-              child: Center(
-                child: Text(
-                  'Sign In',
-                  style: GoogleFonts.bebasNeue(
-                    fontSize: 30,
-                    color: Colors.white,
+            ),
+            addVerticalSpace(60),
+            TextButton(
+              child: Container(
+                height: 80,
+                width: 300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  color: Colors.blue,
+                ),
+                child: Center(
+                  child: Text(
+                    'Sign In',
+                    style: GoogleFonts.bebasNeue(
+                      fontSize: 30,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
+              onPressed: () {
+                doUserLogin();
+              },
             ),
-            onPressed: () {
-              doUserLogin();
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

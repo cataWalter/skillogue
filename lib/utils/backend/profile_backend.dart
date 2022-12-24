@@ -15,6 +15,7 @@ Profile parseProfile(List newProfileFields) {
     Color(newProfileFields[9]),
     List<String>.from(newProfileFields[7]),
     List<String>.from(newProfileFields[8]),
+    newProfileFields[10],
   );
 }
 

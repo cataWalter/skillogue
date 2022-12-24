@@ -1,11 +1,11 @@
-import 'dart:ui';
 
 class Conversation {
   String destEmail;
   String destName;
+  int destPoints;
   List<SingleMessage> messages;
 
-  Conversation(this.destEmail, this.destName, this.messages);
+  Conversation(this.destEmail, this.destName, this.destPoints, this.messages);
 }
 
 class SingleMessage {
@@ -13,9 +13,8 @@ class SingleMessage {
   String text;
   DateTime date;
   bool outgoing;
-  bool read;
 
-  SingleMessage(this.id, this.text, this.date, this.outgoing, this.read);
+  SingleMessage(this.id, this.text, this.date, this.outgoing);
 }
 
 Comparator<Conversation> sortConversationsByDate = (a, b) =>

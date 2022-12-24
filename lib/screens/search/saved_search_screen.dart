@@ -1,13 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile_search.dart';
+import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/colors.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/misc_backend.dart';
+import '../../utils/localization.dart';
 
 class SavedSearchScreen extends StatefulWidget {
   const SavedSearchScreen({Key? key}) : super(key: key);
@@ -23,7 +27,7 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           automaticallyImplyLeading: false,
-          elevation: 0,
+          elevation: 4,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -32,6 +36,16 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
                   : Colors.black,
             ),
             onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            appName,
+            style: GoogleFonts.bebasNeue(
+              fontSize: 28,
+              fontWeight: FontWeight.w300,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
           ),
         ),
         body: getSearchResults());
@@ -43,11 +57,9 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
         itemCount: savedProfileSearch.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.only(
-              left: 4,
-              right: 4,
-              bottom: 6,
-            ),
+            padding: tabletMode
+                ? const EdgeInsets.only(left: 200, right: 200, top: 10)
+                : phoneEdgeInsets,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
@@ -75,17 +87,22 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
                             return BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                               child: AlertDialog(
-                                title: const Text(
-                                    "Do you want to delete this saved search?"),
+                                title: Text(
+                                  AppLocale.deleteSearch.getString(context),
+                                ),
                                 actions: [
                                   TextButton(
-                                    child: const Text("No"),
+                                    child: Text(
+                                      AppLocale.no.getString(context),
+                                    ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                   ),
                                   TextButton(
-                                    child: const Text("Yes"),
+                                    child: Text(
+                                      AppLocale.yes.getString(context),
+                                    ),
                                     onPressed: () {
                                       deleteDatabase(index);
                                       setState(() {
@@ -130,7 +147,7 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "It's cold here! 🥶",
+                AppLocale.cold.getString(context),
                 style: GoogleFonts.bebasNeue(
                     fontSize: 20,
                     color: Theme.of(context).brightness == Brightness.dark
@@ -143,7 +160,7 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Save some searches and save time! :-)",
+                AppLocale.saveSomeSearches.getString(context),
                 style: GoogleFonts.bebasNeue(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -178,10 +195,12 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
       res.addAll(chippies(x.search.languages, 12));
     }
     if (x.search.genders.isNotEmpty) {
-      res.addAll(chippies(
-        x.search.genders,
-        12,
-      ));
+      res.addAll(
+        chippies(
+          x.search.genders,
+          12,
+        ),
+      );
     }
     if (x.search.city.isNotEmpty) {
       res.add(
