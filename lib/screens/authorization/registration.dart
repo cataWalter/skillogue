@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/guided_registration.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
 
+import '../../main.dart';
 import '../../utils/backend/authorization_backend.dart';
+import '../../utils/constants.dart';
+import '../../utils/localization.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -20,11 +24,12 @@ class _RegistrationState extends State<Registration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      body: Padding(
+        padding: tabletMode ? tabletEdgeInsets : phoneEdgeInsets,
+        child: listViewCreator(
+          [
             Padding(
-              padding: const EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.only(top: 20),
               child: SizedBox(
                 height: 300,
                 child: Image.asset(
@@ -33,8 +38,11 @@ class _RegistrationState extends State<Registration> {
               ),
             ),
             ListTile(
-              title: MyTextField(controllerEmail, "Email",
-                  TextInputType.emailAddress, Icons.email),
+              title: MyTextField(
+                  controllerEmail,
+                  AppLocale.email.getString(context),
+                  TextInputType.emailAddress,
+                  Icons.email),
             ),
             ListTile(
               title: SizedBox(
@@ -77,7 +85,7 @@ class _RegistrationState extends State<Registration> {
                 ),
                 child: Center(
                   child: Text(
-                    'Sign Up',
+                    AppLocale.signUp.getString(context),
                     style: GoogleFonts.bebasNeue(
                       fontSize: 30,
                       color: Colors.white,
@@ -110,12 +118,15 @@ class _RegistrationState extends State<Registration> {
     if (noUsersSameEmail) {
       nextScreen(email, password);
     } else {
-      f();
+      existingEmail();
     }
   }
 
-  f() {
-    getBlurDialog(context, "Error!",
-        "The email is already associated with an existing account!");
+  existingEmail() {
+    getBlurDialog(
+      context,
+      AppLocale.error.getString(context),
+      AppLocale.alreadyAssociatedEmail.getString(context),
+    );
   }
 }

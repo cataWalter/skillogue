@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:skillogue/utils/backend/profile_backend.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../entities/conversation.dart';
@@ -9,7 +10,7 @@ import '../../entities/profile_search.dart';
 import 'misc_backend.dart';
 
 Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
-    List<Conversation> conversations) async {
+    List<Conversation> conversations, context) async {
   PostgrestFilterBuilder query =
       supabase.from("profile").select().neq("email", searcher);
   if (curSearch.countries.isNotEmpty) {
@@ -37,7 +38,11 @@ Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
   final List<dynamic> data = await query;
   List<Profile> res = [];
   for (var y in data) {
-    res.add(parseProfile(parseLinkedMap(y)));
+    try {
+      res.add(parseProfile(parseLinkedMap(y)));
+    } catch (e) {
+      //showSnackBar(e.toString(), context);
+    }
   }
   List<Profile> newRes = [];
   bool noConversationWithThisProfile;

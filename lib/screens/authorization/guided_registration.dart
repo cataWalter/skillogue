@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
@@ -9,10 +10,13 @@ import 'package:skillogue/widgets/mono_dropdown.dart';
 import 'package:skillogue/widgets/multi_dropdown.dart';
 import 'package:skillogue/widgets/my_text_field.dart';
 
+import '../../main.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/constants.dart';
 import '../../utils/data.dart';
+import '../../utils/localization.dart';
 
 class GuidedRegistration extends StatefulWidget {
   final String email;
@@ -59,7 +63,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
         elevation: 0,
         title: Center(
           child: Text(
-            "Let's make this profile look good!",
+            AppLocale.lookGoodProfile.getString(context),
             style: GoogleFonts.bebasNeue(
               fontSize: 28,
               fontWeight: FontWeight.w300,
@@ -99,81 +103,88 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
             Profile registeredProfile = await findProfileByEmail(widget.email);
             nextScreen(registeredProfile);
           } else {
-            showSnackBar(
-                "😡 Don't make me angry! Fill that profile! 😡", context);
+            //showSnackBar(context.getString("fill profile"), context);
           }
         },
         icon: const Icon(Icons.save),
         label: const Text("Save"),
       ),
-      body: listViewCreator(
-        [
-          MyTextField(controllerFullName, "Full Name", TextInputType.text,
-              Icons.person),
-          MyTextField(
-              controllerAge, "Age", TextInputType.number, Icons.numbers),
-          MonoDropdown(
-            cities,
-            "Cities",
-            selectedCity.isNotEmpty
-                ? selectedCity
-                : "What's your current city?",
-            Icons.location_city,
-            (value) {
-              setState(() {
-                selectedCity = value;
-              });
-            },
-          ),
-          MonoDropdown(
-            countries,
-            "Countries",
-            selectedCountry.isNotEmpty
-                ? selectedCountry
-                : "From what country are you from?",
-            Icons.flag,
-            (value) {
-              setState(() {
-                selectedCountry = value;
-              });
-            },
-          ),
-          MonoDropdown(
-            genders,
-            "Genders",
-            selectedGender.isNotEmpty ? selectedGender : "What's your gender?",
-            Icons.female,
-            (value) {
-              setState(() {
-                selectedGender = value;
-              });
-            },
-          ),
-          MultiDropdown(
-            skills,
-            "What are your passions?",
-            "Passions",
-            selectedSkills,
-            Icons.sports_tennis,
-            (value) {
-              setState(() {
-                selectedSkills = value;
-              });
-            },
-          ),
-          MultiDropdown(
-            languages,
-            "What languages do you speak?",
-            "Languages",
-            selectedLanguages,
-            Icons.abc,
-            (value) {
-              setState(() {
-                selectedLanguages = value;
-              });
-            },
-          ),
-        ],
+      body: Padding(
+        padding: tabletMode ? tabletEdgeInsets : phoneEdgeInsets,
+        child: listViewCreator(
+          [
+            MyTextField(
+                controllerFullName,
+                AppLocale.personalName.getString(context),
+                TextInputType.text,
+                Icons.person),
+            MyTextField(controllerAge, AppLocale.age.getString(context),
+                TextInputType.number, Icons.numbers),
+            MonoDropdown(
+              cities,
+              AppLocale.cities.getString(context),
+              selectedCity.isNotEmpty
+                  ? selectedCity
+                  : AppLocale.yourCity.getString(context),
+              Icons.location_city,
+              (value) {
+                setState(() {
+                  selectedCity = value;
+                });
+              },
+            ),
+            MonoDropdown(
+              countries,
+              AppLocale.countries.getString(context),
+              selectedCountry.isNotEmpty
+                  ? selectedCountry
+                  : AppLocale.yourCountry.getString(context),
+              Icons.flag,
+              (value) {
+                setState(() {
+                  selectedCountry = value;
+                });
+              },
+            ),
+            MonoDropdown(
+              genders,
+              AppLocale.genders.getString(context),
+              selectedGender.isNotEmpty
+                  ? selectedGender
+                  : AppLocale.yourGender.getString(context),
+              Icons.female,
+              (value) {
+                setState(() {
+                  selectedGender = value;
+                });
+              },
+            ),
+            MultiDropdown(
+              skills,
+              AppLocale.yourPassions.getString(context),
+              AppLocale.skills.getString(context),
+              selectedSkills,
+              Icons.sports_tennis,
+              (value) {
+                setState(() {
+                  selectedSkills = value;
+                });
+              },
+            ),
+            MultiDropdown(
+              languages,
+              AppLocale.yourLanguages.getString(context),
+              AppLocale.languages.getString(context),
+              selectedLanguages,
+              Icons.abc,
+              (value) {
+                setState(() {
+                  selectedLanguages = value;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

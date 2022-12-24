@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:skillogue/screens/authorization/splash.dart';
 import 'package:skillogue/utils/backend/notifications.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/utils/localization.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
 
 ThemeManager themeManager = ThemeManager();
+final FlutterLocalization _localization = FlutterLocalization.instance;
+late bool tabletMode;
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   WidgetsFlutterBinding.ensureInitialized();
+  // The first language is your default language.
 
   //Hive
   await Hive.initFlutter();
@@ -34,7 +39,20 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     themeManager.addListener(themeListener);
+    _localization.init(
+      mapLocales: [
+        const MapLocale('en', AppLocale.en),
+        const MapLocale('it', AppLocale.it),
+        const MapLocale('scn', AppLocale.scn),
+      ],
+      initLanguageCode: 'en',
+    );
+    _localization.onTranslatedLanguage = _onTranslatedLanguage;
     super.initState();
+  }
+
+  void _onTranslatedLanguage(Locale? locale) {
+    setState(() {});
   }
 
   themeListener() {
@@ -45,18 +63,30 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_myBox.get(darkModeKey) != null){
+    if (_myBox.get(darkModeKey) != null) {
       bool darkModeEnabled = _myBox.get(darkModeKey);
-      if (darkModeEnabled){
+      if (darkModeEnabled) {
         themeManager.toggleDark();
       }
     }
+    _localization.translate('en');
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        themeMode: themeManager.themeMode,
-        title: appName,
-        home: const SplashScreen());
+      home: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 700) {
+            tabletMode = false;
+          } else {
+            tabletMode = true;
+          }
+          return const SplashScreen();
+        },
+      ),
+      debugShowCheckedModeBanner: false,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeManager.themeMode,
+      supportedLocales: _localization.supportedLocales,
+      localizationsDelegates: _localization.localizationsDelegates,
+    );
   }
 }

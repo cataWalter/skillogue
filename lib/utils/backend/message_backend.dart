@@ -15,11 +15,11 @@ Future<List<Conversation>> getMessagesAll(String email) async {
       await supabase.from('message').select().eq('receiver', email);
   for (LinkedHashMap x in sentMessages) {
     newConversations =
-        await addMessage(true, newConversations, parseMessage(x));
+        await addMessage12345(true, newConversations, parseMessage(x));
   }
   for (LinkedHashMap x in receivedMessages) {
     newConversations =
-        await addMessage(false, newConversations, parseMessage(x));
+        await addMessage12345(false, newConversations, parseMessage(x));
   }
   sortConversations(newConversations);
   return newConversations;
@@ -46,7 +46,7 @@ bool existsMessage(Message m, List<Conversation> conversations) {
   return false;
 }
 
-Future<List<Conversation>> addMessage(
+Future<List<Conversation>> addMessage12345(
     bool outgoing, List<Conversation> conversations, Message m) async {
   for (Conversation c in conversations) {
     for (SingleMessage x in c.messages) {
@@ -64,7 +64,7 @@ Future<List<Conversation>> addMessage(
     for (Conversation c in conversations) {
       if (c.destEmail == m.receiverEmail) {
         added = true;
-        c.messages.add(SingleMessage(m.id, m.text, m.date, true, false));
+        c.messages.add(SingleMessage(m.id, m.text, m.date, true));
         c.messages = sortMessages(c.messages);
         return conversations;
       }
@@ -74,14 +74,15 @@ Future<List<Conversation>> addMessage(
       conversations.add(Conversation(
           m.receiverEmail,
           destProfile.name,
-          [SingleMessage(m.id, m.text, m.date, true, false)]));
+          destProfile.points,
+          [SingleMessage(m.id, m.text, m.date, true)]));
       return conversations;
     }
   } else {
     for (Conversation c in conversations) {
       if (c.destEmail == m.senderEmail) {
         added = true;
-        c.messages.add(SingleMessage(m.id, m.text, m.date, false, false));
+        c.messages.add(SingleMessage(m.id, m.text, m.date, false));
         c.messages = sortMessages(c.messages);
         return conversations;
       }
@@ -91,7 +92,8 @@ Future<List<Conversation>> addMessage(
       conversations.add(Conversation(
           m.senderEmail,
           destProfile.name,
-          [SingleMessage(m.id, m.text, m.date, false, false)]));
+          destProfile.points,
+          [SingleMessage(m.id, m.text, m.date, false)]));
       return conversations;
     }
   }
@@ -102,7 +104,7 @@ Future<List<Conversation>> addMessage(
 parsePayload(payload, String email, List<Conversation> conversations) async {
   String eventType = payload.entries.elementAt(3).value;
   if (eventType == "INSERT") {
-    conversations = await addMessage(
+    conversations = await addMessage12345(
       payload.entries.elementAt(4).value.entries.elementAt(3).value == email,
       conversations,
       Message(
@@ -125,11 +127,11 @@ Future<List<Conversation>> getNewMessages(
       await supabase.from('message').select().eq('receiver', email);
   for (LinkedHashMap x in sentMessages) {
     newConversations =
-        await addMessage(true, newConversations, parseMessage(x));
+        await addMessage12345(true, newConversations, parseMessage(x));
   }
   for (LinkedHashMap x in receivedMessages) {
     newConversations =
-        await addMessage(false, newConversations, parseMessage(x));
+        await addMessage12345(false, newConversations, parseMessage(x));
   }
   sortConversations(newConversations);
   return newConversations;
