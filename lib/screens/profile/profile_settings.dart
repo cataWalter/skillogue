@@ -1,5 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
@@ -7,7 +9,7 @@ import 'package:skillogue/utils/constants.dart';
 
 import '../../main.dart';
 import '../../utils/colors.dart';
-import '../../widgets/appbar.dart';
+import '../../utils/localization.dart';
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -26,13 +28,48 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(47),
-        child: ThisAppBar(profile.name, false),
+        child: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    appName,
+                    style: GoogleFonts.bebasNeue(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    profile.name,
+                    style: GoogleFonts.bebasNeue(
+                        fontSize: 24,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+        padding: tabletMode ? tabletEdgeInsets : const EdgeInsets.fromLTRB(8, 0, 8, 0),
         children: <Widget>[
           ListTile(
-            title: const Text('Set your chat background color'),
+            title: Text(AppLocale.setColor.getString(context)),
             subtitle: Text(ColorTools.nameThatColor(selectedColor)),
             trailing: ColorIndicator(
               width: 44,
@@ -42,8 +79,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               onSelectFocus: false,
               onSelect: () async {
                 final Color colorBeforeDialog = selectedColor;
-                // Wait for the picker to close, if dialog was dismissed,
-                // then restore the color we had before it was opened.
                 if (!(await colorPickerDialog())) {
                   setState(() {
                     selectedColor = colorBeforeDialog;
@@ -53,8 +88,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ),
           ),
           SwitchListTile(
-            title: const Text('Turn ON for dark mode'),
-            subtitle: const Text('Turn OFF for light mode'),
+            title: Text(AppLocale.darkMode.getString(context)),
+            subtitle: Text(AppLocale.lightMode.getString(context)),
             value: isDark,
             onChanged: (bool value) {
               setState(() {
@@ -63,6 +98,19 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 (isDark
                     ? themeManager.toggleDark()
                     : themeManager.toggleLight());
+              });
+            },
+          ),
+          SwitchListTile(
+            title:
+                Text(AppLocale.artificialIntelligenceEnable.getString(context)),
+            subtitle: Text(
+                AppLocale.artificialIntelligenceDisabled.getString(context)),
+            value: artificialIntelligenceEnabled,
+            onChanged: (bool value) {
+              setState(() {
+                _myBox.put(artificialIntelligenceKey, value);
+                artificialIntelligenceEnabled = value;
               });
             },
           ),
@@ -76,14 +124,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => Home(
-                conversations, 0
-              ),
+              builder: (context) => Home(conversations, 0),
             ),
           );
         },
         icon: const Icon(Icons.save),
-        label: const Text("Save"),
+        label: Text(AppLocale.save.getString(context)),
       ),
     );
   }
@@ -99,15 +145,15 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       runSpacing: 5,
       wheelDiameter: 155,
       heading: Text(
-        'Select color',
+        AppLocale.selectColor.getString(context),
         style: Theme.of(context).textTheme.titleMedium,
       ),
       subheading: Text(
-        'Select color shade',
+        AppLocale.selectColorShade.getString(context),
         style: Theme.of(context).textTheme.titleMedium,
       ),
       wheelSubheading: Text(
-        'Selected color and its shades',
+        AppLocale.selectedColorShade.getString(context),
         style: Theme.of(context).textTheme.titleMedium,
       ),
       showMaterialName: true,

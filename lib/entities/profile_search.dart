@@ -1,5 +1,6 @@
-import 'package:skillogue/entities/profile.dart';
+import 'package:flutter/material.dart';
 
+import '../utils/misc_functions.dart';
 
 class ProfileSearch {
   List<String> skills = [];
@@ -35,21 +36,6 @@ class ProfileSearch {
   }
 }
 
-int getSkillIndex(String skill, List<String> skills) {
-  for (int i = 0; i < skills.length; i++) {
-    if (skills[i] == skill) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-double evaluateSimilarity(String skill1, String skill2, List<String> skills, List<List<double>> skillSimilarity) {
-  int a = getSkillIndex(skill1, skills);
-  int b = getSkillIndex(skill2, skills);
-  return skillSimilarity[a][b];
-}
-
 List<int> findMax(int howMany, List<double> points) {
   List<double> b = [...points];
   b.sort((b, a) => a.compareTo(b));
@@ -61,14 +47,20 @@ List<int> findMax(int howMany, List<double> points) {
   return res;
 }
 
-suggestFeature(List<String> mine, int howMany,  List<String> skills, List<List<double>> skillSimilarity) {
+suggestFeature(
+  List<String> mine,
+  int howMany,
+  List<String> myList,
+  List<List<double>> similarityMatrix,
+) {
   List<double> res1 = [];
   double res2;
-  for (String skill1 in skills) {
+  for (String s1 in myList) {
     res2 = 0;
-    if (!mine.contains(skill1)) {
-      for (String skill2 in mine) {
-        res2 += evaluateSimilarity(skill1, skill2, skills, skillSimilarity);
+    if (!mine.contains(s1)) {
+      for (String s2 in mine) {
+        res2 += similarityMatrix[getElementIndex(s1, myList)]
+            [getElementIndex(s2, myList)];
       }
     }
     res1.add(res2);
@@ -76,7 +68,35 @@ suggestFeature(List<String> mine, int howMany,  List<String> skills, List<List<d
   List<int> newSkillIndexes = findMax(howMany, res1);
   List<String> res = [];
   for (int x in newSkillIndexes) {
-    res.add(skills[x]);
+    res.add(myList[x]);
+  }
+  return res;
+}
+
+List<Widget> chippies(
+    List<String> skills, List<String> languages, double size) {
+  List<Widget> res = [];
+  for (String item in skills) {
+    res.add(
+      Chip(
+        backgroundColor: Colors.blue[800],
+        label: Text(
+          item,
+          style: TextStyle(fontSize: size, color: Colors.white),
+        ),
+      ),
+    );
+  }
+  for (String item in languages) {
+    res.add(
+      Chip(
+        backgroundColor: Colors.green,
+        label: Text(
+          item,
+          style: TextStyle(fontSize: size, color: Colors.white),
+        ),
+      ),
+    );
   }
   return res;
 }

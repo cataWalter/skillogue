@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
@@ -7,12 +10,15 @@ import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/localization.dart';
 import '../home_screen.dart';
 
 class SingleConversationScreen extends StatefulWidget {
-  final Conversation conversation;
+  final Conversation myConversation;
+  final bool showBackButton;
 
-  const SingleConversationScreen(this.conversation, {super.key});
+  const SingleConversationScreen(this.myConversation, this.showBackButton,
+      {super.key});
 
   @override
   State<SingleConversationScreen> createState() =>
@@ -21,6 +27,7 @@ class SingleConversationScreen extends StatefulWidget {
 
 class _SingleConversationScreenState extends State<SingleConversationScreen> {
   final newMessageController = TextEditingController();
+  final newSuggestionController = TextEditingController();
 
   checkNewMessages() async {
     while (mounted) {
@@ -51,27 +58,34 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
         elevation: 10,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: GestureDetector(
           onTap: () async {
             Profile lookupProfile =
-                await findProfileByEmail(widget.conversation.destEmail);
+                await findProfileByEmail(widget.myConversation.destEmail);
             nextScreenProfileOverview(lookupProfile);
           },
           child: Row(
             children: [
-              getAvatar(widget.conversation.destName, 20, 2),
+              if (widget.showBackButton)
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    addHorizontalSpace(20),
+                  ],
+                ),
+              getAvatar(widget.myConversation.destName,
+                  widget.myConversation.destPoints, 20, 2, 1.2, 20),
               addHorizontalSpace(10),
               Text(
-                widget.conversation.destName,
+                widget.myConversation.destName,
                 style: TextStyle(
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
@@ -95,55 +109,112 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                 case 0:
                   {
                     if (profile.blocked
-                        .contains(widget.conversation.destEmail)) {
+                        .contains(widget.myConversation.destEmail)) {
                       await supabase
                           .from('block')
                           .delete()
                           .eq('blocker', profile.email);
-                      profile.blocked.remove(widget.conversation.destEmail);
+                      profile.blocked.remove(widget.myConversation.destEmail);
                       setState(() {});
                     } else {
                       databaseInsert('block', {
                         'blocker': profile.email,
-                        'blocked': widget.conversation.destEmail
+                        'blocked': widget.myConversation.destEmail
                       });
-                      profile.blocked.add(widget.conversation.destEmail);
+                      profile.blocked.add(widget.myConversation.destEmail);
                       setState(() {});
                     }
                   }
                   break;
+                case 1:
+                  {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: AlertDialog(
+                            title: Text(AppLocale.report.getString(context)),
+                            content: TextField(
+                              controller: newSuggestionController,
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.none,
+                              autocorrect: false,
+                              minLines: 1,
+                              maxLines: 5,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(40.0),
+                                ),
+                                fillColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? const Color.fromRGBO(30, 30, 30, 1)
+                                    : const Color.fromRGBO(235, 235, 235, 1),
+                                hintText: "",
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).hintColor),
+                                filled: true,
+                                suffixIcon: const Icon(Icons.message,
+                                    color: Color.fromRGBO(129, 129, 129, 1)),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: Text(AppLocale.ok.getString(context)),
+                                onPressed: () {
+                                  String newTextMessage =
+                                      newSuggestionController.text.trim();
+                                  if (newTextMessage.isNotEmpty) {
+                                    newSuggestionController.clear();
+                                    DateTime curDate = DateTime.now();
+                                    databaseInsert('suggestion', {
+                                      'user': profile.email,
+                                      'advice':
+                                          "REPORT ${widget.myConversation.destName}: $newTextMessage",
+                                      'date': curDate.toString(),
+                                    });
+                                    showSnackBar(
+                                        AppLocale.safe.getString(context),
+                                        context);
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
               }
             },
             itemBuilder: (BuildContext context) => [
-              profile.blocked.contains(widget.conversation.destEmail)
-                  ? const PopupMenuItem(
+              profile.blocked.contains(widget.myConversation.destEmail)
+                  ? PopupMenuItem(
                       value: 0,
                       child: Text(
-                        "Unblock",
+                        AppLocale.unblock.getString(context),
                       ),
                     )
-                  : const PopupMenuItem(
+                  : PopupMenuItem(
                       value: 0,
                       child: Text(
-                        "Block",
+                        AppLocale.block.getString(context),
                       ),
                     ),
+              PopupMenuItem(
+                value: 1,
+                child: Text(
+                  AppLocale.report.getString(context),
+                ),
+              )
             ],
           ),
         ],
       ),
       body: Container(
-        /*decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.02, 0.9],
-            colors: [
-              Colors.blue,
-              profile.color,
-            ],
-          ),
-        ),*/
         color: profile.color,
         child: Column(
           children: [
@@ -155,7 +226,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                   order: GroupedListOrder.DESC,
                   useStickyGroupSeparators: true,
                   floatingHeader: true,
-                  elements: widget.conversation.messages,
+                  elements: widget.myConversation.messages,
                   groupBy: (message) => DateTime(
                       message.date.year, message.date.month, message.date.day),
                   groupHeaderBuilder: (message) => SizedBox(
@@ -200,7 +271,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                             fillColor: Colors.black,
                             focusColor: Colors.black,
                             hoverColor: Colors.black,
-                            hintText: "Type a message...",
+                            hintText: AppLocale.typeMessage.getString(context),
                             hintStyle: TextStyle(color: Colors.grey[300]),
                             border: InputBorder.none,
                           ),
@@ -226,12 +297,12 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                             DateTime curDate = DateTime.now();
                             databaseInsert('message', {
                               'sender': profile.email,
-                              'receiver': widget.conversation.destEmail,
+                              'receiver': widget.myConversation.destEmail,
                               'text': newTextMessage,
                               'date': curDate.toString(),
                             });
-                            widget.conversation.messages.add(SingleMessage(
-                                0, newTextMessage, curDate, true, false));
+                            widget.myConversation.messages.add(SingleMessage(
+                                0, newTextMessage, curDate, true));
                             setState(() {});
                           }
                         },
