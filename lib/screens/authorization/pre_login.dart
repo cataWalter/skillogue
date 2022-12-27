@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/login.dart';
 import 'package:skillogue/screens/authorization/registration.dart';
 import 'package:skillogue/utils/misc_functions.dart';
+
+import '../../utils/localization.dart';
 
 class PreLogin extends StatefulWidget {
   const PreLogin({Key? key}) : super(key: key);
@@ -21,7 +24,7 @@ class _PreLoginState extends State<PreLogin> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                addVerticalSpace(100),
+                //addVerticalSpace(100),
                 Image.asset(
                   'assets/images/logo2.png',
                 ),
@@ -30,11 +33,12 @@ class _PreLoginState extends State<PreLogin> {
                     height: 80,
                     width: 300,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: Colors.blue),
+                      borderRadius: BorderRadius.circular(40),
+                      color: Colors.blue,
+                    ),
                     child: Center(
                       child: Text(
-                        'Sign In',
+                        AppLocale.signIn.getString(context),
                         style: GoogleFonts.bebasNeue(
                           fontSize: 30,
                           color: Colors.white,
@@ -61,7 +65,8 @@ class _PreLoginState extends State<PreLogin> {
                         color: Colors.teal[300]),
                     child: Center(
                       child: Text(
-                        'Sign Up',
+                        AppLocale.signUp.getString(context),
+                        //context.getString("sign up"),
                         style: GoogleFonts.bebasNeue(
                           fontSize: 30,
                           color: Colors.white,

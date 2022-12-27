@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+
+import 'localization.dart';
 
 String initials(String fullName) {
   if (fullName.length < 3) {
@@ -31,7 +34,7 @@ Future<void> pause() async {
   await Future.delayed(const Duration(seconds: 1));
 }
 
-List<Widget> chippies(List<String> toChip, double size) {
+List<Widget> profileChippies(List<String> toChip, double size) {
   List<Widget> res = [];
   for (String s in toChip) {
     res.add(Chip(
@@ -69,6 +72,15 @@ popScreen(context) {
   Navigator.of(context).pop();
 }
 
+int getElementIndex(el, myList) {
+  for (int i = 0; i < myList.length; i++) {
+    if (myList[i] == el) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 void getBlurDialog(context, title, message) {
   showDialog(
     context: context,
@@ -80,7 +92,9 @@ void getBlurDialog(context, title, message) {
           content: Text(message),
           actions: [
             TextButton(
-              child: const Text("OK"),
+              child: Text(
+                AppLocale.ok.getString(context),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -127,3 +141,9 @@ Container limitMaxWidth(Widget x, int minWidth, int maxWidth) {
     child: x,
   );
 }
+
+/*
+context.getString("string")
+context.getString("string"),
+context.getString("string");
+ */
