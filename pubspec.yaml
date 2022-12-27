@@ -15,7 +15,7 @@ dependencies:
   google_fonts: ^3.0.1
   grouped_list: ^5.1.2
   multi_select_flutter: ^4.1.2
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.11.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   auto_size_text: ^3.0.0
@@ -27,8 +27,9 @@ dependencies:
   drop_down_list: ^0.0.4
   numberpicker: ^2.1.1
   random_avatar: ^0.0.7
-  flutter_local_notifications: ^9.5.3+1
+  flutter_local_notifications: ^13.0.0
   flutter_localization: ^0.1.9
+  onesignal_flutter: ^3.5.0
 
 dev_dependencies:
   #flutter_test:
