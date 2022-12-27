@@ -10,10 +10,8 @@ import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/localization.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
 
-import 'package:skillogue/utils/notifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:skillogue/utils/backend/misc_backend.dart';
-import 'package:provider/provider.dart' as provider;
+
 
 ThemeManager themeManager = ThemeManager();
 final FlutterLocalization _localization = FlutterLocalization.instance;
