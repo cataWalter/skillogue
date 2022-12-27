@@ -1,8 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tzData;
+import 'package:skillogue/utils/backend/misc_backend.dart';
 
+/*final messaging = FirebaseMessaging.instance;
 
 class Notifications {
   //static final Notifications _notificationsMessage = Notifications._internal();
@@ -83,3 +86,4 @@ class Notifications {
 
 
 }
+*/

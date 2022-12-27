@@ -1,6 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:skillogue/entities/conversation.dart';
 import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
@@ -17,7 +20,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
-import '../utils/backend/notifications.dart';
+import '../utils/notifications.dart';
 import '../utils/backend/profile_search_backend.dart';
 
 List<Conversation> conversations = [];
@@ -37,6 +40,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final _myBox = Hive.box(localDatabase);
+  static final String oneSignalAppId = "b56dbfe1-d278-47ff-a5aa-59a5b8cfd617";
+
 
   @override
   void initState() {
@@ -44,7 +49,8 @@ class _HomeState extends State<Home> {
     conversationUpdate();
     findBlocked();
     savedSearchesUpdate();
-    pushNotifications();
+    initPlatformState();
+    //pushNotifications();
   }
 
   savedSearchesUpdate() async {
@@ -239,14 +245,43 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void pushNotifications(){
-      Notifications().addNotification(
+  Future<void> initPlatformState() async {
+    OneSignal.shared.setAppId(oneSignalAppId);
+    OneSignal.shared
+        .promptUserForPushNotificationPermission()
+        .then((accepted) {});
+  }
+
+
+  /*void pushNotifications() async{
+      /*Notifications().addNotification(
         'New messages',
         'You have ${countUnanswered()} unread messages',
         DateTime.now().millisecondsSinceEpoch + 1000,
         channel: 'testing',
-      );
+      );*/
+
+    NotificationSettings settings = await messaging.requestPermission(
+        alert:true,
+        badge: false,
+        provisional: false,
+        sound:true
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized){
+      if(kDebugMode){
+        print('User granted permission');
+      }
+      String? token = await messaging.getToken();
+      if(token != null){
+        await supabase.rpc('update_fcm_key', params:{'key': token}).execute();
+      }
+    } else{
+      if(kDebugMode){
+        print('User declined or has not accepted permission');
+      }
+    }
 
 
-  }
+  }*/
 }
