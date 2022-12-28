@@ -8,6 +8,7 @@ import 'package:skillogue/screens/authorization/splash.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/localization.dart';
+import 'package:skillogue/utils/notifications.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
 
 import 'package:skillogue/utils/backend/misc_backend.dart';
@@ -28,7 +29,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox(localDatabase);
 
-  //await Notifications().setup();
+  await LocalNoticeService().setup();
 
   runApp(const MyApp());
 }
