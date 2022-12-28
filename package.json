@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.2.2",
+    "react-onesignal": "^2.0.4",
+    "stripe": "^11.5.0"
+  },
+  "devDependencies": {
+    "supabase": "^1.27.8"
+  }
+}

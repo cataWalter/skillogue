@@ -25,6 +25,7 @@ import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
 import '../utils/backend/profile_search_backend.dart';
 import '../utils/misc_functions.dart';
+import '../utils/notifications.dart';
 import 'authorization/pre_login.dart';
 
 List<Conversation> conversations = [];
@@ -55,6 +56,7 @@ class _HomeState extends State<Home> {
     findBlocked();
     savedSearchesUpdate();
     initPlatformState();
+    //newMessageNotification();
   }
 
   artificialIntelligenceUpdate() {
@@ -469,6 +471,7 @@ class _HomeState extends State<Home> {
           ),
         );
         setState(() {});
+        newMessageNotification();
       },
     ).subscribe();
 
@@ -486,5 +489,25 @@ class _HomeState extends State<Home> {
         .promptUserForPushNotificationPermission()
         .then((accepted) {});
   }
+  void newMessageNotification(){
+    if (newMessages()){
+      LocalNoticeService().addNotification(
+        'New messages',
+        'Go ahead someone is texting you!',
+        DateTime.now().millisecondsSinceEpoch + 1000,
+        channel: 'chatting',
+      );
+    }
+
+    /*LocalNoticeService().addNotification(
+      'Testing',
+      'Go ahead someone is texting you!',
+      DateTime.now().millisecondsSinceEpoch + 1000,
+      channel: 'chatting',
+    );*/
+
+  }
+
+
 
 }
