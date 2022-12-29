@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/widgets/my_text_field.dart';
+import 'package:skillogue/utils/localization.dart';
 
 import '../../entities/conversation.dart';
 import '../../entities/profile.dart';
@@ -9,6 +9,7 @@ import '../../main.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/backend/message_backend.dart';
 import '../../utils/backend/profile_backend.dart';
+import '../../utils/constants.dart';
 import '../../utils/misc_functions.dart';
 import '../home_screen.dart';
 
@@ -20,17 +21,18 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final controllerUsername = TextEditingController();
+  final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
   late Profile loggedProfile;
+  bool obscurePassword = true;
 
   void doUserLogin() async {
-    if (controllerUsername.text.trim().isEmpty ||
+    if (controllerEmail.text.trim().isEmpty ||
         controllerPassword.text.trim().isEmpty) {
       return;
     }
-    String email = controllerUsername.text.trim();
-    controllerUsername.clear();
+    String email = controllerEmail.text.trim();
+    controllerEmail.clear();
     String password = controllerPassword.text.trim();
     controllerPassword.clear();
     try {
@@ -70,8 +72,28 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            MyTextField(controllerUsername, 'Username', TextInputType.text,
-                Icons.person),
+            SizedBox(
+              height: 50,
+              child: TextField(
+                controller: controllerEmail,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  fillColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : const Color.fromRGBO(235, 235, 235, 1),
+                  hintText: AppLocale.email.getString(context),
+                  hintStyle: TextStyle(
+                      fontSize: 16, color: Theme.of(context).hintColor),
+                  filled: true,
+                ),
+              ),
+            ),
             SizedBox(
               height: 50,
               child: TextField(
@@ -79,7 +101,7 @@ class _LoginState extends State<Login> {
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.none,
                 autocorrect: false,
-                obscureText: true,
+                obscureText: obscurePassword,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
@@ -95,7 +117,23 @@ class _LoginState extends State<Login> {
                   hintStyle: TextStyle(
                       fontSize: 16, color: Theme.of(context).hintColor),
                   filled: true,
-                  suffixIcon: const Icon(Icons.password),
+                  suffix: obscurePassword
+                      ? TextButton(
+                          onPressed: () {
+                            setState(() {
+                              obscurePassword = false;
+                            });
+                          },
+                          child: const Text("Show"),
+                        )
+                      : TextButton(
+                          onPressed: () {
+                            setState(() {
+                              obscurePassword = true;
+                            });
+                          },
+                          child: const Text("Hide"),
+                        ),
                 ),
               ),
             ),

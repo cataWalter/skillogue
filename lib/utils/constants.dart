@@ -3,10 +3,9 @@ import 'package:flutter/cupertino.dart';
 const appName = "SKILLOGUE";
 
 const loggedProfileKey = 0;
-
 const artificialIntelligenceKey = 1;
-
-const darkModeKey = 12;
+const languageKey = 2;
+const darkModeKey = 3;
 
 const newFunctionalityMessage = "COMING SOON! :-)";
 

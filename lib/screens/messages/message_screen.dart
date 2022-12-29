@@ -21,16 +21,15 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> {
   int conversationIndex = 0;
 
+
   @override
   Widget build(BuildContext context) {
-    List<Conversation> c = conversations;
     if (conversations.isNotEmpty) {
       conversations = sortConversations(conversations);
       return tabletMode
           ? Row(children: [
               Expanded(
                 flex: 2,
-
                 child: ListView.builder(
                   itemCount: conversations.length,
                   itemBuilder: ((context, index) =>
@@ -100,6 +99,7 @@ class _MessageScreenState extends State<MessageScreen> {
   Widget tabletChatCard(Conversation curConversation, int index) {
     return InkWell(
       onTap: () {
+        setState(() {});
         profile.blockedBy.contains(curConversation.destEmail)
             ? getBlurDialogImage(
                 context,

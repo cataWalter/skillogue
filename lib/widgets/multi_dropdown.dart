@@ -22,7 +22,7 @@ class MultiDropdown extends StatefulWidget {
 }
 
 class _MultiDropdownState extends State<MultiDropdown> {
-  late List<String> selectedValues;
+  late List<String> selectedValues = widget.initialValues;
 
   @override
   Widget build(BuildContext context) {

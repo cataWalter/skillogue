@@ -65,7 +65,7 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
           child: Text(
             AppLocale.lookGoodProfile.getString(context),
             style: GoogleFonts.bebasNeue(
-              fontSize: 28,
+              fontSize: 20,
               fontWeight: FontWeight.w300,
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
@@ -77,7 +77,6 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          var parameters = {};
           if (selectedCountry.isNotEmpty &&
               selectedGender.isNotEmpty &&
               selectedCity.isNotEmpty &&
@@ -87,19 +86,21 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
               int.parse(controllerAge.text) >= 18 &&
               int.parse(controllerAge.text) <= 99) {
             await registration(widget.email, widget.password);
-            databaseInsert('profile', {'email': widget.email});
-            parameters.addAll({'country': selectedCountry});
-            parameters.addAll({'gender': selectedGender});
-            parameters.addAll({'city': selectedCity});
-            parameters.addAll({'name': controllerFullName.text});
-            parameters.addAll({'languages': selectedLanguages});
-            parameters.addAll({'skills': selectedSkills});
-            parameters.addAll({'age': int.parse(controllerAge.text)});
-            parameters.addAll({'color': getRandomDarkColor().value});
-            await supabase
-                .from('profile')
-                .update(parameters)
-                .eq('email', widget.email);
+            databaseInsert(
+              'profile',
+              {
+                'email': widget.email,
+                'country': selectedCountry,
+                'gender': selectedGender,
+                'city': selectedCity,
+                'name': controllerFullName.text,
+                'languages': selectedLanguages,
+                'skills': selectedSkills,
+                'age': int.parse(controllerAge.text),
+                'color': getRandomDarkColor().value,
+                'points': 0
+              },
+            );
             Profile registeredProfile = await findProfileByEmail(widget.email);
             nextScreen(registeredProfile);
           } else {

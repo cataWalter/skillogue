@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  app_links
+  app_links_windows
   flutter_localization
   url_launcher_windows
 )

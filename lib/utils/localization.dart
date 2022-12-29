@@ -1,11 +1,8 @@
-/*
-AppLocale.s.getString(context)
-AppLocale.s.getString(context),
-Text(AppLocale.s.getString(context))
- */
+import '../main.dart';
+import 'misc_functions.dart';
 
 mixin AppLocale {
-  static const String signIn = "Sign in";
+  static const String signIn = "";
   static const String signUp = "Sign up";
   static const String username = "Username";
   static const String password = "Password";
@@ -101,6 +98,8 @@ mixin AppLocale {
       "We found your profile! Hold on, just a sec. 👩🏻‍🎤";
   static const String report = "Report";
   static const String safe = "The world is a safer place now! 🦸🏾";
+  static const String localizatorQuestion = "What's the app language?";
+
   static const Map<String, dynamic> en = {
     signIn: "Sign in",
     signUp: "Sign up",
@@ -189,6 +188,7 @@ mixin AppLocale {
     profileFound: "We found your profile! Hold on, just a sec. 👩🏻‍🎤",
     report: "Report",
     safe: "The world is a safer place now! 🦸🏾",
+    localizatorQuestion: "What's the app language?",
   };
 
   static const Map<String, dynamic> it = {
@@ -297,7 +297,7 @@ mixin AppLocale {
     save: "Salva",
     fillProfile: "Non farmi arrabbiare! Riempi quel profilo! 😡",
     by: "Di",
-    skills: "Abilità",
+    skills: "Chiddu chi sapi fari",
     languages: "Lingue",
     alreadyAssociatedEmail:
         "Questa email è già associata con un altro account!",
@@ -360,4 +360,30 @@ mixin AppLocale {
     thanksAcknowledgments:
         "Grazie a tutti quelli che hanno la pazienza di darmi le loro opinioni!",
   };
+}
+
+mapTranslation(value, context) {
+  switch (value) {
+    case "English":
+      {
+        localizator.translate('en');
+      }
+      break;
+    case "Italian":
+      {
+        localizator.translate('it');
+      }
+      break;
+    case "Sicilian":
+      {
+        localizator.translate('scn');
+      }
+      break;
+    default:
+      {
+        showSnackBar(
+            "$value translation has not been implemented yet! Still, if you wish, you can participate to its translation by texting us!",
+            context);
+      }
+  }
 }

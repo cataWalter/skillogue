@@ -216,6 +216,24 @@ class _SearchScreenState extends State<SearchScreen> {
                 });
               },
             ),
+            /*CupertinoRangeSlider(
+              minValue: 18.roundToDouble(),
+              maxValue: 99.roundToDouble(),
+              min: 1.0,
+              max: 100.0,
+              onMinChanged: (minVal) {
+                setState(() {
+                  //min = minVal.round();
+                  //widget.onMinValueChanged(minValue);
+                });
+              },
+              onMaxChanged: (maxVal) {
+                setState(() {
+                  //maxValue = maxVal.round();
+                  //widget.onMaxValueChanged(maxValue);
+                });
+              },
+            )*/
           ],
         ),
       ),

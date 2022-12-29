@@ -11,9 +11,8 @@ import 'package:skillogue/entities/profile.dart';
 import 'package:skillogue/entities/profile_search.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
+import 'package:skillogue/screens/profile/profile_screen.dart';
 import 'package:skillogue/screens/profile/profile_settings.dart';
-import 'package:skillogue/screens/profile/profile_show.dart';
-import 'package:skillogue/screens/profile/update_profile_info_screen.dart';
 import 'package:skillogue/screens/search/profile_search_screen.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
 import 'package:skillogue/utils/constants.dart';
@@ -23,9 +22,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../entities/message.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
+import '../utils/backend/notifications.dart';
 import '../utils/backend/profile_search_backend.dart';
 import '../utils/misc_functions.dart';
-import '../utils/notifications.dart';
 import 'authorization/pre_login.dart';
 
 List<Conversation> conversations = [];
@@ -56,7 +55,7 @@ class _HomeState extends State<Home> {
     findBlocked();
     savedSearchesUpdate();
     initPlatformState();
-    newMessageNotification();
+    //newMessageNotification();
   }
 
   artificialIntelligenceUpdate() {
@@ -206,7 +205,7 @@ class _HomeState extends State<Home> {
     switch (widget.currentPageIndex) {
       case searchIndex:
         {
-          return SearchScreen();
+          return const SearchScreen();
         }
       case profileIndex:
         {
@@ -244,23 +243,13 @@ class _HomeState extends State<Home> {
                         case 0:
                           {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      UpdateProfileInfoScreen(profile)),
-                            );
-                          }
-                          break;
-                        case 1:
-                          {
-                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ProfileSettings()));
+                                        ProfileSettings(profile)));
                           }
                           break;
-                        case 2:
+                        case 3:
                           {
                             signOut();
                             _myBox.delete(loggedProfileKey);
@@ -272,14 +261,14 @@ class _HomeState extends State<Home> {
                                     builder: (context) => const PreLogin()));
                           }
                           break;
-                        case 3:
+                        case 1:
                           {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return BackdropFilter(
                                   filter:
-                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                   child: AlertDialog(
                                     title: Text(AppLocale.suggestionTitle
                                         .getString(context)),
@@ -287,7 +276,7 @@ class _HomeState extends State<Home> {
                                       controller: newSuggestionController,
                                       keyboardType: TextInputType.text,
                                       textCapitalization:
-                                          TextCapitalization.none,
+                                      TextCapitalization.none,
                                       autocorrect: false,
                                       minLines: 1,
                                       maxLines: 5,
@@ -295,15 +284,15 @@ class _HomeState extends State<Home> {
                                         border: OutlineInputBorder(
                                           borderSide: BorderSide.none,
                                           borderRadius:
-                                              BorderRadius.circular(40.0),
+                                          BorderRadius.circular(40.0),
                                         ),
                                         fillColor:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? const Color.fromRGBO(
-                                                    30, 30, 30, 1)
-                                                : const Color.fromRGBO(
-                                                    235, 235, 235, 1),
+                                        Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? const Color.fromRGBO(
+                                            30, 30, 30, 1)
+                                            : const Color.fromRGBO(
+                                            235, 235, 235, 1),
                                         hintText: AppLocale.whatSuggestion
                                             .getString(context),
                                         hintStyle: TextStyle(
@@ -321,8 +310,8 @@ class _HomeState extends State<Home> {
                                             AppLocale.ok.getString(context)),
                                         onPressed: () {
                                           String newTextMessage =
-                                              newSuggestionController.text
-                                                  .trim();
+                                          newSuggestionController.text
+                                              .trim();
                                           if (newTextMessage.isNotEmpty) {
                                             newSuggestionController.clear();
                                             DateTime curDate = DateTime.now();
@@ -347,7 +336,7 @@ class _HomeState extends State<Home> {
                             );
                           }
                           break;
-                        case 4:
+                        case 2:
                           {
                             getBlurDialog(
                                 context,
@@ -393,7 +382,7 @@ class _HomeState extends State<Home> {
                   ),
                 ],
               ),
-              body: ProfileShow(profile, true));
+              body: ProfileScreen(profile, true));
         }
       case messagesIndex:
         {
@@ -471,6 +460,7 @@ class _HomeState extends State<Home> {
           ),
         );
         setState(() {});
+        newMessageNotification();
       },
     ).subscribe();
 
@@ -481,16 +471,15 @@ class _HomeState extends State<Home> {
     }
   }
 
-  static final String oneSignalAppId = "b56dbfe1-d278-47ff-a5aa-59a5b8cfd617";
+  static const String oneSignalAppId = "b56dbfe1-d278-47ff-a5aa-59a5b8cfd617";
   Future<void> initPlatformState() async {
     OneSignal.shared.setAppId(oneSignalAppId);
     OneSignal.shared
         .promptUserForPushNotificationPermission()
         .then((accepted) {});
   }
-
   void newMessageNotification(){
-    if (countUnanswered() != 0){
+    if (newMessages()){
       LocalNoticeService().addNotification(
         'New messages',
         'Go ahead someone is texting you!',
@@ -499,12 +488,12 @@ class _HomeState extends State<Home> {
       );
     }
 
-    LocalNoticeService().addNotification(
+    /*LocalNoticeService().addNotification(
       'Testing',
-      'testing body',
+      'Go ahead someone is texting you!',
       DateTime.now().millisecondsSinceEpoch + 1000,
-      channel: 'testing',
-    );
+      channel: 'chatting',
+    );*/
 
   }
 

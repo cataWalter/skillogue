@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/screens/profile/profile_show.dart';
+import 'package:skillogue/screens/profile/profile_screen.dart';
 
 class ProfileOverview extends StatelessWidget {
   final Profile profile;
@@ -24,7 +24,7 @@ class ProfileOverview extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: ProfileShow(profile, false),
+      body: ProfileScreen(profile, false),
     );
   }
 }

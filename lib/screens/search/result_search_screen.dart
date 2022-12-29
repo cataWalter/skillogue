@@ -15,9 +15,9 @@ import '../../utils/localization.dart';
 import '../home_screen.dart';
 
 class ResultSearchScreen extends StatefulWidget {
-  List<Profile> profileSearchResults;
+  final List<Profile> profileSearchResults;
 
-  ResultSearchScreen(this.profileSearchResults, {super.key});
+  const ResultSearchScreen(this.profileSearchResults, {super.key});
 
   @override
   State<ResultSearchScreen> createState() => _ResultSearchScreenState();
@@ -68,6 +68,13 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
                 child: Column(
                   children: [
                     ListTile(
+                      leading: getAvatar(
+                          widget.profileSearchResults[index].name,
+                          widget.profileSearchResults[index].points,
+                          30,
+                          1.5,
+                          0,
+                          10),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -97,25 +104,25 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
                             ],
                           ),
                           addVerticalSpace(4),
+                          profileDescription(
+                              widget.profileSearchResults[index],
+                              12,
+                              Colors.white.withOpacity(0.8),
+                              true,
+                              true),
                         ],
                       ),
-                      subtitle: Column(
-                        children: [
-                          profileDescription(widget.profileSearchResults[index],
-                              12, Colors.white.withOpacity(0.8), true, true),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Wrap(
-                              spacing: 3.0,
-                              runSpacing: -10,
-                              alignment: WrapAlignment.start,
-                              children: chippies(
-                                  widget.profileSearchResults[index].skills,
-                                  widget.profileSearchResults[index].languages,
-                                  12.0),
-                            ),
-                          ),
-                        ],
+                      subtitle: Align(
+                        alignment: Alignment.center,
+                        child: Wrap(
+                          spacing: 3.0,
+                          runSpacing: -10,
+                          alignment: WrapAlignment.start,
+                          children: chippies(
+                              widget.profileSearchResults[index].skills,
+                              widget.profileSearchResults[index].languages,
+                              12.0),
+                        ),
                       ),
                     ),
                   ],
