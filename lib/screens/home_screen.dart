@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
     findBlocked();
     savedSearchesUpdate();
     initPlatformState();
-    //newMessageNotification();
+    newMessageNotification();
   }
 
   artificialIntelligenceUpdate() {
@@ -471,7 +471,6 @@ class _HomeState extends State<Home> {
           ),
         );
         setState(() {});
-        newMessageNotification();
       },
     ).subscribe();
 
@@ -489,8 +488,9 @@ class _HomeState extends State<Home> {
         .promptUserForPushNotificationPermission()
         .then((accepted) {});
   }
+
   void newMessageNotification(){
-    if (newMessages()){
+    if (countUnanswered() != 0){
       LocalNoticeService().addNotification(
         'New messages',
         'Go ahead someone is texting you!',
@@ -499,12 +499,12 @@ class _HomeState extends State<Home> {
       );
     }
 
-    /*LocalNoticeService().addNotification(
+    LocalNoticeService().addNotification(
       'Testing',
-      'Go ahead someone is texting you!',
+      'testing body',
       DateTime.now().millisecondsSinceEpoch + 1000,
-      channel: 'chatting',
-    );*/
+      channel: 'testing',
+    );
 
   }
 
