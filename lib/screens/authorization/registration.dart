@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skillogue/screens/authorization/guided_registration.dart';
-import 'package:skillogue/utils/misc_functions.dart';
-import 'package:skillogue/widgets/my_text_field.dart';
 
 import '../../main.dart';
 import '../../utils/backend/authorization_backend.dart';
 import '../../utils/constants.dart';
 import '../../utils/localization.dart';
+import '../../utils/misc_functions.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -20,6 +19,7 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   final controllerPassword = TextEditingController();
   final controllerEmail = TextEditingController();
+  bool obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,39 +37,68 @@ class _RegistrationState extends State<Registration> {
                 ),
               ),
             ),
-            ListTile(
-              title: MyTextField(
-                  controllerEmail,
-                  AppLocale.email.getString(context),
-                  TextInputType.emailAddress,
-                  Icons.email),
-            ),
-            ListTile(
-              title: SizedBox(
-                height: 50,
-                child: TextField(
-                  controller: controllerPassword,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.none,
-                  autocorrect: false,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(40.0),
-                    ),
-                    fillColor: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black
-                        : const Color.fromRGBO(235, 235, 235, 1),
-                    labelText: 'Password',
-                    labelStyle: TextStyle(
-                        fontSize: 16, color: Theme.of(context).hintColor),
-                    hintText: 'Password',
-                    hintStyle: TextStyle(
-                        fontSize: 16, color: Theme.of(context).hintColor),
-                    filled: true,
-                    suffixIcon: const Icon(Icons.password),
+            SizedBox(
+              height: 50,
+              child: TextField(
+                controller: controllerEmail,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(40.0),
                   ),
+                  fillColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : const Color.fromRGBO(235, 235, 235, 1),
+                  hintText: AppLocale.email.getString(context),
+                  hintStyle: TextStyle(
+                      fontSize: 16, color: Theme.of(context).hintColor),
+                  filled: true,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 50,
+              child: TextField(
+                controller: controllerPassword,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.none,
+                autocorrect: false,
+                obscureText: obscurePassword,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  fillColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : const Color.fromRGBO(235, 235, 235, 1),
+                  labelText: 'Password',
+                  labelStyle: TextStyle(
+                      fontSize: 16, color: Theme.of(context).hintColor),
+                  hintText: 'Password',
+                  hintStyle: TextStyle(
+                      fontSize: 16, color: Theme.of(context).hintColor),
+                  filled: true,
+                  suffix: obscurePassword
+                      ? TextButton(
+                          onPressed: () {
+                            setState(() {
+                              obscurePassword = false;
+                            });
+                          },
+                          child: const Text("Show"),
+                        )
+                      : TextButton(
+                          onPressed: () {
+                            setState(() {
+                              obscurePassword = true;
+                            });
+                          },
+                          child: const Text("Hide"),
+                        ),
                 ),
               ),
             ),

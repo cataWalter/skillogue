@@ -1,23 +1,18 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:skillogue/screens/authorization/splash.dart';
-
+import 'package:skillogue/utils/backend/notifications.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/localization.dart';
-import 'package:skillogue/utils/notifications.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
 
-import 'package:skillogue/utils/backend/misc_backend.dart';
-
-
 ThemeManager themeManager = ThemeManager();
-final FlutterLocalization _localization = FlutterLocalization.instance;
 late bool tabletMode;
 
+final FlutterLocalization localizator = FlutterLocalization.instance;
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -28,14 +23,13 @@ void main() async {
   //Hive
   await Hive.initFlutter();
   await Hive.openBox(localDatabase);
-
   await LocalNoticeService().setup();
-
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -46,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     themeManager.addListener(themeListener);
-    _localization.init(
+    localizator.init(
       mapLocales: [
         const MapLocale('en', AppLocale.en),
         const MapLocale('it', AppLocale.it),
@@ -54,7 +48,7 @@ class _MyAppState extends State<MyApp> {
       ],
       initLanguageCode: 'en',
     );
-    _localization.onTranslatedLanguage = _onTranslatedLanguage;
+    localizator.onTranslatedLanguage = _onTranslatedLanguage;
     super.initState();
   }
 
@@ -76,7 +70,6 @@ class _MyAppState extends State<MyApp> {
         themeManager.toggleDark();
       }
     }
-    _localization.translate('en');
     return MaterialApp(
       home: LayoutBuilder(
         builder: (context, constraints) {
@@ -92,8 +85,8 @@ class _MyAppState extends State<MyApp> {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
-      supportedLocales: _localization.supportedLocales,
-      localizationsDelegates: _localization.localizationsDelegates,
+      supportedLocales: localizator.supportedLocales,
+      localizationsDelegates: localizator.localizationsDelegates,
     );
   }
 }

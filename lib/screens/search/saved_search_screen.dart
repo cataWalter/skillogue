@@ -59,7 +59,7 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
           return Padding(
             padding: tabletMode
                 ? const EdgeInsets.only(left: 200, right: 200, top: 10)
-                : phoneEdgeInsets,
+                : const EdgeInsets.only(left: 10, right: 10, top: 10),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),

@@ -1,4 +1,3 @@
-
 class Conversation {
   String destEmail;
   String destName;

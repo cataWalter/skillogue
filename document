@@ -1,0 +1,30 @@
+Introduction
+
+Software architecture
+    whimsical.com
+
+Use cases
+    use case each one with a sequence diagram
+
+External libraries
+    grouped_list
+    multi_select_flutter
+    hive
+    supabase_flutter
+    flex_color_picker
+    google_nav_bar
+    flutter_speed_dial
+    drop_down_list
+    random_avatar
+
+Design choices
+    Point system
+    Theme Manager
+    Translations
+    Word embedding algorithms
+    Multiplatform design
+    Why no pictures nor friends nor comments nor likes?
+
+Tests
+
+Our users' opinion
