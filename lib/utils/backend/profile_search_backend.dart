@@ -1,12 +1,11 @@
 import 'dart:collection';
 
 import 'package:skillogue/utils/backend/profile_backend.dart';
-import 'package:skillogue/utils/misc_functions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../entities/conversation.dart';
-import '../../entities/profile.dart';
-import '../../entities/profile_search.dart';
+import '../../entities/conversation_entity.dart';
+import '../../entities/profile_entity.dart';
+import '../../entities/profile_search_entity.dart';
 import 'misc_backend.dart';
 
 Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,

@@ -6,6 +6,7 @@ const loggedProfileKey = 0;
 const artificialIntelligenceKey = 1;
 const languageKey = 2;
 const darkModeKey = 3;
+const chatColorKey = 4;
 
 const newFunctionalityMessage = "COMING SOON! :-)";
 
@@ -16,5 +17,6 @@ const messagesIndex = 2;
 
 const localDatabase = "local_database";
 
-const tabletEdgeInsets = EdgeInsets.symmetric(horizontal: 200.0);
 const phoneEdgeInsets = EdgeInsets.symmetric(horizontal: 10.0);
+const tabletEdgeInsets = EdgeInsets.symmetric(horizontal: 200.0);
+const desktopEdgeInsets = EdgeInsets.symmetric(horizontal: 300.0);

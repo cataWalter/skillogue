@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:skillogue/entities/conversation.dart';
-import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/entities/conversation_entity.dart';
+import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
@@ -12,6 +12,8 @@ import '../../utils/backend/misc_backend.dart';
 import '../../utils/backend/profile_backend.dart';
 import '../../utils/localization.dart';
 import '../home_screen.dart';
+
+late Color chatColor;
 
 class SingleConversationScreen extends StatefulWidget {
   final Conversation myConversation;
@@ -215,7 +217,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
         ],
       ),
       body: Container(
-        color: profile.color,
+        color: chatColor,
         child: Column(
           children: [
             addVerticalSpace(10),

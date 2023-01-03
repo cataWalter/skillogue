@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:skillogue/screens/authorization/pre_login.dart';
+import 'package:skillogue/screens/authorization/pre_login_screen.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/backend/message_backend.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
-import '../../entities/conversation.dart';
+import '../../entities/conversation_entity.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -32,51 +32,18 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Column(
           children: [
-            Expanded(
-              flex: 8,
-              child: Column(
-                children: [
-                  addVerticalSpace(100),
-                  Image.asset(
-                    'assets/images/logo2.png',
-                  ),
-                  Text(
-                    appName,
-                    style: GoogleFonts.bebasNeue(
-                      fontSize: 80,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
+            addVerticalSpace(100),
+            Image.asset(
+              'assets/images/logo2.png',
+            ),
+            Text(
+              appName,
+              style: GoogleFonts.bebasNeue(
+                fontSize: 80,
+                fontWeight: FontWeight.w300,
+                color: Colors.blue,
               ),
             ),
-            /*Expanded(
-              child: Column(
-                children: [
-                  Center(
-                    child: Text(
-                      "by",
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w100,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "Walter Catalfamo",
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),*/
           ],
         ),
       ),
@@ -99,11 +66,13 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-
   getHome() async {
     if (_myBox.get(loggedProfileKey) != null) {
       profile = await findProfileByEmail(_myBox.get(loggedProfileKey));
       List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
+      Future<void>.delayed(const Duration(milliseconds: 400), () {
+        showSnackBar("Good morning ! 🌞", context);
+      });
       //pause();
       nextScreenHome(c);
     } else {

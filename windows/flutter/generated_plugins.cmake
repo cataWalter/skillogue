@@ -3,7 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  app_links_windows
+  app_links
+  awesome_notifications
   flutter_localization
   url_launcher_windows
 )

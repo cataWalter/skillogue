@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skillogue/screens/authorization/login.dart';
-import 'package:skillogue/screens/authorization/registration.dart';
+import 'package:skillogue/screens/authorization/sign_in_screen.dart';
+import 'package:skillogue/screens/authorization/sign_up_screen.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/localization.dart';
