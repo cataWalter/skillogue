@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/profile_search.dart';
-import 'package:skillogue/main.dart';
+import 'package:skillogue/entities/profile_entity.dart';
+import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/screens/search/result_search_screen.dart';
 import 'package:skillogue/screens/search/saved_search_screen.dart';
@@ -17,6 +15,7 @@ import '../../utils/backend/profile_search_backend.dart';
 import '../../utils/data.dart';
 import '../../utils/localization.dart';
 import '../../utils/misc_functions.dart';
+import '../../utils/responsive_layout.dart';
 import '../../widgets/mono_dropdown.dart';
 import '../../widgets/multi_dropdown.dart';
 
@@ -57,8 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
               style: GoogleFonts.bebasNeue(
                 fontSize: 28,
                 fontWeight: FontWeight.w300,
-                color:
-                Theme.of(context).brightness == Brightness.dark
+                color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black,
               ),
@@ -109,134 +107,128 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
       ),
-
-      body: Padding(
-        padding: tabletMode ? tabletEdgeInsets : phoneEdgeInsets,
-        child: listViewCreator(
-          [
-            MultiDropdown(
-              countries,
-              AppLocale.theirCountriesPerson.getString(context),
-              AppLocale.country.getString(context),
-              activeProfileSearch.countries,
-              Icons.add_location,
-              (value) {
-                setState(() {
-                  activeProfileSearch.countries = value;
-                });
-              },
-            ),
-            MultiDropdown(
-              skills,
-              AppLocale.theirPassionsPerson.getString(context),
-              AppLocale.skills.getString(context),
-              activeProfileSearch.skills,
-              Icons.sports_tennis,
-              (value) {
-                setState(() {
-                  activeProfileSearch.skills = value;
-                });
-              },
-            ),
-            MultiDropdown(
-              languages,
-              AppLocale.theirLanguagesPerson.getString(context),
-              AppLocale.languages.getString(context),
-              activeProfileSearch.languages,
-              Icons.abc,
-              (value) {
-                setState(() {
-                  activeProfileSearch.languages = value;
-                });
-              },
-            ),
-            MultiDropdown(
-              genders,
-              AppLocale.theirGendersPerson.getString(context),
-              AppLocale.genders.getString(context),
-              activeProfileSearch.genders,
-              Icons.female,
-              (value) {
-                setState(() {
-                  activeProfileSearch.genders = value;
-                });
-              },
-            ),
-            MonoDropdown(
-              cities,
-              AppLocale.cities.getString(context),
-              activeProfileSearch.city.isNotEmpty
-                  ? activeProfileSearch.city
-                  : AppLocale.theirCityPerson.getString(context),
-              Icons.location_city,
-              (value) {
-                setState(() {
-                  activeProfileSearch.city = value;
-                });
-              },
-            ),
-            SizedBox(
-              height: 50,
-              child: TextField(
-                enabled: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(40.0),
-                  ),
-                  fillColor: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : const Color.fromRGBO(235, 235, 235, 1),
-                  hintText: AppLocale.theirAge.getString(context),
-                  hintStyle: TextStyle(
-                      fontSize: 16, color: Theme.of(context).hintColor),
-                  filled: true,
-                  suffixIcon: const Icon(Icons.numbers,
-                      color: Color.fromRGBO(129, 129, 129, 1)),
-                ),
-              ),
-            ),
-            RangeSlider(
-              activeColor: Colors.black,
-              inactiveColor: Colors.grey,
-              values: _currentRangeValues,
-              max: 99,
-              min: 18,
-              divisions: 80,
-              labels: RangeLabels(
-                _currentRangeValues.start.round().toString(),
-                _currentRangeValues.end.round().toString(),
-              ),
-              onChanged: (RangeValues values) {
-                setState(() {
-                  _currentRangeValues = values;
-                  activeProfileSearch.minAge =
-                      _currentRangeValues.start.toInt();
-                  activeProfileSearch.maxAge = _currentRangeValues.end.toInt();
-                });
-              },
-            ),
-            /*CupertinoRangeSlider(
-              minValue: 18.roundToDouble(),
-              maxValue: 99.roundToDouble(),
-              min: 1.0,
-              max: 100.0,
-              onMinChanged: (minVal) {
-                setState(() {
-                  //min = minVal.round();
-                  //widget.onMinValueChanged(minValue);
-                });
-              },
-              onMaxChanged: (maxVal) {
-                setState(() {
-                  //maxValue = maxVal.round();
-                  //widget.onMaxValueChanged(maxValue);
-                });
-              },
-            )*/
-          ],
+      body: ResponsiveLayout(
+        mobileBody: Padding(
+          padding: phoneEdgeInsets,
+          child: profileSearchList(),
+        ),
+        tabletBody: Padding(
+          padding: tabletEdgeInsets,
+          child: profileSearchList(),
+        ),
+        desktopBody: Padding(
+          padding: desktopEdgeInsets,
+          child: profileSearchList(),
         ),
       ),
+    );
+  }
+
+  profileSearchList() {
+    return listViewCreator(
+      [
+        MultiDropdown(
+          countries,
+          AppLocale.theirCountriesPerson.getString(context),
+          AppLocale.country.getString(context),
+          activeProfileSearch.countries,
+          Icons.add_location,
+          (value) {
+            setState(() {
+              activeProfileSearch.countries = value;
+            });
+          },
+        ),
+        MultiDropdown(
+          skills,
+          AppLocale.theirPassionsPerson.getString(context),
+          AppLocale.skills.getString(context),
+          activeProfileSearch.skills,
+          Icons.sports_tennis,
+          (value) {
+            setState(() {
+              activeProfileSearch.skills = value;
+            });
+          },
+        ),
+        MultiDropdown(
+          languages,
+          AppLocale.theirLanguagesPerson.getString(context),
+          AppLocale.languages.getString(context),
+          activeProfileSearch.languages,
+          Icons.abc,
+          (value) {
+            setState(() {
+              activeProfileSearch.languages = value;
+            });
+          },
+        ),
+        MultiDropdown(
+          genders,
+          AppLocale.theirGendersPerson.getString(context),
+          AppLocale.genders.getString(context),
+          activeProfileSearch.genders,
+          Icons.female,
+          (value) {
+            setState(() {
+              activeProfileSearch.genders = value;
+            });
+          },
+        ),
+        MonoDropdown(
+          cities,
+          AppLocale.cities.getString(context),
+          activeProfileSearch.city.isNotEmpty
+              ? activeProfileSearch.city
+              : AppLocale.theirCityPerson.getString(context),
+          Icons.location_city,
+          (value) {
+            setState(() {
+              activeProfileSearch.city = value;
+            });
+          },
+        ),
+        SizedBox(
+          height: 50,
+          child: TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : const Color.fromRGBO(235, 235, 235, 1),
+              hintText: AppLocale.theirAge.getString(context),
+              hintStyle:
+                  TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
+              filled: true,
+              suffixIcon: const Icon(Icons.numbers,
+                  color: Color.fromRGBO(129, 129, 129, 1)),
+            ),
+          ),
+        ),
+        RangeSlider(
+          activeColor: Colors.black,
+          inactiveColor: Colors.grey,
+          values: _currentRangeValues,
+          max: 99,
+          min: 18,
+          divisions: 80,
+          labels: RangeLabels(
+            _currentRangeValues.start.round().toString(),
+            _currentRangeValues.end.round().toString(),
+          ),
+          onChanged: (RangeValues values) {
+            setState(() {
+              _currentRangeValues = values;
+              activeProfileSearch.minAge = _currentRangeValues.start.toInt();
+              activeProfileSearch.maxAge = _currentRangeValues.end.toInt();
+            });
+          },
+        ),
+      ],
     );
   }
 
@@ -247,6 +239,10 @@ class _SearchScreenState extends State<SearchScreen> {
         builder: (context) => ResultSearchScreen(profileSearchResults),
       ),
     );
+  }
+
+  noUsers() {
+    getBlurDialog(context, AppLocale.noUsers.getString(context), "😢");
   }
 
   dials() {
@@ -265,7 +261,7 @@ class _SearchScreenState extends State<SearchScreen> {
               nextScreen();
             }
           } else {
-            getBlurDialog(context, AppLocale.noUsers.getString(context), "😢");
+            noUsers();
           }
         },
       ),

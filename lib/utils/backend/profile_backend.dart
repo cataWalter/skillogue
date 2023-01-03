@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../../entities/profile.dart';
+import '../../entities/profile_entity.dart';
 import 'misc_backend.dart';
 
 Profile parseProfile(List newProfileFields) {
@@ -12,10 +10,9 @@ Profile parseProfile(List newProfileFields) {
     newProfileFields[4],
     newProfileFields[5],
     DateTime.parse(newProfileFields[6]),
-    Color(newProfileFields[9]),
     List<String>.from(newProfileFields[7]),
     List<String>.from(newProfileFields[8]),
-    newProfileFields[10],
+    newProfileFields[9],
   );
 }
 

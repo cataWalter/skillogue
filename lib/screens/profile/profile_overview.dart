@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skillogue/entities/profile.dart';
+import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
 
 class ProfileOverview extends StatelessWidget {

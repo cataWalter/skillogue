@@ -1,31 +1,33 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:skillogue/entities/conversation.dart';
-import 'package:skillogue/entities/profile.dart';
-import 'package:skillogue/entities/profile_search.dart';
+import 'package:skillogue/entities/conversation_entity.dart';
+import 'package:skillogue/entities/profile_entity.dart';
+import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
+import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
-import 'package:skillogue/screens/profile/profile_settings.dart';
+import 'package:skillogue/screens/profile/profile_settings_screen.dart';
 import 'package:skillogue/screens/search/profile_search_screen.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
+import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../entities/message.dart';
+import '../entities/message_entity.dart';
 import '../utils/backend/message_backend.dart';
 import '../utils/backend/misc_backend.dart';
-import '../utils/backend/notifications.dart';
 import '../utils/backend/profile_search_backend.dart';
 import '../utils/misc_functions.dart';
-import 'authorization/pre_login.dart';
+import 'authorization/pre_login_screen.dart';
 
 List<Conversation> conversations = [];
 late Profile profile;
@@ -55,7 +57,16 @@ class _HomeState extends State<Home> {
     findBlocked();
     savedSearchesUpdate();
     initPlatformState();
-    newMessageNotification();
+    initColor();
+
+  }
+
+  initColor() {
+    if (_myBox.get(chatColorKey) != null) {
+      chatColor = _myBox.get(chatColorKey);
+    } else {
+      chatColor = getRandomDarkColor();
+    }
   }
 
   artificialIntelligenceUpdate() {
@@ -80,6 +91,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     _myBox.put(loggedProfileKey, profile.email);
+
     return Scaffold(
       extendBodyBehindAppBar: false,
       bottomNavigationBar: Container(
@@ -162,8 +174,7 @@ class _HomeState extends State<Home> {
       GButton(
         icon: Icons.message,
         text: redNotification
-            ? countUnanswered().toString() +
-                AppLocale.newMessages.getString(context)
+            ? AppLocale.newMessages.getString(context)
             : AppLocale.chat.getString(context),
         iconColor: redNotification ? Colors.red : iconColor,
         textColor: redNotification ? Colors.red : textColor,
@@ -171,16 +182,6 @@ class _HomeState extends State<Home> {
         iconActiveColor: redNotification ? Colors.red : iconActiveColor,
       ),
     ];
-  }
-
-  int countUnanswered() {
-    int index = 0;
-    for (; index < conversations.length; index++) {
-      if (conversations[index].messages.last.outgoing) {
-        return index;
-      }
-    }
-    return index;
   }
 
   bool newMessages() {
@@ -441,7 +442,7 @@ class _HomeState extends State<Home> {
       ChannelFilter(event: '*', schema: '*'),
       (payload, [ref]) async {
         //print('Change received: ${payload.toString()}');
-        conversations = await addMessage12345(
+        conversations = await addMessage(
           payload.entries.elementAt(4).value.entries.elementAt(3).value ==
               profile.email,
           conversations,
@@ -455,7 +456,16 @@ class _HomeState extends State<Home> {
           ),
         );
         setState(() {});
-        newMessageNotification();
+        if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=
+            profile.email) {
+          Profile destProfile = await findProfileByEmail(
+              payload.entries.elementAt(4).value.entries.elementAt(3).value);
+          newMessageNotification(
+              destProfile.email,
+              destProfile.name,
+              destProfile.points,
+              payload.entries.elementAt(4).value.entries.elementAt(4).value);
+        }
       },
     ).subscribe();
 
@@ -475,21 +485,28 @@ class _HomeState extends State<Home> {
         .then((accepted) {});
   }
 
-  void newMessageNotification() {
-    if (newMessages()) {
-      LocalNoticeService().addNotification(
-        'New messages',
-        'Go ahead someone is texting you!',
-        DateTime.now().millisecondsSinceEpoch + 1000,
-        channel: 'chatting',
-      );
-    }
-
-    LocalNoticeService().addNotification(
-      'Testing',
-      'Go ahead someone is texting you!',
-      DateTime.now().millisecondsSinceEpoch + 1000,
-      channel: 'chatting',
+  void newMessageNotification(email, name, points, message) {
+    /*InAppNotifications.instance
+      ..titleFontSize = 14.0
+      ..descriptionFontSize = 11.0
+      ..textColor = Colors.white
+      ..backgroundColor = Colors.black
+      ..shadow = true
+      ..animationStyle = InAppNotificationsAnimationStyle.scale;*/
+    InAppNotifications.show(
+      title: "New message from " + name,
+      leading: getAvatar(name, points, 50, 1, 1, 20),
+      description: "\n" + message,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SingleConversationScreen(
+                findConversation(email, conversations), true),
+          ),
+        );
+      },
+      persistent: false,
     );
   }
 }

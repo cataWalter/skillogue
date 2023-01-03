@@ -12,7 +12,6 @@ class Profile {
   String gender;
   int age;
   DateTime lastLogin;
-  Color color;
   int points;
   List<String> languages;
   List<String> skills;
@@ -21,7 +20,7 @@ class Profile {
   List<String> blockedBy = [];
 
   Profile(this.email, this.name, this.country, this.city, this.gender, this.age,
-      this.lastLogin, this.color, this.languages, this.skills, this.points);
+      this.lastLogin, this.languages, this.skills, this.points);
 }
 
 evaluatePersonality(List<String> skills) {
@@ -41,7 +40,7 @@ evaluatePersonality(List<String> skills) {
 
 Widget getAvatar(String name, int points, int radiusSize, double multiplier,
     double alignment, int starSize) {
-  if (points < 50) {
+  if (points < 200) {
     return randomAvatar(
       name,
       height: radiusSize.toDouble() * multiplier,

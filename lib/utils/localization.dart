@@ -69,7 +69,7 @@ mixin AppLocale {
   static const String cold = "It's cold here! 🥶";
   static const String saveSomeSearches =
       "Save some searches and save time! :-)";
-  static const String newMessages = "new messages";
+  static const String newMessages = "New messages";
   static const String setColor = "Set your chat background color";
   static const String darkMode = "Premi per modalità notte";
   static const String lightMode = "Premi per modalità giorno";
@@ -162,7 +162,7 @@ mixin AppLocale {
     deleteSearch: "Do you want to delete this saved search?",
     cold: "It's cold here! 🥶",
     saveSomeSearches: "Save some searches and save time! 😊",
-    newMessages: "new messages",
+    newMessages: "New messages",
     setColor: "Set your chat background color",
     darkMode: "Turn ON for dark mode",
     lightMode: "Turn OFF for light mode",

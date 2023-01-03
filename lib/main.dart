@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:skillogue/screens/authorization/splash.dart';
-import 'package:skillogue/utils/backend/notifications.dart';
+import 'package:skillogue/screens/authorization/splash_screen.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/localization.dart';
 import 'package:skillogue/widgets/theme_manager.dart';
 
 ThemeManager themeManager = ThemeManager();
-late bool tabletMode;
 
 final FlutterLocalization localizator = FlutterLocalization.instance;
 
@@ -23,7 +22,6 @@ void main() async {
   //Hive
   await Hive.initFlutter();
   await Hive.openBox(localDatabase);
-  await LocalNoticeService().setup();
   runApp(const MyApp());
 }
 
@@ -71,22 +69,14 @@ class _MyAppState extends State<MyApp> {
       }
     }
     return MaterialApp(
-      home: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 700) {
-            tabletMode = false;
-          } else {
-            tabletMode = true;
-          }
-          return const SplashScreen();
-        },
-      ),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
       supportedLocales: localizator.supportedLocales,
       localizationsDelegates: localizator.localizationsDelegates,
+      builder: InAppNotifications.init(),
     );
   }
 }

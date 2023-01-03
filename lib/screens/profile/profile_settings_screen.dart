@@ -4,10 +4,12 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:skillogue/screens/home_screen.dart';
+import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/utils/responsive_layout.dart';
 
-import '../../entities/profile.dart';
+import '../../entities/profile_entity.dart';
 import '../../main.dart';
 import '../../utils/colors.dart';
 import '../../utils/data.dart';
@@ -27,7 +29,7 @@ class ProfileSettings extends StatefulWidget {
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   late bool isDark = themeManager.isDarkNow();
-  late Color selectedColor = profile.color;
+  late Color selectedColor = chatColor;
   final _myBox = Hive.box(localDatabase);
   final controllerFullName = TextEditingController();
   final controllerAge = TextEditingController();
@@ -104,163 +106,171 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           ),
         ),
       ),
-      body: ListView(
-        padding: tabletMode
-            ? tabletEdgeInsets
-            : const EdgeInsets.fromLTRB(8, 0, 8, 0),
-        children: <Widget>[
-          divider("App Settings"),
-          SwitchListTile(
-            title: Text(AppLocale.darkMode.getString(context)),
-            subtitle: Text(AppLocale.lightMode.getString(context)),
-            value: isDark,
-            onChanged: (bool value) {
-              setState(() {
-                _myBox.put(darkModeKey, value);
-                isDark = value;
-                (isDark
-                    ? themeManager.toggleDark()
-                    : themeManager.toggleLight());
-              });
-            },
-          ),
-          ListTile(
-            title: MonoDropdown(
-              profile.languages,
-              AppLocale.languages.getString(context),
-              AppLocale.localizatorQuestion.getString(context),
-              Icons.abc,
-              (value) {
-                setState(() {
-                  mapTranslation(value, context);
-                });
-              },
-            ),
-          ),
-          divider("Profile"),
-          ListTile(
-            title: MyTextField(
-                controllerFullName,
-                widget.profile.name.isNotEmpty
-                    ? widget.profile.name
-                    : AppLocale.personalName.getString(context),
-                TextInputType.text,
-                Icons.person),
-          ),
-          ListTile(
-            title: MyTextField(
-                controllerAge,
-                widget.profile.age.toString().isNotEmpty &&
-                        widget.profile.age <= 99
-                    ? widget.profile.age.toString()
-                    : AppLocale.age.getString(context),
-                TextInputType.number,
-                Icons.numbers),
-          ),
-          ListTile(
-            title: MonoDropdown(
-              cities,
-              AppLocale.city.getString(context),
-              selectedCity,
-              Icons.location_city,
-              (value) {
-                setState(() {
-                  selectedCity = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: MonoDropdown(
-              countries,
-              AppLocale.country.getString(context),
-              selectedCountry,
-              Icons.flag,
-              (value) {
-                setState(() {
-                  selectedCountry = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: MonoDropdown(
-              genders,
-              AppLocale.gender.getString(context),
-              selectedGender,
-              Icons.female,
-              (value) {
-                setState(() {
-                  selectedGender = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: MultiDropdown(
-              skills,
-              AppLocale.yourPassions.getString(context),
-              AppLocale.skills.getString(context),
-              selectedSkills,
-              Icons.sports_tennis,
-              (value) {
-                setState(() {
-                  selectedSkills = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: MultiDropdown(
-              languages,
-              AppLocale.yourLanguages.getString(context),
-              AppLocale.languages.getString(context),
-              selectedLanguages,
-              Icons.abc,
-              (value) {
-                setState(() {
-                  selectedLanguages = value;
-                });
-              },
-            ),
-          ),
-          divider("Search"),
-          SwitchListTile(
-            title:
-                Text(AppLocale.artificialIntelligenceEnable.getString(context)),
-            subtitle: Text(
-                AppLocale.artificialIntelligenceDisabled.getString(context)),
-            value: artificialIntelligenceEnabled,
-            onChanged: (bool value) {
-              setState(() {
-                _myBox.put(artificialIntelligenceKey, value);
-                artificialIntelligenceEnabled = value;
-              });
-            },
-          ),
-          divider("Chat"),
-          ListTile(
-            title: Text(AppLocale.setColor.getString(context)),
-            subtitle: Text(ColorTools.nameThatColor(selectedColor)),
-            trailing: ColorIndicator(
-              width: 44,
-              height: 44,
-              borderRadius: 4,
-              color: selectedColor,
-              onSelectFocus: false,
-              onSelect: () async {
-                final Color colorBeforeDialog = selectedColor;
-                if (!(await colorPickerDialog())) {
-                  setState(() {
-                    selectedColor = colorBeforeDialog;
-                  });
-                }
-              },
-            ),
-          ),
-        ],
+      body: ResponsiveLayout(
+        mobileBody: ListView(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+          children: profileSettingsList(),
+        ),
+        tabletBody: ListView(
+          padding: tabletEdgeInsets,
+          children: profileSettingsList(),
+        ),
+        desktopBody: ListView(
+          padding: desktopEdgeInsets,
+          children: profileSettingsList(),
+        ),
       ),
     );
+  }
+
+  profileSettingsList() {
+    return <Widget>[
+      divider("App Settings"),
+      SwitchListTile(
+        title: Text(AppLocale.darkMode.getString(context)),
+        subtitle: Text(AppLocale.lightMode.getString(context)),
+        value: isDark,
+        onChanged: (bool value) {
+          setState(() {
+            _myBox.put(darkModeKey, value);
+            isDark = value;
+            (isDark ? themeManager.toggleDark() : themeManager.toggleLight());
+          });
+        },
+      ),
+      ListTile(
+        title: MonoDropdown(
+          profile.languages,
+          AppLocale.languages.getString(context),
+          AppLocale.localizatorQuestion.getString(context),
+          Icons.abc,
+          (value) {
+            setState(() {
+              mapTranslation(value, context);
+            });
+          },
+        ),
+      ),
+      divider("Profile"),
+      ListTile(
+        title: MyTextField(
+            controllerFullName,
+            widget.profile.name.isNotEmpty
+                ? widget.profile.name
+                : AppLocale.personalName.getString(context),
+            TextInputType.text,
+            Icons.person),
+      ),
+      ListTile(
+        title: MyTextField(
+            controllerAge,
+            widget.profile.age.toString().isNotEmpty && widget.profile.age <= 99
+                ? widget.profile.age.toString()
+                : AppLocale.age.getString(context),
+            TextInputType.number,
+            Icons.numbers),
+      ),
+      ListTile(
+        title: MonoDropdown(
+          cities,
+          AppLocale.city.getString(context),
+          selectedCity,
+          Icons.location_city,
+          (value) {
+            setState(() {
+              selectedCity = value;
+            });
+          },
+        ),
+      ),
+      ListTile(
+        title: MonoDropdown(
+          countries,
+          AppLocale.country.getString(context),
+          selectedCountry,
+          Icons.flag,
+          (value) {
+            setState(() {
+              selectedCountry = value;
+            });
+          },
+        ),
+      ),
+      ListTile(
+        title: MonoDropdown(
+          genders,
+          AppLocale.gender.getString(context),
+          selectedGender,
+          Icons.female,
+          (value) {
+            setState(() {
+              selectedGender = value;
+            });
+          },
+        ),
+      ),
+      ListTile(
+        title: MultiDropdown(
+          skills,
+          AppLocale.yourPassions.getString(context),
+          AppLocale.skills.getString(context),
+          selectedSkills,
+          Icons.sports_tennis,
+          (value) {
+            setState(() {
+              selectedSkills = value;
+            });
+          },
+        ),
+      ),
+      ListTile(
+        title: MultiDropdown(
+          languages,
+          AppLocale.yourLanguages.getString(context),
+          AppLocale.languages.getString(context),
+          selectedLanguages,
+          Icons.abc,
+          (value) {
+            setState(() {
+              selectedLanguages = value;
+            });
+          },
+        ),
+      ),
+      divider("Search"),
+      SwitchListTile(
+        title: Text(AppLocale.artificialIntelligenceEnable.getString(context)),
+        subtitle:
+            Text(AppLocale.artificialIntelligenceDisabled.getString(context)),
+        value: artificialIntelligenceEnabled,
+        onChanged: (bool value) {
+          setState(() {
+            _myBox.put(artificialIntelligenceKey, value);
+            artificialIntelligenceEnabled = value;
+          });
+        },
+      ),
+      divider("Chat"),
+      ListTile(
+        title: Text(AppLocale.setColor.getString(context)),
+        subtitle: Text(ColorTools.nameThatColor(selectedColor)),
+        trailing: ColorIndicator(
+          width: 44,
+          height: 44,
+          borderRadius: 4,
+          color: selectedColor,
+          onSelectFocus: false,
+          onSelect: () async {
+            final Color colorBeforeDialog = selectedColor;
+            if (!(await colorPickerDialog())) {
+              setState(() {
+                selectedColor = colorBeforeDialog;
+              });
+            }
+          },
+        ),
+      ),
+    ];
   }
 
   Row divider(String text) {
@@ -361,13 +371,17 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       if (selectedCity.isNotEmpty) {
         widget.profile.city = selectedCity;
       }
-      profile.color = selectedColor;
+      {
+        if (chatColor != selectedColor) {
+          chatColor = selectedColor;
+          _myBox.put(chatColorKey, chatColor);
+        }
+      }
     });
   }
 
   void updateDatabaseProfileSettings() async {
     var parameters = {};
-    parameters.addAll({'color': selectedColor.value});
     if (selectedCountry.isNotEmpty) {
       parameters.addAll({'country': selectedCountry});
     }
