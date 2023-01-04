@@ -6,6 +6,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:skillogue/entities/conversation_entity.dart';
 import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
+import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/misc_backend.dart';
@@ -13,7 +14,7 @@ import '../../utils/backend/profile_backend.dart';
 import '../../utils/localization.dart';
 import '../home_screen.dart';
 
-late Color chatColor;
+Color chatColor = getRandomDarkColor();
 
 class SingleConversationScreen extends StatefulWidget {
   final Conversation myConversation;

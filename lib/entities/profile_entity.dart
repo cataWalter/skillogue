@@ -201,11 +201,13 @@ Widget profileDescription(
               size: size.toDouble(),
               color: c,
             ),
-            Text(
-              "   ${evaluatePersonality(p.skills)}",
-              style: TextStyle(
-                fontSize: size.toDouble(),
-                color: c,
+            Expanded(
+              child: Text(
+                "   ${evaluatePersonality(p.skills)}",
+                style: TextStyle(
+                  fontSize: size.toDouble(),
+                  color: c,
+                ),
               ),
             ),
           ],
