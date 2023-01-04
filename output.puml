@@ -1,0 +1,537 @@
+@startuml
+set namespaceSeparator ::
+
+class "skillogue::entities::conversation_entity.dart::Conversation" {
+  +String destEmail
+  +String destName
+  +int destPoints
+  +List<SingleMessage> messages
+}
+
+class "skillogue::entities::conversation_entity.dart::SingleMessage" {
+      +int id
+      +String text
+      +DateTime date
+      +bool outgoing
+}
+
+class "skillogue::entities::message_entity.dart::Message" {
+      +int id
+      +String senderEmail
+      +String receiverEmail
+      +String text
+      +DateTime date
+}
+
+class "skillogue::entities::profile_entity.dart::Profile" {
+      +String email
+      +String name
+      +String country
+      +String city
+      +String gender
+      +int age
+      +DateTime lastLogin
+      +int points
+      +List<String> languages
+      +List<String> skills
+      +List<String> blocked
+      +List<String> blockedBy
+}
+
+class "skillogue::entities::profile_search_entity.dart::ProfileSearch" {
+      +List<String> skills
+      +List<String> countries
+      +List<String> languages
+      +List<String> genders
+      +String city
+      +int? minAge
+      +int? maxAge
+      +void clean()
+      +ProfileSearch copy()
+}
+
+class "skillogue::entities::profile_search_entity.dart::SavedProfileSearch" {
+      +String name
+      +ProfileSearch search
+}
+
+"skillogue::entities::profile_search_entity.dart::SavedProfileSearch" o-- "skillogue::entities::profile_search_entity.dart::ProfileSearch"
+
+class "skillogue::main.dart::MyApp" {
+  +State<MyApp> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::main.dart::MyApp"
+
+class "skillogue::main.dart::_MyAppState" {
+  -Box<dynamic> _myBox
+  +void initState()
+  -void _onTranslatedLanguage()
+  +dynamic themeListener()
+  +Widget build()
+}
+
+"skillogue::main.dart::_MyAppState" o-- "hive::hive.dart::Box<dynamic>"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::main.dart::_MyAppState"
+
+class "skillogue::screens::authorization::guided_registration_screen.dart::GuidedRegistration" {
+  +String email
+  +String password
+  +State<GuidedRegistration> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::authorization::guided_registration_screen.dart::GuidedRegistration"
+
+class "skillogue::screens::authorization::guided_registration_screen.dart::_GuidedRegistrationState" {
+      +TextEditingController controllerFullName
+      +TextEditingController controllerAge
+      +List<String> selectedLanguages
+      +List<String> selectedSkills
+      +String selectedGender
+      +String selectedCountry
+      +String selectedCity
+      +void nextScreen()
+      +Widget build()
+      +dynamic registrationList()
+}
+
+"skillogue::screens::authorization::guided_registration_screen.dart::_GuidedRegistrationState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::authorization::guided_registration_screen.dart::_GuidedRegistrationState"
+
+class "skillogue::screens::authorization::pre_login_screen.dart::PreLogin" {
+  +State<PreLogin> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::authorization::pre_login_screen.dart::PreLogin"
+
+class "skillogue::screens::authorization::pre_login_screen.dart::_PreLoginState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::authorization::pre_login_screen.dart::_PreLoginState"
+
+class "skillogue::screens::authorization::sign_in_screen.dart::Login" {
+  +State<Login> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::authorization::sign_in_screen.dart::Login"
+
+class "skillogue::screens::authorization::sign_in_screen.dart::_LoginState" {
+      +TextEditingController controllerEmail
+      +TextEditingController controllerPassword
+      +Profile loggedProfile
+      +bool obscurePassword
+      +void doUserLogin()
+      +void nextScreen()
+      +Widget build()
+      +dynamic loginList()
+}
+
+"skillogue::screens::authorization::sign_in_screen.dart::_LoginState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"skillogue::screens::authorization::sign_in_screen.dart::_LoginState" o-- "skillogue::entities::profile_entity.dart::Profile"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::authorization::sign_in_screen.dart::_LoginState"
+
+class "skillogue::screens::authorization::sign_up_screen.dart::Registration" {
+  +State<Registration> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::authorization::sign_up_screen.dart::Registration"
+
+class "skillogue::screens::authorization::sign_up_screen.dart::_RegistrationState" {
+      +TextEditingController controllerPassword
+      +TextEditingController controllerEmail
+      +bool obscurePassword
+      +Widget build()
+      +dynamic registrationList()
+      +void nextScreen()
+      +void doUserRegistration()
+      +dynamic existingEmail()
+}
+
+"skillogue::screens::authorization::sign_up_screen.dart::_RegistrationState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::authorization::sign_up_screen.dart::_RegistrationState"
+
+class "skillogue::screens::authorization::splash_screen.dart::SplashScreen" {
+  +State<SplashScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::authorization::splash_screen.dart::SplashScreen"
+
+class "skillogue::screens::authorization::splash_screen.dart::_SplashScreenState" {
+      -Box<dynamic> _myBox
+      +Widget build()
+      +void nextScreenHome()
+      +void nextScreenPreLogin()
+      +dynamic getHome()
+}
+
+"skillogue::screens::authorization::splash_screen.dart::_SplashScreenState" o-- "hive::hive.dart::Box<dynamic>"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::authorization::splash_screen.dart::_SplashScreenState"
+
+class "skillogue::screens::home_screen.dart::Home" {
+  +int currentPageIndex
+  +State<Home> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::home_screen.dart::Home"
+
+class "skillogue::screens::home_screen.dart::_HomeState" {
+      -Box<dynamic> _myBox
+      +TextEditingController newSuggestionController
+      {static} +String oneSignalAppId
+      +void initState()
+      +dynamic initColor()
+      +dynamic artificialIntelligenceUpdate()
+      +dynamic savedSearchesUpdate()
+      +dynamic findBlocked()
+      +Widget build()
+      +List<GButton> getButtons()
+      +bool newMessages()
+      +List<Icon> navbarIcons()
+      +dynamic getScreen()
+      +dynamic signOut()
+      +dynamic conversationUpdate()
+      +Future<void> initPlatformState()
+      +void newMessageNotification()
+}
+
+"skillogue::screens::home_screen.dart::_HomeState" o-- "hive::hive.dart::Box<dynamic>"
+"skillogue::screens::home_screen.dart::_HomeState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::home_screen.dart::_HomeState"
+
+class "skillogue::screens::messages::message_screen.dart::MessageScreen" {
+  +State<MessageScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::messages::message_screen.dart::MessageScreen"
+
+class "skillogue::screens::messages::message_screen.dart::_MessageScreenState" {
+      +int conversationIndex
+      +Widget build()
+      +dynamic checkNewMessages()
+      +void initState()
+      +Widget tabletChatCard()
+      +Widget mobileChatCard()
+      +AutoSizeText getOverflowReplacement()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::messages::message_screen.dart::_MessageScreenState"
+
+class "skillogue::screens::messages::single_conversation_screen.dart::SingleConversationScreen" {
+      +Conversation myConversation
+      +bool showBackButton
+  +State<SingleConversationScreen> createState()
+}
+
+"skillogue::screens::messages::single_conversation_screen.dart::SingleConversationScreen" o-- "skillogue::entities::conversation_entity.dart::Conversation"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::messages::single_conversation_screen.dart::SingleConversationScreen"
+
+class "skillogue::screens::messages::single_conversation_screen.dart::_SingleConversationScreenState" {
+      +TextEditingController newMessageController
+      +TextEditingController newSuggestionController
+      +dynamic checkNewMessages()
+      +void initState()
+      +void nextScreenProfileOverview()
+      +Widget build()
+      +Align getSingleMessageWidget()
+}
+
+"skillogue::screens::messages::single_conversation_screen.dart::_SingleConversationScreenState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::messages::single_conversation_screen.dart::_SingleConversationScreenState"
+
+class "skillogue::screens::profile::profile_overview.dart::ProfileOverview" {
+  +Profile profile
+  +Widget build()
+}
+
+"skillogue::screens::profile::profile_overview.dart::ProfileOverview" o-- "skillogue::entities::profile_entity.dart::Profile"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "skillogue::screens::profile::profile_overview.dart::ProfileOverview"
+
+class "skillogue::screens::profile::profile_screen.dart::ProfileScreen" {
+      +Profile profile
+      +bool showSettings
+      +Widget build()
+      +Align chippyTitle()
+      +Align chippyValues()
+}
+
+"skillogue::screens::profile::profile_screen.dart::ProfileScreen" o-- "skillogue::entities::profile_entity.dart::Profile"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "skillogue::screens::profile::profile_screen.dart::ProfileScreen"
+
+class "skillogue::screens::profile::profile_settings_screen.dart::ProfileSettings" {
+  +Profile profile
+  +State<ProfileSettings> createState()
+}
+
+"skillogue::screens::profile::profile_settings_screen.dart::ProfileSettings" o-- "skillogue::entities::profile_entity.dart::Profile"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::profile::profile_settings_screen.dart::ProfileSettings"
+
+class "skillogue::screens::profile::profile_settings_screen.dart::_ProfileSettingsState" {
+      +bool isDark
+      +Color selectedColor
+      -Box<dynamic> _myBox
+      +TextEditingController controllerFullName
+      +TextEditingController controllerAge
+      +List<String> selectedLanguages
+      +List<String> selectedSkills
+      +String selectedCountry
+      +String selectedCity
+      +String selectedGender
+      +Map<ColorSwatch<Object>, String> colorsNameMap
+      +void initState()
+      +Widget build()
+      +dynamic profileSettingsList()
+      +Row divider()
+      +Future<bool> colorPickerDialog()
+      +void updateLocalProfileSettings()
+      +void updateDatabaseProfileSettings()
+}
+
+"skillogue::screens::profile::profile_settings_screen.dart::_ProfileSettingsState" o-- "dart::ui::Color"
+"skillogue::screens::profile::profile_settings_screen.dart::_ProfileSettingsState" o-- "hive::hive.dart::Box<dynamic>"
+"skillogue::screens::profile::profile_settings_screen.dart::_ProfileSettingsState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::profile::profile_settings_screen.dart::_ProfileSettingsState"
+
+class "skillogue::screens::search::profile_search_screen.dart::SearchScreen" {
+  +State<SearchScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::search::profile_search_screen.dart::SearchScreen"
+
+class "skillogue::screens::search::profile_search_screen.dart::_SearchScreenState" {
+      -RangeValues _currentRangeValues
+      +List<Profile> profileSearchResults
+      +TextEditingController newMessageController
+      +void initState()
+      +Widget build()
+      +dynamic profileSearchList()
+      +void nextScreen()
+      +dynamic noUsers()
+      +dynamic dials()
+      +List<Widget> showSavedSearches()
+}
+
+"skillogue::screens::search::profile_search_screen.dart::_SearchScreenState" o-- "flutter::src::material::slider_theme.dart::RangeValues"
+"skillogue::screens::search::profile_search_screen.dart::_SearchScreenState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::search::profile_search_screen.dart::_SearchScreenState"
+
+class "skillogue::screens::search::result_search_screen.dart::ResultSearchScreen" {
+      +List<Profile> profileSearchResults
+      +State<ResultSearchScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::search::result_search_screen.dart::ResultSearchScreen"
+
+class "skillogue::screens::search::result_search_screen.dart::_ResultSearchScreenState" {
+      +TextEditingController newMessageController
+      +Widget build()
+      +dynamic searchResultsList()
+      +dynamic sendNewMessage()
+}
+
+"skillogue::screens::search::result_search_screen.dart::_ResultSearchScreenState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::search::result_search_screen.dart::_ResultSearchScreenState"
+
+class "skillogue::screens::search::saved_search_screen.dart::SavedSearchScreen" {
+  +State<SavedSearchScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::screens::search::saved_search_screen.dart::SavedSearchScreen"
+
+class "skillogue::screens::search::saved_search_screen.dart::_SavedSearchScreenState" {
+  +Widget build()
+  +Widget getSavedSearches()
+  +dynamic savedSearchesList()
+  +dynamic deleteDatabase()
+  +List<Chip> singleTileCreator()
+  +List<Chip> chippies()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::screens::search::saved_search_screen.dart::_SavedSearchScreenState"
+
+class "skillogue::test.dart::MyApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "skillogue::test.dart::MyApp"
+
+class "skillogue::test.dart::MainScreen" {
+  +MainScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::test.dart::MainScreen"
+
+class "skillogue::test.dart::MainScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::test.dart::MainScreenState"
+
+abstract class "skillogue::utils::localization.dart::AppLocale" {
+  {static} +String signIn
+  {static} +String signUp
+  {static} +String username
+  {static} +String password
+  {static} +String email
+  {static} +String country
+  {static} +String genders
+  {static} +String cities
+  {static} +String countries
+  {static} +String lookGoodProfile
+  {static} +String personalName
+  {static} +String age
+  {static} +String yourCity
+  {static} +String yourCountry
+  {static} +String yourGender
+  {static} +String yourPassions
+  {static} +String yourLanguages
+  {static} +String save
+  {static} +String fillProfile
+  {static} +String by
+  {static} +String skills
+  {static} +String languages
+  {static} +String alreadyAssociatedEmail
+  {static} +String unblock
+  {static} +String block
+  {static} +String saveSearch
+  {static} +String nameSearch
+  {static} +String no
+  {static} +String yes
+  {static} +String ok
+  {static} +String newName
+  {static} +String clean
+  {static} +String suggestSkills
+  {static} +String suggestLanguages
+  {static} +String suggestCountries
+  {static} +String search
+  {static} +String cancel
+  {static} +String theirCountriesPerson
+  {static} +String theirPassionsPerson
+  {static} +String theirLanguagesPerson
+  {static} +String theirGendersPerson
+  {static} +String theirCityPerson
+  {static} +String theirAge
+  {static} +String startHere
+  {static} +String profile
+  {static} +String chat
+  {static} +String typeMessage
+  {static} +String today
+  {static} +String yesterday
+  {static} +String updateProfile
+  {static} +String settings
+  {static} +String contactUs
+  {static} +String acknowledgments
+  {static} +String logout
+  {static} +String sendMessage
+  {static} +String searchNewFriends
+  {static} +String noUsers
+  {static} +String deleteSearch
+  {static} +String cold
+  {static} +String saveSomeSearches
+  {static} +String newMessages
+  {static} +String setColor
+  {static} +String darkMode
+  {static} +String lightMode
+  {static} +String selectColor
+  {static} +String selectColorShade
+  {static} +String selectedColorShade
+  {static} +String city
+  {static} +String gender
+  {static} +String savedSearches
+  {static} +String newFriends
+  {static} +String blocked
+  {static} +String sincere
+  {static} +String fuck
+  {static} +String error
+  {static} +String suggestionTitle
+  {static} +String whatSuggestion
+  {static} +String thanks
+  {static} +String thanksAcknowledgments
+  {static} +String artificialIntelligenceEnable
+  {static} +String artificialIntelligenceDisabled
+  {static} +String profileFound
+  {static} +String report
+  {static} +String safe
+  {static} +String localizatorQuestion
+  {static} +Map<String, dynamic> en
+  {static} +Map<String, dynamic> it
+  {static} +Map<String, dynamic> scn
+}
+
+class "skillogue::utils::responsive_layout.dart::ResponsiveLayout" {
+  +Widget mobileBody
+  +Widget tabletBody
+  +Widget desktopBody
+  +Widget build()
+}
+
+"skillogue::utils::responsive_layout.dart::ResponsiveLayout" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "skillogue::utils::responsive_layout.dart::ResponsiveLayout"
+
+class "skillogue::widgets::mono_dropdown.dart::MonoDropdown" {
+  +List<String> toShow
+  +String title
+  +String hint
+  +IconData iconData
+  +dynamic Function(String) setValue
+  +State<MonoDropdown> createState()
+}
+
+"skillogue::widgets::mono_dropdown.dart::MonoDropdown" o-- "flutter::src::widgets::icon_data.dart::IconData"
+"skillogue::widgets::mono_dropdown.dart::MonoDropdown" o-- "null::dynamic Function(String)"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::widgets::mono_dropdown.dart::MonoDropdown"
+
+class "skillogue::widgets::mono_dropdown.dart::_MyUniSelectFieldState2" {
+  +List<SelectedListItem> listToSelectedItemList()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::widgets::mono_dropdown.dart::_MyUniSelectFieldState2"
+
+class "skillogue::widgets::multi_dropdown.dart::MultiDropdown" {
+  +List<String> allValues
+  +String question
+  +String title
+  +List<String> initialValues
+  +IconData iconData
+  +dynamic Function(List<String>) setValues
+  +State<MultiDropdown> createState()
+}
+
+"skillogue::widgets::multi_dropdown.dart::MultiDropdown" o-- "flutter::src::widgets::icon_data.dart::IconData"
+"skillogue::widgets::multi_dropdown.dart::MultiDropdown" o-- "null::dynamic Function(List<String>)"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "skillogue::widgets::multi_dropdown.dart::MultiDropdown"
+
+class "skillogue::widgets::multi_dropdown.dart::_MultiDropdownState" {
+  +List<String> selectedValues
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "skillogue::widgets::multi_dropdown.dart::_MultiDropdownState"
+
+class "skillogue::widgets::my_text_field.dart::MyTextField" {
+  +TextEditingController controller
+  +String hint
+  +TextInputType textInputType
+  +IconData iconData
+  +Widget build()
+}
+
+"skillogue::widgets::my_text_field.dart::MyTextField" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"skillogue::widgets::my_text_field.dart::MyTextField" o-- "flutter::src::services::text_input.dart::TextInputType"
+"skillogue::widgets::my_text_field.dart::MyTextField" o-- "flutter::src::widgets::icon_data.dart::IconData"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "skillogue::widgets::my_text_field.dart::MyTextField"
+
+class "skillogue::widgets::theme_manager.dart::ThemeManager" {
+  -ThemeMode _themeMode
+  +dynamic themeMode
+  +bool isDarkNow()
+  +dynamic toggleDark()
+  +dynamic toggleLight()
+}
+
+"skillogue::widgets::theme_manager.dart::ThemeManager" o-- "flutter::src::material::app.dart::ThemeMode"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "skillogue::widgets::theme_manager.dart::ThemeManager"
+
+
+@enduml

@@ -12,7 +12,6 @@ class SingleMessage {
   String text;
   DateTime date;
   bool outgoing;
-
   SingleMessage(this.id, this.text, this.date, this.outgoing);
 }
 
