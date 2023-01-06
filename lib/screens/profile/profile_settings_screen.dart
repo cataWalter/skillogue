@@ -140,7 +140,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       ),
       ListTile(
         title: MonoDropdown(
-          profile.languages,
+          widget.profile.languages,
           AppLocale.languages.getString(context),
           AppLocale.localizatorQuestion.getString(context),
           Icons.abc,
@@ -374,7 +374,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       {
         if (chatColor != selectedColor) {
           chatColor = selectedColor;
-          _myBox.put(chatColorKey, chatColor);
+          _myBox.put(chatColorKey, chatColor.value);
         }
       }
     });
@@ -406,6 +406,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         parameters.addAll({'age': newAge});
       }
     }
-    updateProfile(profile.email, parameters);
+    updateProfile(widget.profile.email, parameters);
   }
 }

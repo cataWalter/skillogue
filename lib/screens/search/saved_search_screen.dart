@@ -89,14 +89,16 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                AppLocale.saveSomeSearches.getString(context),
-                style: GoogleFonts.bebasNeue(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black),
+              Expanded(
+                child: Text(
+                  AppLocale.saveSomeSearches.getString(context),
+                  style: GoogleFonts.bebasNeue(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black),
+                ),
               ),
             ],
           ),

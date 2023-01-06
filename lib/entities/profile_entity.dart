@@ -184,11 +184,13 @@ Widget profileDescription(
               size: size.toDouble(),
               color: c,
             ),
-            Text(
-              "   ${p.country}",
-              style: TextStyle(
-                fontSize: size.toDouble(),
-                color: c,
+            Expanded(
+              child: Text(
+                "   ${p.country}",
+                style: TextStyle(
+                  fontSize: size.toDouble(),
+                  color: c,
+                ),
               ),
             ),
           ],

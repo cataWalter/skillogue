@@ -88,10 +88,10 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return sendNewMessage(
-                    widget.profileSearchResults[index].email,
-                    widget.profileSearchResults[index].name,
-                    widget.profileSearchResults[index].points,
-                  );
+                      widget.profileSearchResults[index].email,
+                      widget.profileSearchResults[index].name,
+                      widget.profileSearchResults[index].points,
+                      index);
                 },
               );
             },
@@ -131,7 +131,7 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
     );
   }
 
-  sendNewMessage(String destEmail, String destName, int destPoints) {
+  sendNewMessage(String destEmail, String destName, int destPoints, int index) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
       child: AlertDialog(
@@ -188,11 +188,13 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
                     ],
                   ),
                 );
-                setState(() {});
+                setState(() {
+                  widget.profileSearchResults.removeAt(index);
+                });
               }
               Navigator.of(context).pop();
             },
-          )
+          ),
         ],
       ),
     );

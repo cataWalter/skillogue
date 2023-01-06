@@ -19,7 +19,12 @@ Profile parseProfile(List newProfileFields) {
 Future<Profile> findProfileByEmail(String email) async {
   final List<dynamic> data =
       await supabase.from('profile').select().eq('email', email);
-  return parseProfile(parseLinkedMap(data[0]));
+  try {
+    return parseProfile(parseLinkedMap(data[0]));
+  } catch (e) {
+    return Profile("email", "name", "country", "city", "gender", 99,
+        DateTime.now(), [], [], 0);
+  }
 }
 
 void updateProfile(String email, parameters) async {
