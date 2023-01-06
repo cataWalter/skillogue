@@ -63,10 +63,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     if (_myBox.get(darkModeKey) != null) {
-      bool darkModeEnabled = _myBox.get(darkModeKey);
-      if (darkModeEnabled) {
-        themeManager.toggleDark();
+      try {
+        bool darkModeEnabled = _myBox.get(darkModeKey);
+        if (darkModeEnabled) {
+          themeManager.toggleDark();
+        }
       }
+      catch (e) {}
     }
     return MaterialApp(
       home: const SplashScreen(),

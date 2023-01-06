@@ -30,11 +30,13 @@ import '../utils/misc_functions.dart';
 import 'authorization/pre_login_screen.dart';
 
 List<Conversation> conversations = [];
-late Profile profile;
+Profile profile = Profile("email", "name", "country", "city", "gender", 99,
+    DateTime.now(), ["languages"], ["skills"], 0);
 ProfileSearch activeProfileSearch = ProfileSearch();
 //late EventSearch activeEventSearch;
-late List<SavedProfileSearch> savedProfileSearch;
+List<SavedProfileSearch> savedProfileSearch = [];
 bool artificialIntelligenceEnabled = false;
+Color chatColor = getRandomDarkColor();
 
 class Home extends StatefulWidget {
   Home(conversations, this.currentPageIndex, {super.key});
@@ -56,14 +58,17 @@ class _HomeState extends State<Home> {
     conversationUpdate();
     findBlocked();
     savedSearchesUpdate();
-    initPlatformState();
+    //initPlatformState();
     initColor();
-
   }
 
   initColor() {
     if (_myBox.get(chatColorKey) != null) {
-      chatColor = _myBox.get(chatColorKey);
+      try {
+        chatColor = Color(_myBox.get(chatColorKey));
+      } catch (e) {
+        _myBox.delete(chatColorKey);
+      }
     } else {
       chatColor = getRandomDarkColor();
     }
@@ -479,10 +484,10 @@ class _HomeState extends State<Home> {
   static const String oneSignalAppId = "b56dbfe1-d278-47ff-a5aa-59a5b8cfd617";
 
   Future<void> initPlatformState() async {
-    OneSignal.shared.setAppId(oneSignalAppId);
+    /*OneSignal.shared.setAppId(oneSignalAppId);
     OneSignal.shared
         .promptUserForPushNotificationPermission()
-        .then((accepted) {});
+        .then((accepted) {});*/
   }
 
   void newMessageNotification(email, name, points, message) {

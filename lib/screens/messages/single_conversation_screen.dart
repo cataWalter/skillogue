@@ -14,7 +14,7 @@ import '../../utils/backend/profile_backend.dart';
 import '../../utils/localization.dart';
 import '../home_screen.dart';
 
-Color chatColor = getRandomDarkColor();
+
 
 class SingleConversationScreen extends StatefulWidget {
   final Conversation myConversation;

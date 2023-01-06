@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Column(
           children: [
-            addVerticalSpace(100),
+            addVerticalSpace(50),
             Image.asset(
               'assets/images/logo2.png',
             ),
