@@ -1,10 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:skillogue/entities/conversation_entity.dart';
+import 'package:skillogue/entities/message_entity.dart';
 import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/entities/profile_search_entity.dart';
+import 'package:skillogue/main.dart';
+import 'package:skillogue/utils/backend/authorization_backend.dart';
 import 'package:skillogue/utils/colors.dart';
+import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/data.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
@@ -82,6 +88,19 @@ void main() {
     });
   });
 
+  group("Message entity", () {
+    DateTime d = DateTime(1111, 10, 10, 10, 10, 10, 10, 10);
+    test("Message", () {
+      Message testMessage = Message(
+          598, "sender@mail.com", "receiver@mail.com", "test message", d);
+      expect(testMessage.text, "test message");
+      expect(testMessage.id, 598);
+      expect(testMessage.senderEmail, "sender@mail.com");
+      expect(testMessage.receiverEmail, "receiver@mail.com");
+      expect(testMessage.date, d);
+    });
+  });
+
   group("Profile entity and profile search entity", () {
     List<String> skillsTest = ['Hiking', 'Nature', 'Climbing', 'Camping'];
     List<String> languagesTest = ["English", "Italian", "Spanish"];
@@ -108,12 +127,16 @@ void main() {
         expect(y.length >= 10, true);
       }
     });
-  });
-  test("Find Max", () {
-    for (var x in countrySimilarity) {
-      var y = findMax(10, x);
-      expect(y.length >= 10, true);
-    }
+
+    test("Test clean", (){
+      ProfileSearch test1 = ProfileSearch();
+      test1.clean();
+      expect(test1.skills, []);
+      expect(test1.languages, []);
+      expect(test1.countries, []);
+      expect(test1.genders, []);
+      expect(test1.city, "");
+    });
   });
   group("Colors", () {
     test("Is this color dark?", () {
@@ -182,14 +205,11 @@ void main() {
     });
   });
 
-
-
-  group("authorization backend", () {});
-
-  test("getAvatar", () {
-    List<String> lTest = ["e1", "e2", "e3"];
-    String eTest = "e2";
-    expect(getElementIndex(eTest, lTest), 1);
-    expect(getElementIndex("eT", lTest), -1);
+  group("Authorization Backend", () {
+    test("Is there a user with this email?", () async {
+      String emailTest = "test@mail.com";
+      bool notExits = await notExistsUsersWithSameEmail(emailTest);
+      expect(notExits, true);
+    });
   });
 }
