@@ -16,6 +16,7 @@ import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/utils/backend/authorization_backend.dart';
 import 'package:skillogue/utils/backend/message_backend.dart';
+import 'package:skillogue/utils/backend/profile_backend.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/data.dart';
@@ -311,6 +312,70 @@ void main() {
 
     group("Misc_backend", () {
       dynamic l = [];
+    });
+
+    group("Profile backend", () {
+      Profile profileMatch = Profile(
+        "test@mail.com",
+        "Test",
+        "Italy",
+        "Milan",
+        "Other",
+        28,
+        DateTime.parse('2022-12-20 20:18:04Z'),
+        ["English"],
+        ['Acting', 'Animals'],
+        0
+      );
+
+      List profileFields = [
+        "test@mail.com",
+        "Test",
+        "Italy",
+        "Milan",
+        "Other",
+        28,
+        '2022-12-20 20:18:04Z',
+        ["English"],
+        ['Acting', 'Animals'],
+        0
+      ];
+
+      // to do
+      test("Parse Profile", () {
+        Profile profileTest = parseProfile(profileFields);
+        expect(profileTest == profileMatch, true);
+      });
+
+      // to do
+      test("Find profile by email", () async {
+        Profile profileTest = await findProfileByEmail("test@mail.com");
+        Profile pMatch = Profile("email", "name", "country", "city", "gender", 99,
+            DateTime.now(), [], [], 0);
+        expect(profileTest, pMatch);
+      });
+
+      test("Update profile", () {
+        try{
+          updateProfile("test@mail.com", {'name': 'Test'});
+        } on Exception catch (_) {
+          expect(true, true);
+        };
+      });
+
+      test("Get blocked", () async{
+        List<String> blocklist = await getBlocked("test@mail.com");
+        expect(blocklist, []);
+      });
+
+      test("Get blocked by", () async{
+        List<String> blocklist = await getBlockedBy("test45@mail.com");
+        expect(blocklist, []);
+      });
+
+
+
+
     });
   });
 
