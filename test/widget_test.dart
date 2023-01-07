@@ -602,4 +602,38 @@ void main() {
     ))));
     await tester.pumpAndSettle();
   });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    DateTime d = DateTime.now();
+
+    final BuildContext context = tester.element(find.byType(Container));
+    List<SingleMessage> messages = [
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+      SingleMessage(343, "hey", d, true),
+    ];
+    List<Profile> searchResults = [
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+    ];
+    Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+    /*await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: save
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(MaterialApp(
+        home: Material(
+            child: getSingleMessageWidget(
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), false),
+    ))));
+    await tester.pumpAndSettle();*/
+  });
 }
