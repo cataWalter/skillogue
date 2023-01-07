@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
@@ -141,7 +142,24 @@ Container limitMaxWidth(Widget x, int minWidth, int maxWidth) {
     child: x,
   );
 }
-
+AutoSizeText getOverflowReplacement(String t, bool normal) {
+  if (normal) {
+    return AutoSizeText(
+      t,
+      overflow: TextOverflow.ellipsis,
+      minFontSize: 14,
+      maxLines: 1,
+    );
+  } else {
+    return AutoSizeText(
+      t,
+      style: const TextStyle(fontWeight: FontWeight.bold),
+      overflow: TextOverflow.ellipsis,
+      minFontSize: 14,
+      maxLines: 1,
+    );
+  }
+}
 /*
 context.getString("string")
 context.getString("string"),

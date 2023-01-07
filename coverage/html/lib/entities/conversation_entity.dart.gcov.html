@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">Sat Jan  7 11:54:28 2023</td>
+            <td class="headerValue">Sat Jan  7 12:36:41 2023</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -66,7 +66,7 @@
 <a name="4"><span class="lineNum">       4 </span>            :   int destPoints;</a>
 <a name="5"><span class="lineNum">       5 </span>            :   List&lt;SingleMessage&gt; messages;</a>
 <a name="6"><span class="lineNum">       6 </span>            : </a>
-<a name="7"><span class="lineNum">       7 </span><span class="lineCov">          1 :   Conversation(this.destEmail, this.destName, this.destPoints, this.messages);</span></a>
+<a name="7"><span class="lineNum">       7 </span><span class="lineCov">          2 :   Conversation(this.destEmail, this.destName, this.destPoints, this.messages);</span></a>
 <a name="8"><span class="lineNum">       8 </span>            : }</a>
 <a name="9"><span class="lineNum">       9 </span>            : </a>
 <a name="10"><span class="lineNum">      10 </span>            : class SingleMessage {</a>
@@ -95,25 +95,25 @@
 <a name="33"><span class="lineNum">      33 </span>            :   return messages;</a>
 <a name="34"><span class="lineNum">      34 </span>            : }</a>
 <a name="35"><span class="lineNum">      35 </span>            : </a>
-<a name="36"><span class="lineNum">      36 </span><span class="lineCov">          1 : String parseTime(DateTime d) {</span></a>
-<a name="37"><span class="lineNum">      37 </span><span class="lineCov">          5 :   return &quot;${parseSmallNumbers(d.hour)}:${parseSmallNumbers(d.minute)}&quot;;</span></a>
+<a name="36"><span class="lineNum">      36 </span><span class="lineCov">          2 : String parseTime(DateTime d) {</span></a>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">         10 :   return &quot;${parseSmallNumbers(d.hour)}:${parseSmallNumbers(d.minute)}&quot;;</span></a>
 <a name="38"><span class="lineNum">      38 </span>            : }</a>
 <a name="39"><span class="lineNum">      39 </span>            : </a>
-<a name="40"><span class="lineNum">      40 </span><span class="lineCov">          1 : String parseDate(DateTime d) {</span></a>
-<a name="41"><span class="lineNum">      41 </span><span class="lineCov">          4 :   if (d.day == DateTime.now().day) {</span></a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">          2 : String parseDate(DateTime d) {</span></a>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">          8 :   if (d.day == DateTime.now().day) {</span></a>
 <a name="42"><span class="lineNum">      42 </span>            :     return &quot;Today&quot;;</a>
 <a name="43"><span class="lineNum">      43 </span>            :   }</a>
-<a name="44"><span class="lineNum">      44 </span><span class="lineCov">          5 :   if (d.day == DateTime.now().day - 1) {</span></a>
+<a name="44"><span class="lineNum">      44 </span><span class="lineCov">         10 :   if (d.day == DateTime.now().day - 1) {</span></a>
 <a name="45"><span class="lineNum">      45 </span>            :     return &quot;Yesterday&quot;;</a>
 <a name="46"><span class="lineNum">      46 </span>            :   }</a>
-<a name="47"><span class="lineNum">      47 </span><span class="lineCov">          6 :   return '${parseSmallNumbers(d.day)}/${parseSmallNumbers(d.month)}/${d.year}';</span></a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineCov">         12 :   return '${parseSmallNumbers(d.day)}/${parseSmallNumbers(d.month)}/${d.year}';</span></a>
 <a name="48"><span class="lineNum">      48 </span>            : }</a>
 <a name="49"><span class="lineNum">      49 </span>            : </a>
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">          1 : String parseSmallNumbers(int n) {</span></a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineCov">          1 :   if (n &lt;= 9) {</span></a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          1 :     return &quot;0$n&quot;;</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">          2 : String parseSmallNumbers(int n) {</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">          2 :   if (n &lt;= 9) {</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          2 :     return &quot;0$n&quot;;</span></a>
 <a name="53"><span class="lineNum">      53 </span>            :   } else {</a>
-<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          1 :     return n.toString();</span></a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          2 :     return n.toString();</span></a>
 <a name="55"><span class="lineNum">      55 </span>            :   }</a>
 <a name="56"><span class="lineNum">      56 </span>            : }</a>
 <a name="57"><span class="lineNum">      57 </span>            : </a>

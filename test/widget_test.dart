@@ -72,8 +72,6 @@ void main() {
     });
   });
 
-
-
   testWidgets('ProfileOverview', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
@@ -254,5 +252,133 @@ void main() {
     });
   });
 
+  testWidgets('Message', (tester) async {
+    await tester.runAsync(() async {
+      await Hive.initFlutter();
+      await Hive.openBox(localDatabase);
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: MessageScreen(),
+        ),
+      ));
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
 
+  testWidgets('SingleConversationScreen', (tester) async {
+    await tester.runAsync(() async {
+      await Hive.initFlutter();
+      await Hive.openBox(localDatabase);
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleConversationScreen(x, true),
+        ),
+      ));
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
+
+  testWidgets('Home', (tester) async {
+    await tester.runAsync(() async {
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Home([x], 2),
+        ),
+      ));
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("ciao")));
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("pop0")));
+
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
+
+  testWidgets('pop0', (tester) async {
+    await tester.runAsync(() async {
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: ProfileScreen(Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3), true),
+        ),
+      ));
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("ciao")));
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("pop0")));
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
 }
