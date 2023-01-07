@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -235,12 +234,12 @@ void main() {
 
     group("Messages backend", () {
       String emailTest = "test@mail.com";
-      LinkedHashMap<dynamic, dynamic> messageTest = LinkedHashMap({
-        0: 1111,
-        1: '1969-07-20 20:18:04Z',
-        2: 'This is the body of the test',
-        3: 'sender@mail.com',
-        4: 'receiver@mail.com'});
+      var messageTest = {
+        "0": 1111,
+        "1": '1969-07-20 20:18:04Z',
+        "2": 'This is the body of the test',
+        "3": 'sender@mail.com',
+        "4": 'receiver@mail.com'};
 
       test("Get all messages", () async {
         List<Conversation> e = await getMessagesAll(emailTest);
