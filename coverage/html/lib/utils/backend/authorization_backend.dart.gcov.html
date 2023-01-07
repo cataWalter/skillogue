@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">3</td>
             <td class="headerCovTableEntry">10</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntryLo">30.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">Sat Jan  7 12:36:41 2023</td>
+            <td class="headerValue">Sat Jan  7 13:09:15 2023</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -64,30 +64,34 @@
 <a name="2"><span class="lineNum">       2 </span>            : </a>
 <a name="3"><span class="lineNum">       3 </span>            : import 'misc_backend.dart';</a>
 <a name="4"><span class="lineNum">       4 </span>            : </a>
-<a name="5"><span class="lineNum">       5 </span><span class="lineNoCov">          0 : Future&lt;bool&gt; notExistsUsersWithSameEmail(String email) async {</span></a>
-<a name="6"><span class="lineNum">       6 </span>            :   final List&lt;dynamic&gt; data =</a>
-<a name="7"><span class="lineNum">       7 </span><span class="lineNoCov">          0 :       await supabase.from('profile').select().eq('email', email);</span></a>
-<a name="8"><span class="lineNum">       8 </span><span class="lineNoCov">          0 :   return data.isEmpty;</span></a>
-<a name="9"><span class="lineNum">       9 </span>            : }</a>
-<a name="10"><span class="lineNum">      10 </span>            : </a>
-<a name="11"><span class="lineNum">      11 </span><span class="lineNoCov">          0 : Future&lt;AuthResponse&gt; login(String email, String password) async {</span></a>
-<a name="12"><span class="lineNum">      12 </span><span class="lineNoCov">          0 :   return await supabase.auth.signInWithPassword(</span></a>
-<a name="13"><span class="lineNum">      13 </span>            :     email: email,</a>
-<a name="14"><span class="lineNum">      14 </span>            :     password: password,</a>
-<a name="15"><span class="lineNum">      15 </span>            :   );</a>
-<a name="16"><span class="lineNum">      16 </span>            : }</a>
-<a name="17"><span class="lineNum">      17 </span>            : </a>
-<a name="18"><span class="lineNum">      18 </span><span class="lineNoCov">          0 : Future&lt;AuthResponse&gt; registration(String email, String password) async {</span></a>
-<a name="19"><span class="lineNum">      19 </span><span class="lineNoCov">          0 :   return await supabase.auth.signUp(</span></a>
-<a name="20"><span class="lineNum">      20 </span>            :     email: email,</a>
-<a name="21"><span class="lineNum">      21 </span>            :     password: password,</a>
-<a name="22"><span class="lineNum">      22 </span>            :   );</a>
-<a name="23"><span class="lineNum">      23 </span>            : }</a>
-<a name="24"><span class="lineNum">      24 </span>            : </a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineNoCov">          0 : void loginDateUpdate(email) async {</span></a>
-<a name="26"><span class="lineNum">      26 </span><span class="lineNoCov">          0 :   await supabase.from('profile').update(</span></a>
-<a name="27"><span class="lineNum">      27 </span><span class="lineNoCov">          0 :       {'last_login': DateTime.now().toString()}).match({'email': email});</span></a>
-<a name="28"><span class="lineNum">      28 </span>            : }</a>
+<a name="5"><span class="lineNum">       5 </span><span class="lineCov">          1 : Future&lt;bool&gt; notExistsUsersWithSameEmail(String email) async {</span></a>
+<a name="6"><span class="lineNum">       6 </span>            :   try {</a>
+<a name="7"><span class="lineNum">       7 </span>            :     final List&lt;dynamic&gt; data =</a>
+<a name="8"><span class="lineNum">       8 </span><span class="lineCov">          4 :         await supabase.from('profile').select().eq('email', email);</span></a>
+<a name="9"><span class="lineNum">       9 </span><span class="lineCov">          1 :     return data.isEmpty;</span></a>
+<a name="10"><span class="lineNum">      10 </span>            :   } catch (e) {</a>
+<a name="11"><span class="lineNum">      11 </span>            :     return false;</a>
+<a name="12"><span class="lineNum">      12 </span>            :   }</a>
+<a name="13"><span class="lineNum">      13 </span>            : }</a>
+<a name="14"><span class="lineNum">      14 </span>            : </a>
+<a name="15"><span class="lineNum">      15 </span><span class="lineNoCov">          0 : Future&lt;AuthResponse&gt; login(String email, String password) async {</span></a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineNoCov">          0 :   return await supabase.auth.signInWithPassword(</span></a>
+<a name="17"><span class="lineNum">      17 </span>            :     email: email,</a>
+<a name="18"><span class="lineNum">      18 </span>            :     password: password,</a>
+<a name="19"><span class="lineNum">      19 </span>            :   );</a>
+<a name="20"><span class="lineNum">      20 </span>            : }</a>
+<a name="21"><span class="lineNum">      21 </span>            : </a>
+<a name="22"><span class="lineNum">      22 </span><span class="lineNoCov">          0 : Future&lt;AuthResponse&gt; registration(String email, String password) async {</span></a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineNoCov">          0 :   return await supabase.auth.signUp(</span></a>
+<a name="24"><span class="lineNum">      24 </span>            :     email: email,</a>
+<a name="25"><span class="lineNum">      25 </span>            :     password: password,</a>
+<a name="26"><span class="lineNum">      26 </span>            :   );</a>
+<a name="27"><span class="lineNum">      27 </span>            : }</a>
+<a name="28"><span class="lineNum">      28 </span>            : </a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineNoCov">          0 : void loginDateUpdate(email) async {</span></a>
+<a name="30"><span class="lineNum">      30 </span><span class="lineNoCov">          0 :   await supabase.from('profile').update(</span></a>
+<a name="31"><span class="lineNum">      31 </span><span class="lineNoCov">          0 :       {'last_login': DateTime.now().toString()}).match({'email': email});</span></a>
+<a name="32"><span class="lineNum">      32 </span>            : }</a>
 </pre>
       </td>
     </tr>

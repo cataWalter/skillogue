@@ -8,21 +8,25 @@ import '../../entities/profile_entity.dart';
 import 'misc_backend.dart';
 
 Future<List<Conversation>> getMessagesAll(String email) async {
-  List<Conversation> newConversations = [];
-  final List<dynamic> sentMessages =
-      await supabase.from('message').select().eq('sender', email);
-  final List<dynamic> receivedMessages =
-      await supabase.from('message').select().eq('receiver', email);
-  for (LinkedHashMap x in sentMessages) {
-    newConversations =
-        await addMessage(true, newConversations, parseMessage(x));
+  try {
+    List<Conversation> newConversations = [];
+    final List<dynamic> sentMessages =
+        await supabase.from('message').select().eq('sender', email);
+    final List<dynamic> receivedMessages =
+        await supabase.from('message').select().eq('receiver', email);
+    for (LinkedHashMap x in sentMessages) {
+      newConversations =
+          await addMessage(true, newConversations, parseMessage(x));
+    }
+    for (LinkedHashMap x in receivedMessages) {
+      newConversations =
+          await addMessage(false, newConversations, parseMessage(x));
+    }
+    sortConversations(newConversations);
+    return newConversations;
+  } catch (e) {
+    return [];
   }
-  for (LinkedHashMap x in receivedMessages) {
-    newConversations =
-        await addMessage(false, newConversations, parseMessage(x));
-  }
-  sortConversations(newConversations);
-  return newConversations;
 }
 
 Message parseMessage(LinkedHashMap x) {

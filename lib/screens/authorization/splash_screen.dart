@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
       profile = await findProfileByEmail(_myBox.get(loggedProfileKey));
       List<Conversation> c = await getMessagesAll(_myBox.get(loggedProfileKey));
       Future<void>.delayed(const Duration(milliseconds: 400), () {
-        showSnackBar("Good morning ! 🌞", context);
+        if (mounted) showSnackBar("Good morning ! 🌞", context);
       });
       //pause();
       nextScreenHome(c);

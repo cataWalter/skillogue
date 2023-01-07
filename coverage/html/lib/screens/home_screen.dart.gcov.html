@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">103</td>
-            <td class="headerCovTableEntry">190</td>
-            <td class="headerCovTableEntryLo">54.2 %</td>
+            <td class="headerCovTableEntry">191</td>
+            <td class="headerCovTableEntryLo">53.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">Sat Jan  7 12:36:41 2023</td>
+            <td class="headerValue">Sat Jan  7 13:09:15 2023</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -406,147 +406,148 @@
 <a name="344"><span class="lineNum">     344 </span>            :                     },</a>
 <a name="345"><span class="lineNum">     345 </span><span class="lineNoCov">          0 :                     itemBuilder: (BuildContext context) =&gt; [</span></a>
 <a name="346"><span class="lineNum">     346 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
-<a name="347"><span class="lineNum">     347 </span>            :                         value: 0,</a>
-<a name="348"><span class="lineNum">     348 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
-<a name="349"><span class="lineNum">     349 </span><span class="lineNoCov">          0 :                           AppLocale.settings.getString(context),</span></a>
-<a name="350"><span class="lineNum">     350 </span>            :                         ),</a>
-<a name="351"><span class="lineNum">     351 </span>            :                       ),</a>
-<a name="352"><span class="lineNum">     352 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
-<a name="353"><span class="lineNum">     353 </span>            :                         value: 1,</a>
-<a name="354"><span class="lineNum">     354 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
-<a name="355"><span class="lineNum">     355 </span><span class="lineNoCov">          0 :                           AppLocale.contactUs.getString(context),</span></a>
-<a name="356"><span class="lineNum">     356 </span>            :                         ),</a>
-<a name="357"><span class="lineNum">     357 </span>            :                       ),</a>
-<a name="358"><span class="lineNum">     358 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
-<a name="359"><span class="lineNum">     359 </span>            :                         value: 2,</a>
-<a name="360"><span class="lineNum">     360 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
-<a name="361"><span class="lineNum">     361 </span><span class="lineNoCov">          0 :                           AppLocale.acknowledgments.getString(context),</span></a>
-<a name="362"><span class="lineNum">     362 </span>            :                         ),</a>
-<a name="363"><span class="lineNum">     363 </span>            :                       ),</a>
-<a name="364"><span class="lineNum">     364 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
-<a name="365"><span class="lineNum">     365 </span>            :                         value: 3,</a>
-<a name="366"><span class="lineNum">     366 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
-<a name="367"><span class="lineNum">     367 </span><span class="lineNoCov">          0 :                           AppLocale.logout.getString(context),</span></a>
-<a name="368"><span class="lineNum">     368 </span>            :                         ),</a>
-<a name="369"><span class="lineNum">     369 </span>            :                       ),</a>
-<a name="370"><span class="lineNum">     370 </span>            :                     ],</a>
-<a name="371"><span class="lineNum">     371 </span>            :                   ),</a>
-<a name="372"><span class="lineNum">     372 </span>            :                 ],</a>
-<a name="373"><span class="lineNum">     373 </span>            :               ),</a>
-<a name="374"><span class="lineNum">     374 </span><span class="lineCov">          2 :               body: ProfileScreen(profile, true));</span></a>
-<a name="375"><span class="lineNum">     375 </span>            :         }</a>
-<a name="376"><span class="lineNum">     376 </span><span class="lineCov">          1 :       case messagesIndex:</span></a>
-<a name="377"><span class="lineNum">     377 </span>            :         {</a>
-<a name="378"><span class="lineNum">     378 </span><span class="lineCov">          1 :           return Scaffold(</span></a>
-<a name="379"><span class="lineNum">     379 </span><span class="lineCov">          1 :               appBar: AppBar(</span></a>
-<a name="380"><span class="lineNum">     380 </span><span class="lineCov">          3 :                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,</span></a>
-<a name="381"><span class="lineNum">     381 </span>            :                 automaticallyImplyLeading: false,</a>
-<a name="382"><span class="lineNum">     382 </span>            :                 elevation: 0,</a>
-<a name="383"><span class="lineNum">     383 </span><span class="lineCov">          1 :                 title: Row(</span></a>
-<a name="384"><span class="lineNum">     384 </span>            :                   mainAxisAlignment: MainAxisAlignment.spaceBetween,</a>
-<a name="385"><span class="lineNum">     385 </span><span class="lineCov">          1 :                   children: [</span></a>
-<a name="386"><span class="lineNum">     386 </span><span class="lineCov">          1 :                     Text(</span></a>
-<a name="387"><span class="lineNum">     387 </span>            :                       appName,</a>
-<a name="388"><span class="lineNum">     388 </span><span class="lineCov">          1 :                       style: GoogleFonts.bebasNeue(</span></a>
-<a name="389"><span class="lineNum">     389 </span>            :                         fontSize: 28,</a>
-<a name="390"><span class="lineNum">     390 </span>            :                         fontWeight: FontWeight.w300,</a>
-<a name="391"><span class="lineNum">     391 </span><span class="lineCov">          4 :                         color: Theme.of(context).brightness == Brightness.dark</span></a>
-<a name="392"><span class="lineNum">     392 </span>            :                             ? Colors.white</a>
-<a name="393"><span class="lineNum">     393 </span>            :                             : Colors.black,</a>
-<a name="394"><span class="lineNum">     394 </span>            :                       ),</a>
-<a name="395"><span class="lineNum">     395 </span>            :                     ),</a>
-<a name="396"><span class="lineNum">     396 </span><span class="lineCov">          1 :                     Row(</span></a>
-<a name="397"><span class="lineNum">     397 </span><span class="lineCov">          1 :                       children: [</span></a>
-<a name="398"><span class="lineNum">     398 </span><span class="lineCov">          1 :                         Text(</span></a>
-<a name="399"><span class="lineNum">     399 </span><span class="lineCov">          2 :                           profile.name,</span></a>
-<a name="400"><span class="lineNum">     400 </span><span class="lineCov">          1 :                           style: GoogleFonts.bebasNeue(</span></a>
-<a name="401"><span class="lineNum">     401 </span>            :                               fontSize: 28,</a>
-<a name="402"><span class="lineNum">     402 </span>            :                               fontWeight: FontWeight.w300,</a>
-<a name="403"><span class="lineNum">     403 </span><span class="lineCov">          4 :                               color: Theme.of(context).brightness ==</span></a>
-<a name="404"><span class="lineNum">     404 </span>            :                                       Brightness.dark</a>
-<a name="405"><span class="lineNum">     405 </span>            :                                   ? Colors.white</a>
-<a name="406"><span class="lineNum">     406 </span>            :                                   : Colors.black),</a>
-<a name="407"><span class="lineNum">     407 </span>            :                         ),</a>
-<a name="408"><span class="lineNum">     408 </span><span class="lineCov">          1 :                         addHorizontalSpace(10),</span></a>
-<a name="409"><span class="lineNum">     409 </span><span class="lineCov">          1 :                         Padding(</span></a>
-<a name="410"><span class="lineNum">     410 </span>            :                           padding: const EdgeInsets.only(bottom: 8.0),</a>
-<a name="411"><span class="lineNum">     411 </span><span class="lineCov">          1 :                           child: getAvatar(</span></a>
-<a name="412"><span class="lineNum">     412 </span><span class="lineCov">          4 :                               profile.name, profile.points, 32, 1, 1, 8),</span></a>
-<a name="413"><span class="lineNum">     413 </span>            :                         ),</a>
-<a name="414"><span class="lineNum">     414 </span>            :                       ],</a>
-<a name="415"><span class="lineNum">     415 </span>            :                     ),</a>
-<a name="416"><span class="lineNum">     416 </span>            :                   ],</a>
-<a name="417"><span class="lineNum">     417 </span>            :                 ),</a>
-<a name="418"><span class="lineNum">     418 </span>            :               ),</a>
-<a name="419"><span class="lineNum">     419 </span>            :               body: const MessageScreen());</a>
-<a name="420"><span class="lineNum">     420 </span>            :         }</a>
-<a name="421"><span class="lineNum">     421 </span>            :       /*case eventsIndex:</a>
-<a name="422"><span class="lineNum">     422 </span>            :         {</a>
-<a name="423"><span class="lineNum">     423 </span>            :           return const EventScreen();</a>
-<a name="424"><span class="lineNum">     424 </span>            :         }*/</a>
-<a name="425"><span class="lineNum">     425 </span>            :     }</a>
-<a name="426"><span class="lineNum">     426 </span>            :   }</a>
-<a name="427"><span class="lineNum">     427 </span>            : </a>
-<a name="428"><span class="lineNum">     428 </span><span class="lineNoCov">          0 :   signOut() async {</span></a>
-<a name="429"><span class="lineNum">     429 </span><span class="lineNoCov">          0 :     await supabase.auth.signOut();</span></a>
-<a name="430"><span class="lineNum">     430 </span>            :   }</a>
-<a name="431"><span class="lineNum">     431 </span>            : </a>
-<a name="432"><span class="lineNum">     432 </span><span class="lineCov">          1 :   conversationUpdate() async {</span></a>
-<a name="433"><span class="lineNum">     433 </span><span class="lineCov">          3 :     supabase.channel('home_channel').on(</span></a>
-<a name="434"><span class="lineNum">     434 </span>            :       RealtimeListenTypes.postgresChanges,</a>
-<a name="435"><span class="lineNum">     435 </span><span class="lineCov">          1 :       ChannelFilter(event: '*', schema: '*'),</span></a>
-<a name="436"><span class="lineNum">     436 </span><span class="lineNoCov">          0 :       (payload, [ref]) async {</span></a>
-<a name="437"><span class="lineNum">     437 </span>            :         //print('Change received: ${payload.toString()}');</a>
-<a name="438"><span class="lineNum">     438 </span><span class="lineNoCov">          0 :         conversations = await addMessage(payload.entries.elementAt(4).value.entries.elementAt(3).value == profile.email, conversations, Message( payload.entries.elementAt(4).value.entries.elementAt(1).value, payload.entries.elementAt(4).value.entries.elementAt(3).value, payload.entries.elementAt(4).value.entries.elementAt(2).value,payload.entries.elementAt(4).value.entries.elementAt(4).value,DateTime.parse(payload.entries    .elementAt(4)    .value    .entries    .elementAt(0)    .value)));</span></a>
-<a name="439"><span class="lineNum">     439 </span><span class="lineNoCov">          0 :         setState(() {});</span></a>
-<a name="440"><span class="lineNum">     440 </span><span class="lineNoCov">          0 :         if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=profile.email) {</span></a>
-<a name="441"><span class="lineNum">     441 </span><span class="lineNoCov">          0 :           Profile destProfile = await findProfileByEmail(payload.entries.elementAt(4).value.entries.elementAt(3).value);</span></a>
-<a name="442"><span class="lineNum">     442 </span><span class="lineNoCov">          0 :           newMessageNotification(    destProfile.email,    destProfile.name, destProfile.points, payload.entries.elementAt(4).value.entries.elementAt(4).value);</span></a>
-<a name="443"><span class="lineNum">     443 </span>            :         }</a>
-<a name="444"><span class="lineNum">     444 </span>            :       },</a>
-<a name="445"><span class="lineNum">     445 </span><span class="lineCov">          1 :     ).subscribe();</span></a>
-<a name="446"><span class="lineNum">     446 </span>            : </a>
-<a name="447"><span class="lineNum">     447 </span><span class="lineCov">          1 :     while (mounted) {</span></a>
-<a name="448"><span class="lineNum">     448 </span><span class="lineCov">          4 :       conversations = await getNewMessages(profile.email, conversations);</span></a>
-<a name="449"><span class="lineNum">     449 </span><span class="lineCov">          3 :       if (mounted) setState(() {});</span></a>
-<a name="450"><span class="lineNum">     450 </span><span class="lineCov">          1 :       await Future.delayed(const Duration(seconds: 10));</span></a>
-<a name="451"><span class="lineNum">     451 </span>            :     }</a>
-<a name="452"><span class="lineNum">     452 </span>            :   }</a>
-<a name="453"><span class="lineNum">     453 </span>            : </a>
-<a name="454"><span class="lineNum">     454 </span>            :   static const String oneSignalAppId = &quot;b56dbfe1-d278-47ff-a5aa-59a5b8cfd617&quot;;</a>
-<a name="455"><span class="lineNum">     455 </span>            : </a>
-<a name="456"><span class="lineNum">     456 </span><span class="lineNoCov">          0 :   Future&lt;void&gt; initPlatformState() async {</span></a>
-<a name="457"><span class="lineNum">     457 </span>            :     /*OneSignal.shared.setAppId(oneSignalAppId);</a>
-<a name="458"><span class="lineNum">     458 </span>            :     OneSignal.shared</a>
-<a name="459"><span class="lineNum">     459 </span>            :         .promptUserForPushNotificationPermission()</a>
-<a name="460"><span class="lineNum">     460 </span>            :         .then((accepted) {});*/</a>
-<a name="461"><span class="lineNum">     461 </span>            :   }</a>
-<a name="462"><span class="lineNum">     462 </span>            : </a>
-<a name="463"><span class="lineNum">     463 </span><span class="lineNoCov">          0 :   void newMessageNotification(email, name, points, message) {</span></a>
-<a name="464"><span class="lineNum">     464 </span>            :     /*InAppNotifications.instance</a>
-<a name="465"><span class="lineNum">     465 </span>            :       ..titleFontSize = 14.0</a>
-<a name="466"><span class="lineNum">     466 </span>            :       ..descriptionFontSize = 11.0</a>
-<a name="467"><span class="lineNum">     467 </span>            :       ..textColor = Colors.white</a>
-<a name="468"><span class="lineNum">     468 </span>            :       ..backgroundColor = Colors.black</a>
-<a name="469"><span class="lineNum">     469 </span>            :       ..shadow = true</a>
-<a name="470"><span class="lineNum">     470 </span>            :       ..animationStyle = InAppNotificationsAnimationStyle.scale;*/</a>
-<a name="471"><span class="lineNum">     471 </span>            :     /*InAppNotifications.show(</a>
-<a name="472"><span class="lineNum">     472 </span>            :       title: &quot;New message from &quot; + name,</a>
-<a name="473"><span class="lineNum">     473 </span>            :       leading: getAvatar(name, points, 50, 1, 1, 20),</a>
-<a name="474"><span class="lineNum">     474 </span>            :       description: &quot;\n&quot; + message,</a>
-<a name="475"><span class="lineNum">     475 </span>            :       onTap: () {</a>
-<a name="476"><span class="lineNum">     476 </span>            :         Navigator.push(</a>
-<a name="477"><span class="lineNum">     477 </span>            :           context,</a>
-<a name="478"><span class="lineNum">     478 </span>            :           MaterialPageRoute(</a>
-<a name="479"><span class="lineNum">     479 </span>            :             builder: (context) =&gt; SingleConversationScreen(</a>
-<a name="480"><span class="lineNum">     480 </span>            :                 findConversation(email, conversations), true),</a>
-<a name="481"><span class="lineNum">     481 </span>            :           ),</a>
-<a name="482"><span class="lineNum">     482 </span>            :         );</a>
-<a name="483"><span class="lineNum">     483 </span>            :       },</a>
-<a name="484"><span class="lineNum">     484 </span>            :       persistent: false,</a>
-<a name="485"><span class="lineNum">     485 </span>            :     );*/</a>
-<a name="486"><span class="lineNum">     486 </span>            :   }</a>
-<a name="487"><span class="lineNum">     487 </span>            : }</a>
+<a name="347"><span class="lineNum">     347 </span><span class="lineNoCov">          0 :                         key: Key(&quot;pop0&quot;),</span></a>
+<a name="348"><span class="lineNum">     348 </span>            :                         value: 0,</a>
+<a name="349"><span class="lineNum">     349 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
+<a name="350"><span class="lineNum">     350 </span><span class="lineNoCov">          0 :                           AppLocale.settings.getString(context),</span></a>
+<a name="351"><span class="lineNum">     351 </span>            :                         ),</a>
+<a name="352"><span class="lineNum">     352 </span>            :                       ),</a>
+<a name="353"><span class="lineNum">     353 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
+<a name="354"><span class="lineNum">     354 </span>            :                         value: 1,</a>
+<a name="355"><span class="lineNum">     355 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
+<a name="356"><span class="lineNum">     356 </span><span class="lineNoCov">          0 :                           AppLocale.contactUs.getString(context),</span></a>
+<a name="357"><span class="lineNum">     357 </span>            :                         ),</a>
+<a name="358"><span class="lineNum">     358 </span>            :                       ),</a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
+<a name="360"><span class="lineNum">     360 </span>            :                         value: 2,</a>
+<a name="361"><span class="lineNum">     361 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
+<a name="362"><span class="lineNum">     362 </span><span class="lineNoCov">          0 :                           AppLocale.acknowledgments.getString(context),</span></a>
+<a name="363"><span class="lineNum">     363 </span>            :                         ),</a>
+<a name="364"><span class="lineNum">     364 </span>            :                       ),</a>
+<a name="365"><span class="lineNum">     365 </span><span class="lineNoCov">          0 :                       PopupMenuItem(</span></a>
+<a name="366"><span class="lineNum">     366 </span>            :                         value: 3,</a>
+<a name="367"><span class="lineNum">     367 </span><span class="lineNoCov">          0 :                         child: Text(</span></a>
+<a name="368"><span class="lineNum">     368 </span><span class="lineNoCov">          0 :                           AppLocale.logout.getString(context),</span></a>
+<a name="369"><span class="lineNum">     369 </span>            :                         ),</a>
+<a name="370"><span class="lineNum">     370 </span>            :                       ),</a>
+<a name="371"><span class="lineNum">     371 </span>            :                     ],</a>
+<a name="372"><span class="lineNum">     372 </span>            :                   ),</a>
+<a name="373"><span class="lineNum">     373 </span>            :                 ],</a>
+<a name="374"><span class="lineNum">     374 </span>            :               ),</a>
+<a name="375"><span class="lineNum">     375 </span><span class="lineCov">          2 :               body: ProfileScreen(profile, true));</span></a>
+<a name="376"><span class="lineNum">     376 </span>            :         }</a>
+<a name="377"><span class="lineNum">     377 </span><span class="lineCov">          1 :       case messagesIndex:</span></a>
+<a name="378"><span class="lineNum">     378 </span>            :         {</a>
+<a name="379"><span class="lineNum">     379 </span><span class="lineCov">          1 :           return Scaffold(</span></a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineCov">          1 :               appBar: AppBar(</span></a>
+<a name="381"><span class="lineNum">     381 </span><span class="lineCov">          3 :                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,</span></a>
+<a name="382"><span class="lineNum">     382 </span>            :                 automaticallyImplyLeading: false,</a>
+<a name="383"><span class="lineNum">     383 </span>            :                 elevation: 0,</a>
+<a name="384"><span class="lineNum">     384 </span><span class="lineCov">          1 :                 title: Row(</span></a>
+<a name="385"><span class="lineNum">     385 </span>            :                   mainAxisAlignment: MainAxisAlignment.spaceBetween,</a>
+<a name="386"><span class="lineNum">     386 </span><span class="lineCov">          1 :                   children: [</span></a>
+<a name="387"><span class="lineNum">     387 </span><span class="lineCov">          1 :                     Text(</span></a>
+<a name="388"><span class="lineNum">     388 </span>            :                       appName,</a>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">          1 :                       style: GoogleFonts.bebasNeue(</span></a>
+<a name="390"><span class="lineNum">     390 </span>            :                         fontSize: 28,</a>
+<a name="391"><span class="lineNum">     391 </span>            :                         fontWeight: FontWeight.w300,</a>
+<a name="392"><span class="lineNum">     392 </span><span class="lineCov">          4 :                         color: Theme.of(context).brightness == Brightness.dark</span></a>
+<a name="393"><span class="lineNum">     393 </span>            :                             ? Colors.white</a>
+<a name="394"><span class="lineNum">     394 </span>            :                             : Colors.black,</a>
+<a name="395"><span class="lineNum">     395 </span>            :                       ),</a>
+<a name="396"><span class="lineNum">     396 </span>            :                     ),</a>
+<a name="397"><span class="lineNum">     397 </span><span class="lineCov">          1 :                     Row(</span></a>
+<a name="398"><span class="lineNum">     398 </span><span class="lineCov">          1 :                       children: [</span></a>
+<a name="399"><span class="lineNum">     399 </span><span class="lineCov">          1 :                         Text(</span></a>
+<a name="400"><span class="lineNum">     400 </span><span class="lineCov">          2 :                           profile.name,</span></a>
+<a name="401"><span class="lineNum">     401 </span><span class="lineCov">          1 :                           style: GoogleFonts.bebasNeue(</span></a>
+<a name="402"><span class="lineNum">     402 </span>            :                               fontSize: 28,</a>
+<a name="403"><span class="lineNum">     403 </span>            :                               fontWeight: FontWeight.w300,</a>
+<a name="404"><span class="lineNum">     404 </span><span class="lineCov">          4 :                               color: Theme.of(context).brightness ==</span></a>
+<a name="405"><span class="lineNum">     405 </span>            :                                       Brightness.dark</a>
+<a name="406"><span class="lineNum">     406 </span>            :                                   ? Colors.white</a>
+<a name="407"><span class="lineNum">     407 </span>            :                                   : Colors.black),</a>
+<a name="408"><span class="lineNum">     408 </span>            :                         ),</a>
+<a name="409"><span class="lineNum">     409 </span><span class="lineCov">          1 :                         addHorizontalSpace(10),</span></a>
+<a name="410"><span class="lineNum">     410 </span><span class="lineCov">          1 :                         Padding(</span></a>
+<a name="411"><span class="lineNum">     411 </span>            :                           padding: const EdgeInsets.only(bottom: 8.0),</a>
+<a name="412"><span class="lineNum">     412 </span><span class="lineCov">          1 :                           child: getAvatar(</span></a>
+<a name="413"><span class="lineNum">     413 </span><span class="lineCov">          4 :                               profile.name, profile.points, 32, 1, 1, 8),</span></a>
+<a name="414"><span class="lineNum">     414 </span>            :                         ),</a>
+<a name="415"><span class="lineNum">     415 </span>            :                       ],</a>
+<a name="416"><span class="lineNum">     416 </span>            :                     ),</a>
+<a name="417"><span class="lineNum">     417 </span>            :                   ],</a>
+<a name="418"><span class="lineNum">     418 </span>            :                 ),</a>
+<a name="419"><span class="lineNum">     419 </span>            :               ),</a>
+<a name="420"><span class="lineNum">     420 </span>            :               body: const MessageScreen());</a>
+<a name="421"><span class="lineNum">     421 </span>            :         }</a>
+<a name="422"><span class="lineNum">     422 </span>            :       /*case eventsIndex:</a>
+<a name="423"><span class="lineNum">     423 </span>            :         {</a>
+<a name="424"><span class="lineNum">     424 </span>            :           return const EventScreen();</a>
+<a name="425"><span class="lineNum">     425 </span>            :         }*/</a>
+<a name="426"><span class="lineNum">     426 </span>            :     }</a>
+<a name="427"><span class="lineNum">     427 </span>            :   }</a>
+<a name="428"><span class="lineNum">     428 </span>            : </a>
+<a name="429"><span class="lineNum">     429 </span><span class="lineNoCov">          0 :   signOut() async {</span></a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineNoCov">          0 :     await supabase.auth.signOut();</span></a>
+<a name="431"><span class="lineNum">     431 </span>            :   }</a>
+<a name="432"><span class="lineNum">     432 </span>            : </a>
+<a name="433"><span class="lineNum">     433 </span><span class="lineCov">          1 :   conversationUpdate() async {</span></a>
+<a name="434"><span class="lineNum">     434 </span><span class="lineCov">          3 :     supabase.channel('home_channel').on(</span></a>
+<a name="435"><span class="lineNum">     435 </span>            :       RealtimeListenTypes.postgresChanges,</a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineCov">          1 :       ChannelFilter(event: '*', schema: '*'),</span></a>
+<a name="437"><span class="lineNum">     437 </span><span class="lineNoCov">          0 :       (payload, [ref]) async {</span></a>
+<a name="438"><span class="lineNum">     438 </span>            :         //print('Change received: ${payload.toString()}');</a>
+<a name="439"><span class="lineNum">     439 </span><span class="lineNoCov">          0 :         conversations = await addMessage(payload.entries.elementAt(4).value.entries.elementAt(3).value == profile.email, conversations, Message( payload.entries.elementAt(4).value.entries.elementAt(1).value, payload.entries.elementAt(4).value.entries.elementAt(3).value, payload.entries.elementAt(4).value.entries.elementAt(2).value,payload.entries.elementAt(4).value.entries.elementAt(4).value,DateTime.parse(payload.entries    .elementAt(4)    .value    .entries    .elementAt(0)    .value)));</span></a>
+<a name="440"><span class="lineNum">     440 </span><span class="lineNoCov">          0 :         setState(() {});</span></a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineNoCov">          0 :         if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=profile.email) {</span></a>
+<a name="442"><span class="lineNum">     442 </span><span class="lineNoCov">          0 :           Profile destProfile = await findProfileByEmail(payload.entries.elementAt(4).value.entries.elementAt(3).value);</span></a>
+<a name="443"><span class="lineNum">     443 </span><span class="lineNoCov">          0 :           newMessageNotification(    destProfile.email,    destProfile.name, destProfile.points, payload.entries.elementAt(4).value.entries.elementAt(4).value);</span></a>
+<a name="444"><span class="lineNum">     444 </span>            :         }</a>
+<a name="445"><span class="lineNum">     445 </span>            :       },</a>
+<a name="446"><span class="lineNum">     446 </span><span class="lineCov">          1 :     ).subscribe();</span></a>
+<a name="447"><span class="lineNum">     447 </span>            : </a>
+<a name="448"><span class="lineNum">     448 </span><span class="lineCov">          1 :     while (mounted) {</span></a>
+<a name="449"><span class="lineNum">     449 </span><span class="lineCov">          4 :       conversations = await getNewMessages(profile.email, conversations);</span></a>
+<a name="450"><span class="lineNum">     450 </span><span class="lineCov">          1 :       if (mounted) setState(() {});</span></a>
+<a name="451"><span class="lineNum">     451 </span><span class="lineCov">          1 :       await Future.delayed(const Duration(seconds: 10));</span></a>
+<a name="452"><span class="lineNum">     452 </span>            :     }</a>
+<a name="453"><span class="lineNum">     453 </span>            :   }</a>
+<a name="454"><span class="lineNum">     454 </span>            : </a>
+<a name="455"><span class="lineNum">     455 </span>            :   static const String oneSignalAppId = &quot;b56dbfe1-d278-47ff-a5aa-59a5b8cfd617&quot;;</a>
+<a name="456"><span class="lineNum">     456 </span>            : </a>
+<a name="457"><span class="lineNum">     457 </span><span class="lineNoCov">          0 :   Future&lt;void&gt; initPlatformState() async {</span></a>
+<a name="458"><span class="lineNum">     458 </span>            :     /*OneSignal.shared.setAppId(oneSignalAppId);</a>
+<a name="459"><span class="lineNum">     459 </span>            :     OneSignal.shared</a>
+<a name="460"><span class="lineNum">     460 </span>            :         .promptUserForPushNotificationPermission()</a>
+<a name="461"><span class="lineNum">     461 </span>            :         .then((accepted) {});*/</a>
+<a name="462"><span class="lineNum">     462 </span>            :   }</a>
+<a name="463"><span class="lineNum">     463 </span>            : </a>
+<a name="464"><span class="lineNum">     464 </span><span class="lineNoCov">          0 :   void newMessageNotification(email, name, points, message) {</span></a>
+<a name="465"><span class="lineNum">     465 </span>            :     /*InAppNotifications.instance</a>
+<a name="466"><span class="lineNum">     466 </span>            :       ..titleFontSize = 14.0</a>
+<a name="467"><span class="lineNum">     467 </span>            :       ..descriptionFontSize = 11.0</a>
+<a name="468"><span class="lineNum">     468 </span>            :       ..textColor = Colors.white</a>
+<a name="469"><span class="lineNum">     469 </span>            :       ..backgroundColor = Colors.black</a>
+<a name="470"><span class="lineNum">     470 </span>            :       ..shadow = true</a>
+<a name="471"><span class="lineNum">     471 </span>            :       ..animationStyle = InAppNotificationsAnimationStyle.scale;*/</a>
+<a name="472"><span class="lineNum">     472 </span>            :     /*InAppNotifications.show(</a>
+<a name="473"><span class="lineNum">     473 </span>            :       title: &quot;New message from &quot; + name,</a>
+<a name="474"><span class="lineNum">     474 </span>            :       leading: getAvatar(name, points, 50, 1, 1, 20),</a>
+<a name="475"><span class="lineNum">     475 </span>            :       description: &quot;\n&quot; + message,</a>
+<a name="476"><span class="lineNum">     476 </span>            :       onTap: () {</a>
+<a name="477"><span class="lineNum">     477 </span>            :         Navigator.push(</a>
+<a name="478"><span class="lineNum">     478 </span>            :           context,</a>
+<a name="479"><span class="lineNum">     479 </span>            :           MaterialPageRoute(</a>
+<a name="480"><span class="lineNum">     480 </span>            :             builder: (context) =&gt; SingleConversationScreen(</a>
+<a name="481"><span class="lineNum">     481 </span>            :                 findConversation(email, conversations), true),</a>
+<a name="482"><span class="lineNum">     482 </span>            :           ),</a>
+<a name="483"><span class="lineNum">     483 </span>            :         );</a>
+<a name="484"><span class="lineNum">     484 </span>            :       },</a>
+<a name="485"><span class="lineNum">     485 </span>            :       persistent: false,</a>
+<a name="486"><span class="lineNum">     486 </span>            :     );*/</a>
+<a name="487"><span class="lineNum">     487 </span>            :   }</a>
+<a name="488"><span class="lineNum">     488 </span>            : }</a>
 </pre>
       </td>
     </tr>

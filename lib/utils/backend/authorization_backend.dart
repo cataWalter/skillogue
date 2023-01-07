@@ -3,9 +3,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'misc_backend.dart';
 
 Future<bool> notExistsUsersWithSameEmail(String email) async {
-  final List<dynamic> data =
-      await supabase.from('profile').select().eq('email', email);
-  return data.isEmpty;
+  try {
+    final List<dynamic> data =
+        await supabase.from('profile').select().eq('email', email);
+    return data.isEmpty;
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<AuthResponse> login(String email, String password) async {

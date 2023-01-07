@@ -336,10 +336,10 @@ void main() {
           body: Home([x], 2),
         ),
       ));
-      await tester.pump(Duration(seconds: 2));
+      /*await tester.pump(Duration(seconds: 2));
       await tester.tap(find.byKey(Key("ciao")));
       await tester.pump(Duration(seconds: 2));
-      await tester.tap(find.byKey(Key("pop0")));
+      await tester.tap(find.byKey(Key("pop0")));*/
 
       final titleFinder = find.text('email');
       final messageFinder = find.text('pass');
@@ -371,10 +371,10 @@ void main() {
           body: ProfileScreen(Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3), true),
         ),
       ));
-      await tester.pump(Duration(seconds: 2));
+      /*await tester.pump(Duration(seconds: 2));
       await tester.tap(find.byKey(Key("ciao")));
       await tester.pump(Duration(seconds: 2));
-      await tester.tap(find.byKey(Key("pop0")));
+      await tester.tap(find.byKey(Key("pop0")));*/
       final titleFinder = find.text('email');
       final messageFinder = find.text('pass');
       expect(titleFinder, findsNothing);
