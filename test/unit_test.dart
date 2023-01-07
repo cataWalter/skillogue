@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:skillogue/entities/conversation_entity.dart';
@@ -29,6 +30,20 @@ void main() {
       expect(
         true,
         y[0] == cA && y[1] == cB,
+      );
+    });
+
+    test("overflowreplacement", () {
+      AutoSizeText x = getOverflowReplacement("aaaaaaa", true);
+      AutoSizeText y = getOverflowReplacement("aaaaaaa", true);
+
+      expect(
+        true,
+        x.data == "aaaaaaa"
+      );
+      expect(
+          false,
+          x.data == "a..."
       );
     });
 

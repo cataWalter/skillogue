@@ -115,20 +115,24 @@ parsePayload(payload, String email, List<Conversation> conversations) async {
 
 Future<List<Conversation>> getNewMessages(
     String email, List<Conversation> newConversations) async {
-  final List<dynamic> sentMessages =
-      await supabase.from('message').select().eq('sender', email);
-  final List<dynamic> receivedMessages =
-      await supabase.from('message').select().eq('receiver', email);
-  for (LinkedHashMap x in sentMessages) {
-    newConversations =
-        await addMessage(true, newConversations, parseMessage(x));
+  try {
+    final List<dynamic> sentMessages =
+        await supabase.from('message').select().eq('sender', email);
+    final List<dynamic> receivedMessages =
+        await supabase.from('message').select().eq('receiver', email);
+    for (LinkedHashMap x in sentMessages) {
+      newConversations =
+          await addMessage(true, newConversations, parseMessage(x));
+    }
+    for (LinkedHashMap x in receivedMessages) {
+      newConversations =
+          await addMessage(false, newConversations, parseMessage(x));
+    }
+    sortConversations(newConversations);
+    return newConversations;
+  } catch (e) {
+    return [];
   }
-  for (LinkedHashMap x in receivedMessages) {
-    newConversations =
-        await addMessage(false, newConversations, parseMessage(x));
-  }
-  sortConversations(newConversations);
-  return newConversations;
 }
 
 Future<List<Conversation>> updateMessages(

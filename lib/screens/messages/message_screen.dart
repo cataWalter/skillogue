@@ -278,22 +278,5 @@ class _MessageScreenState extends State<MessageScreen> {
     );
   }
 
-  AutoSizeText getOverflowReplacement(String t, bool normal) {
-    if (normal) {
-      return AutoSizeText(
-        t,
-        overflow: TextOverflow.ellipsis,
-        minFontSize: 14,
-        maxLines: 1,
-      );
-    } else {
-      return AutoSizeText(
-        t,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        overflow: TextOverflow.ellipsis,
-        minFontSize: 14,
-        maxLines: 1,
-      );
-    }
-  }
+
 }

@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">19</td>
             <td class="headerCovTableEntry">32</td>
-            <td class="headerCovTableEntryLo">56.2 %</td>
+            <td class="headerCovTableEntryLo">59.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">Sat Jan  7 11:54:28 2023</td>
+            <td class="headerValue">Sat Jan  7 12:36:41 2023</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -131,7 +131,7 @@
 <a name="69"><span class="lineNum">      69 </span><span class="lineCov">          1 :   getHome() async {</span></a>
 <a name="70"><span class="lineNum">      70 </span><span class="lineCov">          2 :     if (_myBox.get(loggedProfileKey) != null) {</span></a>
 <a name="71"><span class="lineNum">      71 </span><span class="lineCov">          3 :       profile = await findProfileByEmail(_myBox.get(loggedProfileKey));</span></a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineNoCov">          0 :       List&lt;Conversation&gt; c = await getMessagesAll(_myBox.get(loggedProfileKey));</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          3 :       List&lt;Conversation&gt; c = await getMessagesAll(_myBox.get(loggedProfileKey));</span></a>
 <a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 :       Future&lt;void&gt;.delayed(const Duration(milliseconds: 400), () {</span></a>
 <a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 :         showSnackBar(&quot;Good morning ! 🌞&quot;, context);</span></a>
 <a name="75"><span class="lineNum">      75 </span>            :       });</a>

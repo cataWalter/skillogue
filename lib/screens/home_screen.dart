@@ -117,6 +117,7 @@ class _HomeState extends State<Home> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 6),
             child: GNav(
+              key: Key("ciao"),
               haptic: true,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               rippleColor: Colors.grey[300]!,
@@ -193,20 +194,6 @@ class _HomeState extends State<Home> {
     return conversations.isNotEmpty && !conversations[0].messages.last.outgoing;
   }
 
-  List<Icon> navbarIcons(List<IconData> icons) {
-    List<Icon> res = [];
-    for (var singleIcon in icons) {
-      res.add(
-        Icon(
-          singleIcon,
-          size: 30,
-          color: Colors.white,
-        ),
-      );
-    }
-    return res;
-  }
-
   getScreen() {
     switch (widget.currentPageIndex) {
       case searchIndex:
@@ -237,6 +224,7 @@ class _HomeState extends State<Home> {
                 ),
                 actions: [
                   PopupMenuButton(
+                    key: Key("ciao"),
                     color: Theme.of(context).scaffoldBackgroundColor,
                     icon: Icon(
                       Icons.more_vert,
@@ -356,6 +344,7 @@ class _HomeState extends State<Home> {
                     },
                     itemBuilder: (BuildContext context) => [
                       PopupMenuItem(
+                        key: Key("pop0"),
                         value: 0,
                         child: Text(
                           AppLocale.settings.getString(context),
@@ -447,29 +436,11 @@ class _HomeState extends State<Home> {
       ChannelFilter(event: '*', schema: '*'),
       (payload, [ref]) async {
         //print('Change received: ${payload.toString()}');
-        conversations = await addMessage(
-          payload.entries.elementAt(4).value.entries.elementAt(3).value ==
-              profile.email,
-          conversations,
-          Message(
-            payload.entries.elementAt(4).value.entries.elementAt(1).value,
-            payload.entries.elementAt(4).value.entries.elementAt(3).value,
-            payload.entries.elementAt(4).value.entries.elementAt(2).value,
-            payload.entries.elementAt(4).value.entries.elementAt(4).value,
-            DateTime.parse(
-                payload.entries.elementAt(4).value.entries.elementAt(0).value),
-          ),
-        );
+        conversations = await addMessage(payload.entries.elementAt(4).value.entries.elementAt(3).value == profile.email, conversations, Message( payload.entries.elementAt(4).value.entries.elementAt(1).value, payload.entries.elementAt(4).value.entries.elementAt(3).value, payload.entries.elementAt(4).value.entries.elementAt(2).value,payload.entries.elementAt(4).value.entries.elementAt(4).value,DateTime.parse(payload.entries    .elementAt(4)    .value    .entries    .elementAt(0)    .value)));
         setState(() {});
-        if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=
-            profile.email) {
-          Profile destProfile = await findProfileByEmail(
-              payload.entries.elementAt(4).value.entries.elementAt(3).value);
-          newMessageNotification(
-              destProfile.email,
-              destProfile.name,
-              destProfile.points,
-              payload.entries.elementAt(4).value.entries.elementAt(4).value);
+        if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=profile.email) {
+          Profile destProfile = await findProfileByEmail(payload.entries.elementAt(4).value.entries.elementAt(3).value);
+          newMessageNotification(    destProfile.email,    destProfile.name, destProfile.points, payload.entries.elementAt(4).value.entries.elementAt(4).value);
         }
       },
     ).subscribe();
@@ -498,7 +469,7 @@ class _HomeState extends State<Home> {
       ..backgroundColor = Colors.black
       ..shadow = true
       ..animationStyle = InAppNotificationsAnimationStyle.scale;*/
-    InAppNotifications.show(
+    /*InAppNotifications.show(
       title: "New message from " + name,
       leading: getAvatar(name, points, 50, 1, 1, 20),
       description: "\n" + message,
@@ -512,6 +483,6 @@ class _HomeState extends State<Home> {
         );
       },
       persistent: false,
-    );
+    );*/
   }
 }

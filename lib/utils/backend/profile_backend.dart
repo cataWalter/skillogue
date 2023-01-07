@@ -17,9 +17,10 @@ Profile parseProfile(List newProfileFields) {
 }
 
 Future<Profile> findProfileByEmail(String email) async {
-  final List<dynamic> data =
-      await supabase.from('profile').select().eq('email', email);
   try {
+    final List<dynamic> data =
+        await supabase.from('profile').select().eq('email', email);
+
     return parseProfile(parseLinkedMap(data[0]));
   } catch (e) {
     return Profile("email", "name", "country", "city", "gender", 99,
@@ -32,21 +33,29 @@ void updateProfile(String email, parameters) async {
 }
 
 Future<List<String>> getBlocked(String email) async {
-  final List<dynamic> data =
-      await supabase.from('block').select().eq('blocker', email);
-  List<String> res = [];
-  for (var el in data) {
-    res.add(parseLinkedMap(el)[2]);
+  try {
+    final List<dynamic> data =
+        await supabase.from('block').select().eq('blocker', email);
+    List<String> res = [];
+    for (var el in data) {
+      res.add(parseLinkedMap(el)[2]);
+    }
+    return res;
+  } catch (e) {
+    return [];
   }
-  return res;
 }
 
 Future<List<String>> getBlockedBy(String email) async {
-  final List<dynamic> data =
-      await supabase.from('block').select().eq('blocked', email);
-  List<String> res = [];
-  for (var el in data) {
-    res.add(parseLinkedMap(el)[1]);
+  try {
+    final List<dynamic> data =
+        await supabase.from('block').select().eq('blocked', email);
+    List<String> res = [];
+    for (var el in data) {
+      res.add(parseLinkedMap(el)[1]);
+    }
+    return res;
+  } catch (e) {
+    return [];
   }
-  return res;
 }

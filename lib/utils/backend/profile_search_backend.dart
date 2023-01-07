@@ -61,16 +61,20 @@ Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
   return newRes;
 }
 
-getSavedSearches(String searcher) async {
-  PostgrestFilterBuilder query =
-      supabase.from("search").select().eq("user", searcher);
-  final List<dynamic> data = await query;
-  List<SavedProfileSearch> res = [];
-  for (LinkedHashMap x in data) {
-    res.add(SavedProfileSearch(x.values.elementAt(9), parseSearch(x)));
-  }
+Future<List<SavedProfileSearch>> getSavedSearches(String searcher) async {
+  try {
+    PostgrestFilterBuilder query =
+        supabase.from("search").select().eq("user", searcher);
+    final List<dynamic> data = await query;
+    List<SavedProfileSearch> res = [];
+    for (LinkedHashMap x in data) {
+      res.add(SavedProfileSearch(x.values.elementAt(9), parseSearch(x)));
+    }
 
-  return res;
+    return res;
+  } catch (e) {
+    return [];
+  }
 }
 
 parseSearch(x) {
