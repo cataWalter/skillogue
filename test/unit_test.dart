@@ -1,7 +1,3 @@
-import 'dart:collection';
-import 'dart:io';
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +14,7 @@ import 'package:skillogue/screens/search/saved_search_screen.dart';
 import 'package:skillogue/utils/backend/authorization_backend.dart';
 import 'package:skillogue/utils/backend/message_backend.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
+import 'package:skillogue/utils/backend/profile_search_backend.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/data.dart';
@@ -387,6 +384,26 @@ void main() {
       test("Get blocked by", () async {
         List<String> blocklist = await getBlockedBy("test45@mail.com");
         expect(blocklist, []);
+      });
+    });
+
+    group("Profile search backend", () {
+      SingleMessage sm11 =
+      SingleMessage(111, "sm11", DateTime.now().subtract(Duration(days: 2)), true);
+      SingleMessage sm12 =
+      SingleMessage(112, "sm12", DateTime.now().subtract(Duration(days: 3)), false);
+      Conversation c1 = Conversation("test@mail.com", "test", 6, [sm11, sm12]);
+
+
+      /*test("Find users", () async{
+        List<Profile> usersTest =  await findUsers("test@mail.com", ProfileSearch(),
+            [c1], context);
+        expect(usersTest, []);
+      });*/
+
+      test("Get Saved Searches", () async{
+        List<SavedProfileSearch> savedtest = await getSavedSearches("test@mail.com");
+        expect(savedtest, []);
       });
     });
   });
