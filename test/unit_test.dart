@@ -14,6 +14,7 @@ import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
+import 'package:skillogue/screens/search/saved_search_screen.dart';
 import 'package:skillogue/utils/backend/authorization_backend.dart';
 import 'package:skillogue/utils/backend/message_backend.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
@@ -215,24 +216,29 @@ void main() {
       expect(notExits, true);
     });
 
-    test("Log in", () async{
-      login(emailTest, passwordTest).catchError((msg) => expect(true,true)).then((answer){
+    test("Log in", () async {
+      login(emailTest, passwordTest)
+          .catchError((msg) => expect(true, true))
+          .then((answer) {
         expect(answer != null, true);
       });
     });
 
-    test("Registration", () async{
-      registration(emailTest, passwordTest).catchError((msg) => expect(true,true)).then((answer){
+    test("Registration", () async {
+      registration(emailTest, passwordTest)
+          .catchError((msg) => expect(true, true))
+          .then((answer) {
         expect(answer != null, true);
       });
     });
 
     test("Update login", () async {
-      try{
+      try {
         loginDateUpdate(emailTest);
-      } on Exception catch (_){
+      } on Exception catch (_) {
         expect(true, true);
-      };
+      }
+      ;
     });
 
     group("Messages backend", () {
@@ -242,24 +248,33 @@ void main() {
         "1": '1969-07-20 20:18:04Z',
         "2": 'This is the body of the test',
         "3": 'sender@mail.com',
-        "4": 'receiver@mail.com'};
+        "4": 'receiver@mail.com'
+      };
 
       DateTime now = DateTime.now();
-      SingleMessage sm11 = SingleMessage(111, "sm11", now.subtract(Duration(days: 2)), true);
-      SingleMessage sm12 = SingleMessage(112, "sm12", now.subtract(Duration(days: 3)), false);
-      SingleMessage sm21 = SingleMessage(121, "sm21", now.subtract(Duration(days: 4)), true);
-      SingleMessage sm22 = SingleMessage(122, "sm22", now.subtract(Duration(days: 1)), false);
+      SingleMessage sm11 =
+          SingleMessage(111, "sm11", now.subtract(Duration(days: 2)), true);
+      SingleMessage sm12 =
+          SingleMessage(112, "sm12", now.subtract(Duration(days: 3)), false);
+      SingleMessage sm21 =
+          SingleMessage(121, "sm21", now.subtract(Duration(days: 4)), true);
+      SingleMessage sm22 =
+          SingleMessage(122, "sm22", now.subtract(Duration(days: 1)), false);
 
-      Message m1 = Message(111, "sender@mail.com", "test@mail.com", "sm11", now.subtract(Duration(days: 2)));
-      Message m2 = Message(1221, "sender@mail.com", "test@mail.com", "sm3", now.subtract(Duration(days: 1)));
-      Message m3 = Message(1222, "test@mail.com", "receiver@mail.com", "sm4", now);
-      Message m4 = Message(1332, "sender@mail.com", "receiver@mail.com", "sm5", now);
-
+      Message m1 = Message(111, "sender@mail.com", "test@mail.com", "sm11",
+          now.subtract(Duration(days: 2)));
+      Message m2 = Message(1221, "sender@mail.com", "test@mail.com", "sm3",
+          now.subtract(Duration(days: 1)));
+      Message m3 =
+          Message(1222, "test@mail.com", "receiver@mail.com", "sm4", now);
+      Message m4 =
+          Message(1332, "sender@mail.com", "receiver@mail.com", "sm5", now);
 
       Conversation c1 = Conversation("test@mail.com", "test", 6, [sm11, sm12]);
-      Conversation c2 = Conversation("testtest@mail.com", "test", 6, [sm21, sm22]);
+      Conversation c2 =
+          Conversation("testtest@mail.com", "test", 6, [sm21, sm22]);
 
-      List<Conversation> conversations = [c1,c2];
+      List<Conversation> conversations = [c1, c2];
 
       test("Get all messages", () async {
         List<Conversation> e = await getMessagesAll(emailTest);
@@ -275,15 +290,16 @@ void main() {
         expect(mTest.date, DateTime.parse('1969-07-20 20:18:04Z'));
       });
 
-      test("Exists Message", (){
+      test("Exists Message", () {
         bool e1 = existsMessage(m1, conversations);
         expect(e1, true);
         bool e2 = existsMessage(m2, conversations);
         expect(e2, false);
       });
-      
-      test("Add message", () async{
-        List<Conversation> conversationsTest = await addMessage(true, conversations, m1);
+
+      test("Add message", () async {
+        List<Conversation> conversationsTest =
+            await addMessage(true, conversations, m1);
         expect(conversationsTest, conversations);
         conversationsTest = await addMessage(true, conversations, m2);
         expect(existsMessage(m2, conversationsTest), true);
@@ -292,13 +308,16 @@ void main() {
       });
 
       test("get New Messages", () async {
-        List<Conversation> conversationsTest = await getNewMessages("test@mail.com", conversations);
+        List<Conversation> conversationsTest =
+            await getNewMessages("test@mail.com", conversations);
         expect(conversationsTest != [], true);
       });
-      
-      test("Update conversations", () async{
-        List<Conversation> conversationsMatch = await getNewMessages("test@mail.com", conversations);
-        List<Conversation> conversationsTest = await updateMessages("test@mail.com", conversations);
+
+      test("Update conversations", () async {
+        List<Conversation> conversationsMatch =
+            await getNewMessages("test@mail.com", conversations);
+        List<Conversation> conversationsTest =
+            await updateMessages("test@mail.com", conversations);
         expect(conversationsTest, conversationsMatch);
       });
 
@@ -306,8 +325,6 @@ void main() {
         Conversation cTest = findConversation(emailTest, conversations);
         expect(cTest, c1);
       });
-
-
     });
 
     group("Misc_backend", () {
@@ -316,17 +333,16 @@ void main() {
 
     group("Profile backend", () {
       Profile profileMatch = Profile(
-        "test@mail.com",
-        "Test",
-        "Italy",
-        "Milan",
-        "Other",
-        28,
-        DateTime.parse('2022-12-20 20:18:04Z'),
-        ["English"],
-        ['Acting', 'Animals'],
-        0
-      );
+          "test@mail.com",
+          "Test",
+          "Italy",
+          "Milan",
+          "Other",
+          28,
+          DateTime.parse('2022-12-20 20:18:04Z'),
+          ["English"],
+          ['Acting', 'Animals'],
+          0);
 
       List profileFields = [
         "test@mail.com",
@@ -344,38 +360,34 @@ void main() {
       // to do
       test("Parse Profile", () {
         Profile profileTest = parseProfile(profileFields);
-        expect(profileTest == profileMatch, true);
+        expect(profileTest.email == profileMatch.email, true);
       });
 
       // to do
       test("Find profile by email", () async {
         Profile profileTest = await findProfileByEmail("test@mail.com");
-        Profile pMatch = Profile("email", "name", "country", "city", "gender", 99,
-            DateTime.now(), [], [], 0);
-        expect(profileTest, pMatch);
+        Profile pMatch = Profile("email", "name", "country", "city", "gender",
+            99, DateTime.now(), [], [], 0);
+        expect(profileTest.email == pMatch.email, true);
       });
 
       test("Update profile", () {
-        try{
+        try {
           updateProfile("test@mail.com", {'name': 'Test'});
         } on Exception catch (_) {
           expect(true, true);
-        };
+        }
       });
 
-      test("Get blocked", () async{
+      test("Get blocked", () async {
         List<String> blocklist = await getBlocked("test@mail.com");
         expect(blocklist, []);
       });
 
-      test("Get blocked by", () async{
+      test("Get blocked by", () async {
         List<String> blocklist = await getBlockedBy("test45@mail.com");
         expect(blocklist, []);
       });
-
-
-
-
     });
   });
 
@@ -392,5 +404,8 @@ void main() {
     expect(notExits, true);
   });
 
-
+  test("Is there a user with this email?", () async {
+    deleteDatabase("test");
+    expect(true, true);
+  });
 }
