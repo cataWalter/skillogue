@@ -1,4 +1,6 @@
 import 'dart:collection';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -241,6 +243,23 @@ void main() {
         "3": 'sender@mail.com',
         "4": 'receiver@mail.com'};
 
+      DateTime now = DateTime.now();
+      SingleMessage sm11 = SingleMessage(111, "sm11", now.subtract(Duration(days: 2)), true);
+      SingleMessage sm12 = SingleMessage(112, "sm12", now.subtract(Duration(days: 3)), false);
+      SingleMessage sm21 = SingleMessage(121, "sm21", now.subtract(Duration(days: 4)), true);
+      SingleMessage sm22 = SingleMessage(122, "sm22", now.subtract(Duration(days: 1)), false);
+
+      Message m1 = Message(111, "sender@mail.com", "test@mail.com", "sm11", now.subtract(Duration(days: 2)));
+      Message m2 = Message(1221, "sender@mail.com", "test@mail.com", "sm3", now.subtract(Duration(days: 1)));
+      Message m3 = Message(1222, "test@mail.com", "receiver@mail.com", "sm4", now);
+      Message m4 = Message(1332, "sender@mail.com", "receiver@mail.com", "sm5", now);
+
+
+      Conversation c1 = Conversation("test@mail.com", "test", 6, [sm11, sm12]);
+      Conversation c2 = Conversation("test@mail.com", "test", 6, [sm21, sm22]);
+
+      List<Conversation> conversations = [c1,c2];
+
       test("Get all messages", () async {
         List<Conversation> e = await getMessagesAll(emailTest);
         expect(e, []);
@@ -248,6 +267,32 @@ void main() {
 
       test("Parse Messages", () {
         Message mTest = parseMessage(messageTest);
+        expect(mTest.id, 1111);
+        expect(mTest.senderEmail, "sender@mail.com");
+        expect(mTest.receiverEmail, "receiver@mail.com");
+        expect(mTest.text, "This is the body of the test");
+        expect(mTest.date, DateTime.parse('1969-07-20 20:18:04Z'));
+      });
+
+      test("Exists Message", (){
+        bool e1 = existsMessage(m1, conversations);
+        expect(e1, true);
+        bool e2 = existsMessage(m2, conversations);
+        expect(e2, false);
+      });
+      
+      test("Add message", () async{
+        List<Conversation> conversationsTest = await addMessage(true, conversations, m1);
+        expect(conversationsTest, conversations);
+        conversationsTest = await addMessage(true, conversations, m2);
+        expect(existsMessage(m2, conversationsTest), true);
+        conversationsTest = await addMessage(false, conversations, m3);
+        expect(existsMessage(m3, conversationsTest), true);
+      });
+
+      test("get New Messages", () async {
+        List<Conversation> conversationsTest = await getNewMessages("test@mail.com", conversations);
+        expect(conversationsTest != [], true);
       });
     });
 
