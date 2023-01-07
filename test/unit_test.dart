@@ -256,7 +256,7 @@ void main() {
 
 
       Conversation c1 = Conversation("test@mail.com", "test", 6, [sm11, sm12]);
-      Conversation c2 = Conversation("test@mail.com", "test", 6, [sm21, sm22]);
+      Conversation c2 = Conversation("testtest@mail.com", "test", 6, [sm21, sm22]);
 
       List<Conversation> conversations = [c1,c2];
 
@@ -294,6 +294,19 @@ void main() {
         List<Conversation> conversationsTest = await getNewMessages("test@mail.com", conversations);
         expect(conversationsTest != [], true);
       });
+      
+      test("Update conversations", () async{
+        List<Conversation> conversationsMatch = await getNewMessages("test@mail.com", conversations);
+        List<Conversation> conversationsTest = await updateMessages("test@mail.com", conversations);
+        expect(conversationsTest, conversationsMatch);
+      });
+
+      test("Find conversation", () {
+        Conversation cTest = findConversation(emailTest, conversations);
+        expect(cTest, c1);
+      });
+
+
     });
 
     group("Misc_backend", () {
