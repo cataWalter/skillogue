@@ -8,6 +8,8 @@ import 'package:skillogue/entities/message_entity.dart';
 import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/main.dart';
+import 'package:skillogue/screens/messages/message_screen.dart';
+import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/utils/backend/authorization_backend.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
@@ -43,14 +45,8 @@ void main() {
       AutoSizeText x = getOverflowReplacement("aaaaaaa", true);
       AutoSizeText y = getOverflowReplacement("aaaaaaa", true);
 
-      expect(
-        true,
-        x.data == "aaaaaaa"
-      );
-      expect(
-          false,
-          x.data == "a..."
-      );
+      expect(true, x.data == "aaaaaaa");
+      expect(false, x.data == "a...");
     });
 
     test("sortMessages", () {
@@ -112,12 +108,12 @@ void main() {
 
     test("Suggest Skills", () {
       List<String> suggested_skills =
-      suggestFeature(skillsTest, 3, skills, skillSimilarity);
+          suggestFeature(skillsTest, 3, skills, skillSimilarity);
       expect(suggested_skills, ["Gardening", "Kayaking", "Traveling"]);
     });
     test("Suggest Languages", () {
       List<String> suggested_languages =
-      suggestFeature(languagesTest, 3, languages, languageSimilarity);
+          suggestFeature(languagesTest, 3, languages, languageSimilarity);
       expect(suggested_languages, ["French", "Portuguese", "Sicilian"]);
     });
 
@@ -128,7 +124,7 @@ void main() {
       }
     });
 
-    test("Test clean", (){
+    test("Test clean", () {
       ProfileSearch test1 = ProfileSearch();
       test1.clean();
       expect(test1.skills, []);
@@ -212,4 +208,19 @@ void main() {
       expect(notExits, true);
     });
   });
+
+  test("Is there a user with this email?", () async {
+    pause();
+    expect(true, true);
+  });
+
+  test("Is there a user with this email?", () async {
+    blocker("test@mail.com", true);
+    blocker("test@mail.com", false);
+
+    bool notExits = await notExistsUsersWithSameEmail("test@mail.com");
+    expect(notExits, true);
+  });
+
+
 }

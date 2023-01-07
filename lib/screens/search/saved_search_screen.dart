@@ -116,6 +116,7 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
       child: Column(
         children: [
           ListTile(
+            key: Key("savedSearchScreenTile"),
               onTap: () {
                 setState(() {
                   activeProfileSearch = savedProfileSearch[index].search.copy();

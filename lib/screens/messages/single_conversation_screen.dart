@@ -14,8 +14,6 @@ import '../../utils/backend/profile_backend.dart';
 import '../../utils/localization.dart';
 import '../home_screen.dart';
 
-
-
 class SingleConversationScreen extends StatefulWidget {
   final Conversation myConversation;
   final bool showBackButton;
@@ -111,22 +109,8 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
               switch (item) {
                 case 0:
                   {
-                    if (profile.blocked
-                        .contains(widget.myConversation.destEmail)) {
-                      await supabase
-                          .from('block')
-                          .delete()
-                          .eq('blocker', profile.email);
-                      profile.blocked.remove(widget.myConversation.destEmail);
-                      setState(() {});
-                    } else {
-                      databaseInsert('block', {
-                        'blocker': profile.email,
-                        'blocked': widget.myConversation.destEmail
-                      });
-                      profile.blocked.add(widget.myConversation.destEmail);
-                      setState(() {});
-                    }
+                    blocker(widget.myConversation.destEmail, profile.blocked.contains(widget.myConversation.destEmail));
+                    setState(() {});
                   }
                   break;
                 case 1:
@@ -324,74 +308,84 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
       ),
     );
   }
+}
 
-  Align getSingleMessageWidget(SingleMessage message) {
-    if (message.outgoing) {
-      return Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 60),
-          child: Card(
-            color: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 8,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    message.text,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    parseTime(message.date),
-                    style: const TextStyle(fontSize: 10, color: Colors.white),
-                  ),
-                ],
-              ),
+blocker(destEmail, test) async {
+  if (test) {
+    await supabase.from('block').delete().eq('blocker', profile.email);
+    profile.blocked.remove(destEmail);
+  } else {
+    databaseInsert('block', {'blocker': profile.email, 'blocked': destEmail});
+    profile.blocked.add(destEmail);
+  }
+}
+
+Align getSingleMessageWidget(SingleMessage message) {
+  if (message.outgoing) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 60),
+        child: Card(
+          color: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 8,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  message.text,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  parseTime(message.date),
+                  style: const TextStyle(fontSize: 10, color: Colors.white),
+                ),
+              ],
             ),
           ),
         ),
-      );
-    } else {
-      return Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 60),
-          child: Card(
-            color: Colors.blue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 8,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    message.text,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    parseTime(message.date),
-                    style: const TextStyle(fontSize: 10, color: Colors.white),
-                  ),
-                ],
-              ),
+      ),
+    );
+  } else {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 60),
+        child: Card(
+          color: Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 8,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  message.text,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  parseTime(message.date),
+                  style: const TextStyle(fontSize: 10, color: Colors.white),
+                ),
+              ],
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 }

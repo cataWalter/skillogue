@@ -29,7 +29,7 @@ class _MessageScreenState extends State<MessageScreen> {
         mobileBody: ListView.builder(
           itemCount: conversations.length,
           itemBuilder: ((context, index) =>
-              mobileChatCard(conversations[index])),
+              mobileChatCard(context, conversations[index])),
         ),
         tabletBody: Row(
           children: [
@@ -121,6 +121,7 @@ class _MessageScreenState extends State<MessageScreen> {
 
   Widget tabletChatCard(Conversation curConversation, int index) {
     return InkWell(
+      key: Key("block"),
       onTap: () {
         setState(() {});
         profile.blockedBy.contains(curConversation.destEmail)
@@ -137,146 +138,148 @@ class _MessageScreenState extends State<MessageScreen> {
       },
       highlightColor: Colors.blue.withOpacity(0.4),
       splashColor: Colors.green.withOpacity(0.5),
-      child: index == conversationIndex
-          ? Container(
-              color: Colors.blue,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: Row(
-                  children: [
-                    getAvatar(curConversation.destName,
-                        curConversation.destPoints, 24, 2, 1.4, 20),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              curConversation.destName,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            addVerticalSpace(8),
-                            getOverflowReplacement(
-                                curConversation.messages.last.text
-                                    .replaceAll("\n", " "),
-                                curConversation.messages.last.outgoing),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Opacity(
-                      opacity: 0.64,
-                      child: Text(
-                        parseDateGroup(curConversation.messages.last.date),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                children: [
-                  getAvatar(curConversation.destName,
-                      curConversation.destPoints, 24, 2, 1.4, 20),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            curConversation.destName,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
+      child: tabletChat(curConversation, index == conversationIndex),
+    );
+  }
+}
+
+tabletChat(curConversation, test) {
+  return test
+      ? Container(
+          color: Colors.blue,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Row(
+              children: [
+                getAvatar(curConversation.destName, curConversation.destPoints,
+                    24, 2, 1.4, 20),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          curConversation.destName,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
-                          addVerticalSpace(8),
-                          getOverflowReplacement(
-                              curConversation.messages.last.text
-                                  .replaceAll("\n", " "),
-                              curConversation.messages.last.outgoing),
-                        ],
-                      ),
+                        ),
+                        addVerticalSpace(8),
+                        getOverflowReplacement(
+                            curConversation.messages.last.text
+                                .replaceAll("\n", " "),
+                            curConversation.messages.last.outgoing),
+                      ],
                     ),
                   ),
-                  Opacity(
-                    opacity: 0.64,
-                    child: Text(
-                      parseDateGroup(curConversation.messages.last.date),
+                ),
+                Opacity(
+                  opacity: 0.64,
+                  child: Text(
+                    parseDateGroup(curConversation.messages.last.date),
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
+      : Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Row(
+            children: [
+              getAvatar(curConversation.destName, curConversation.destPoints,
+                  24, 2, 1.4, 20),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        curConversation.destName,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      addVerticalSpace(8),
+                      getOverflowReplacement(
+                          curConversation.messages.last.text
+                              .replaceAll("\n", " "),
+                          curConversation.messages.last.outgoing),
+                    ],
+                  ),
+                ),
+              ),
+              Opacity(
+                opacity: 0.64,
+                child: Text(
+                  parseDateGroup(curConversation.messages.last.date),
+                ),
+              )
+            ],
+          ),
+        );
+}
+
+Widget mobileChatCard(context, Conversation curConversation) {
+  return InkWell(
+    key: Key("block"),
+
+    onTap: () {
+      profile.blockedBy.contains(curConversation.destEmail)
+          ? getBlurDialogImage(
+              context,
+              AppLocale.sincere.getString(context) +
+                  curConversation.destName +
+                  AppLocale.blocked.getString(context),
+              'assets/images/fuckAround.jpg',
+              "${AppLocale.fuck.getString(context)}${curConversation.destName} ?")
+          : Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SingleConversationScreen(curConversation, true),
+              ),
+            );
+    },
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      child: Row(
+        children: [
+          getAvatar(curConversation.destName, curConversation.destPoints, 24, 2,
+              1.4, 20),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    curConversation.destName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                  )
+                  ),
+                  addVerticalSpace(8),
+                  getOverflowReplacement(
+                      curConversation.messages.last.text.replaceAll("\n", " "),
+                      curConversation.messages.last.outgoing),
                 ],
               ),
             ),
-    );
-  }
-
-  Widget mobileChatCard(Conversation curConversation) {
-    return InkWell(
-      onTap: () {
-        profile.blockedBy.contains(curConversation.destEmail)
-            ? getBlurDialogImage(
-                context,
-                AppLocale.sincere.getString(context) +
-                    curConversation.destName +
-                    AppLocale.blocked.getString(context),
-                'assets/images/fuckAround.jpg',
-                "${AppLocale.fuck.getString(context)}${curConversation.destName} ?")
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      SingleConversationScreen(curConversation, true),
-                ),
-              );
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Row(
-          children: [
-            getAvatar(curConversation.destName, curConversation.destPoints, 24,
-                2, 1.4, 20),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      curConversation.destName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    addVerticalSpace(8),
-                    getOverflowReplacement(
-                        curConversation.messages.last.text
-                            .replaceAll("\n", " "),
-                        curConversation.messages.last.outgoing),
-                  ],
-                ),
-              ),
+          ),
+          Opacity(
+            opacity: 0.64,
+            child: Text(
+              parseDateGroup(curConversation.messages.last.date),
             ),
-            Opacity(
-              opacity: 0.64,
-              child: Text(
-                parseDateGroup(curConversation.messages.last.date),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
-    );
-  }
-
-
+    ),
+  );
 }

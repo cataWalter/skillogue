@@ -62,6 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             SpeedDial(
+              key: Key("startHere"),
               activeBackgroundColor: Colors.blue,
               label: Text(AppLocale.startHere.getString(context)),
               icon: Icons.add_outlined,
@@ -266,6 +267,7 @@ class _SearchScreenState extends State<SearchScreen> {
         },
       ),
       SpeedDialChild(
+        key: Key("saved"),
         child: const Icon(Icons.star),
         backgroundColor: rainbowColors[1],
         foregroundColor: Colors.white,
