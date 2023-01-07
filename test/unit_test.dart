@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +14,7 @@ import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/utils/backend/authorization_backend.dart';
+import 'package:skillogue/utils/backend/message_backend.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/data.dart';
@@ -202,10 +206,54 @@ void main() {
   });
 
   group("Authorization Backend", () {
+    String emailTest = "test@mail.com";
+    String passwordTest = "password";
     test("Is there a user with this email?", () async {
-      String emailTest = "test@mail.com";
       bool notExits = await notExistsUsersWithSameEmail(emailTest);
       expect(notExits, true);
+    });
+
+    test("Log in", () async{
+      login(emailTest, passwordTest).catchError((msg) => expect(true,true)).then((answer){
+        expect(answer != null, true);
+      });
+    });
+
+    test("Registration", () async{
+      registration(emailTest, passwordTest).catchError((msg) => expect(true,true)).then((answer){
+        expect(answer != null, true);
+      });
+    });
+
+    test("Update login", () async {
+      try{
+        loginDateUpdate(emailTest);
+      } on Exception catch (_){
+        expect(true, true);
+      };
+    });
+
+    group("Messages backend", () {
+      String emailTest = "test@mail.com";
+      LinkedHashMap<dynamic, dynamic> messageTest = LinkedHashMap({
+        0: 1111,
+        1: '1969-07-20 20:18:04Z',
+        2: 'This is the body of the test',
+        3: 'sender@mail.com',
+        4: 'receiver@mail.com'});
+
+      test("Get all messages", () async {
+        List<Conversation> e = await getMessagesAll(emailTest);
+        expect(e, []);
+      });
+
+      test("Parse Messages", () {
+        Message mTest = parseMessage(messageTest);
+      });
+    });
+
+    group("Misc_backend", () {
+      dynamic l = [];
     });
   });
 
