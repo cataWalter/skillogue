@@ -29,7 +29,7 @@ Future<List<Conversation>> getMessagesAll(String email) async {
   }
 }
 
-Message parseMessage(LinkedHashMap x) {
+Message parseMessage(x) {
   return Message(
     x.entries.elementAt(0).value,
     x.entries.elementAt(3).value,

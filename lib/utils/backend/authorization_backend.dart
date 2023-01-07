@@ -13,17 +13,25 @@ Future<bool> notExistsUsersWithSameEmail(String email) async {
 }
 
 Future<AuthResponse> login(String email, String password) async {
-  return await supabase.auth.signInWithPassword(
-    email: email,
-    password: password,
-  );
+  try {
+    return await supabase.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+  } catch (e) {
+    return AuthResponse();
+  }
 }
 
 Future<AuthResponse> registration(String email, String password) async {
-  return await supabase.auth.signUp(
-    email: email,
-    password: password,
-  );
+  try {
+    return await supabase.auth.signUp(
+      email: email,
+      password: password,
+    );
+  } catch (e) {
+    return AuthResponse();
+  }
 }
 
 void loginDateUpdate(email) async {
