@@ -168,6 +168,8 @@ class _HomeState extends State<Home> {
         textColor: textColor,
         hoverColor: hoverColor,
         iconActiveColor: iconActiveColor,
+        key: Key("profileScreen"),
+
       ),
       GButton(
         icon: Icons.search,
@@ -176,6 +178,7 @@ class _HomeState extends State<Home> {
         textColor: textColor,
         hoverColor: hoverColor,
         iconActiveColor: iconActiveColor,
+        key: Key("searchScreen"),
       ),
       GButton(
         icon: Icons.message,
@@ -224,7 +227,7 @@ class _HomeState extends State<Home> {
                 ),
                 actions: [
                   PopupMenuButton(
-                    key: Key("ciao"),
+                    key: Key("PopupMenuButton"),
                     color: Theme.of(context).scaffoldBackgroundColor,
                     icon: Icon(
                       Icons.more_vert,
@@ -243,80 +246,9 @@ class _HomeState extends State<Home> {
                                         ProfileSettings(profile)));
                           }
                           break;
-
                         case 1:
                           {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                  child: AlertDialog(
-                                    title: Text(AppLocale.suggestionTitle
-                                        .getString(context)),
-                                    content: TextField(
-                                      controller: newSuggestionController,
-                                      keyboardType: TextInputType.text,
-                                      textCapitalization:
-                                          TextCapitalization.none,
-                                      autocorrect: false,
-                                      minLines: 1,
-                                      maxLines: 5,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide.none,
-                                          borderRadius:
-                                              BorderRadius.circular(40.0),
-                                        ),
-                                        fillColor:
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? const Color.fromRGBO(
-                                                    30, 30, 30, 1)
-                                                : const Color.fromRGBO(
-                                                    235, 235, 235, 1),
-                                        hintText: AppLocale.whatSuggestion
-                                            .getString(context),
-                                        hintStyle: TextStyle(
-                                            fontSize: 16,
-                                            color: Theme.of(context).hintColor),
-                                        filled: true,
-                                        suffixIcon: const Icon(Icons.message,
-                                            color: Color.fromRGBO(
-                                                129, 129, 129, 1)),
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(
-                                            AppLocale.ok.getString(context)),
-                                        onPressed: () {
-                                          String newTextMessage =
-                                              newSuggestionController.text
-                                                  .trim();
-                                          if (newTextMessage.isNotEmpty) {
-                                            newSuggestionController.clear();
-                                            DateTime curDate = DateTime.now();
-                                            databaseInsert('suggestion', {
-                                              'user': profile.email,
-                                              'advice': newTextMessage,
-                                              'date': curDate.toString(),
-                                            });
-                                            showSnackBar(
-                                                AppLocale.thanks
-                                                    .getString(context),
-                                                context);
-                                          }
-                                          Navigator.of(context).pop();
-                                          //showSnackBar("Thank you! 🥰", context);
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
+                            newSuggestion(context, newSuggestionController);
                           }
                           break;
                         case 2:
@@ -357,6 +289,8 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       PopupMenuItem(
+                        key: Key("pop2"),
+
                         value: 2,
                         child: Text(
                           AppLocale.acknowledgments.getString(context),

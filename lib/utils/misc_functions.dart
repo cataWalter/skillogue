@@ -4,6 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
+import '../screens/home_screen.dart';
+import 'backend/misc_backend.dart';
 import 'localization.dart';
 
 String initials(String fullName) {
@@ -159,6 +161,81 @@ AutoSizeText getOverflowReplacement(String t, bool normal) {
       maxLines: 1,
     );
   }
+}
+
+newSuggestion(context, newSuggestionController){
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return BackdropFilter(
+        filter:
+        ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          title: Text(AppLocale.suggestionTitle
+              .getString(context)),
+          content: TextField(
+            controller: newSuggestionController,
+            keyboardType: TextInputType.text,
+            textCapitalization:
+            TextCapitalization.none,
+            autocorrect: false,
+            minLines: 1,
+            maxLines: 5,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius:
+                BorderRadius.circular(40.0),
+              ),
+              fillColor:
+              Theme.of(context).brightness ==
+                  Brightness.dark
+                  ? const Color.fromRGBO(
+                  30, 30, 30, 1)
+                  : const Color.fromRGBO(
+                  235, 235, 235, 1),
+              hintText: AppLocale.whatSuggestion
+                  .getString(context),
+              hintStyle: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).hintColor),
+              filled: true,
+              suffixIcon: const Icon(Icons.message,
+                  color: Color.fromRGBO(
+                      129, 129, 129, 1)),
+            ),
+          ),
+          actions: [
+            TextButton(
+              key: Key("suggest"),
+              child: Text(
+                  AppLocale.ok.getString(context)),
+              onPressed: () {
+                String newTextMessage =
+                newSuggestionController.text
+                    .trim();
+                if (newTextMessage.isNotEmpty) {
+                  newSuggestionController.clear();
+                  DateTime curDate = DateTime.now();
+                  databaseInsert('suggestion', {
+                    'user': profile.email,
+                    'advice': newTextMessage,
+                    'date': curDate.toString(),
+                  });
+                  showSnackBar(
+                      AppLocale.thanks
+                          .getString(context),
+                      context);
+                }
+                Navigator.of(context).pop();
+                //showSnackBar("Thank you! 🥰", context);
+              },
+            )
+          ],
+        ),
+      );
+    },
+  );
 }
 /*
 context.getString("string")

@@ -20,6 +20,7 @@ import 'package:skillogue/screens/search/profile_search_screen.dart';
 import 'package:skillogue/screens/search/result_search_screen.dart';
 import 'package:skillogue/screens/search/saved_search_screen.dart';
 import 'package:skillogue/utils/constants.dart';
+import 'package:skillogue/utils/misc_functions.dart';
 
 void main() {
   setUp(() async {
@@ -368,7 +369,9 @@ void main() {
 
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-          body: ProfileScreen(Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3), true),
+          body: ProfileScreen(
+              Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+              true),
         ),
       ));
       /*await tester.pump(Duration(seconds: 2));
@@ -380,5 +383,223 @@ void main() {
       expect(titleFinder, findsNothing);
       expect(messageFinder, findsNothing);
     });
+  });
+
+  testWidgets('Home', (tester) async {
+    await tester.runAsync(() async {
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Home([x], 2),
+        ),
+      ));
+
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("searchScreen")));
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("startHere")));
+      await tester.pump(Duration(seconds: 2));
+      await tester.press(find.byKey(Key("saved")));
+      await tester.pump(Duration(seconds: 2));
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
+
+  testWidgets('Home', (tester) async {
+    await tester.runAsync(() async {
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Home([x], 2),
+        ),
+      ));
+
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("profileScreen")));
+      await tester.pump(Duration(seconds: 2));
+      await tester.tap(find.byKey(Key("PopupMenuButton")));
+      await tester.pumpAndSettle();
+
+      await tester.press(find.byKey(Key("pop2")));
+      await tester.pumpAndSettle();
+
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: Material(child: Container())));
+    final BuildContext context = tester.element(find.byType(Container));
+
+    newSuggestion(context, TextEditingController());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key("suggest")));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: Material(child: Container())));
+    final BuildContext context = tester.element(find.byType(Container));
+
+    getBlurDialog(context, "aaa", "aaa");
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: Material(child: Container())));
+    final BuildContext context = tester.element(find.byType(Container));
+
+    getBlurDialogImage(context, "aaa", 'assets/images/logo.png', "exit");
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('tabletCard', (tester) async {
+    await tester.runAsync(() async {
+      DateTime d = DateTime.now();
+      List<SingleMessage> messages = [
+        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d, true),
+      ];
+      List<Profile> searchResults = [
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      ];
+      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: MessageScreen(),
+        ),
+      ));
+
+      await tester.pump(Duration(seconds: 10));
+
+      final titleFinder = find.text('email');
+      final messageFinder = find.text('pass');
+      expect(titleFinder, findsNothing);
+      expect(messageFinder, findsNothing);
+    });
+  });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    DateTime d = DateTime.now();
+
+    final BuildContext context = tester.element(find.byType(Container));
+    List<SingleMessage> messages = [
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+      SingleMessage(343, "hey", d, true),
+    ];
+    List<Profile> searchResults = [
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+    ];
+    Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+    await tester
+        .pumpWidget(MaterialApp(home: Material(child: tabletChat(x, true))));
+    await tester.pumpAndSettle();
+    await tester
+        .pumpWidget(MaterialApp(home: Material(child: tabletChat(x, false))));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    DateTime d = DateTime.now();
+
+    final BuildContext context = tester.element(find.byType(Container));
+    List<SingleMessage> messages = [
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+      SingleMessage(343, "hey", d, true),
+    ];
+    List<Profile> searchResults = [
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+    ];
+    Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+    await tester.pumpWidget(
+        MaterialApp(home: Material(child: mobileChatCard(context, x))));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('showDialog', (WidgetTester tester) async {
+    DateTime d = DateTime.now();
+
+    final BuildContext context = tester.element(find.byType(Container));
+    List<SingleMessage> messages = [
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+      SingleMessage(343, "hey", d, true),
+    ];
+    List<Profile> searchResults = [
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
+    ];
+    Conversation x = Conversation("aaaa", "aaaa", 0, messages);
+    await tester.pumpWidget(MaterialApp(
+        home: Material(
+            child: getSingleMessageWidget(
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+    ))));
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(MaterialApp(
+        home: Material(
+            child: getSingleMessageWidget(
+      SingleMessage(343, "hey", d.add(Duration(days: 1)), false),
+    ))));
+    await tester.pumpAndSettle();
   });
 }
