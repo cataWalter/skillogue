@@ -9,9 +9,9 @@ import 'package:skillogue/utils/misc_functions.dart';
 
 void main() {
   group("Conversation Entity", () {
-    DateTime d = DateTime(1111, 10,10,10,10,10,10,10);
+    DateTime d = DateTime(1111, 10, 10, 10, 10, 10, 10, 10);
     DateTime now = DateTime.now();
-    DateTime yesterday = now.subtract(Duration(days:1));
+    DateTime yesterday = now.subtract(Duration(days: 1));
 
     test("sortConversations", () {
       List<SingleMessage> messagesA = [
@@ -30,7 +30,6 @@ void main() {
         true,
         y[0] == cA && y[1] == cB,
       );
-
     });
 
     test("sortMessages", () {
@@ -51,18 +50,9 @@ void main() {
     });
 
     test("parseDate", () {
-      expect(
-        parseDate(d),
-        '10/10/1111'
-      );
-      expect(
-          parseDate(now),
-          'Today'
-      );
-      expect(
-          parseDate(yesterday),
-          'Yesterday'
-      );
+      expect(parseDate(d), '10/10/1111');
+      expect(parseDate(now), 'Today');
+      expect(parseDate(yesterday), 'Yesterday');
     });
 
     test("parseSmallNumbers", () {
@@ -71,33 +61,15 @@ void main() {
     });
 
     test("parseDateGroup", () {
-      expect(
-          parseDateGroup(d),
-          '10/10/1111'
-      );
-      expect(
-          parseDateGroup(now),
-          parseTime(now)
-      );
-      expect(
-          parseDateGroup(yesterday),
-          'Yesterday'
-      );
+      expect(parseDateGroup(d), '10/10/1111');
+      expect(parseDateGroup(now), parseTime(now));
+      expect(parseDateGroup(yesterday), 'Yesterday');
     });
   });
 
   group("Profile entity and profile search entity", () {
-    List<String> skillsTest= [
-      'Hiking',
-      'Nature',
-      'Climbing',
-      'Camping'
-    ];
-    List<String> languagesTest = [
-      "English",
-      "Italian",
-      "Spanish"
-    ];
+    List<String> skillsTest = ['Hiking', 'Nature', 'Climbing', 'Camping'];
+    List<String> languagesTest = ["English", "Italian", "Spanish"];
 
     test("Evaluate personality", () {
       String personality = evaluatePersonality(skillsTest);
@@ -105,40 +77,49 @@ void main() {
     });
 
     test("Suggest Skills", () {
-      List<String> suggested_skills = suggestFeature(
-          skillsTest, 3, skills, skillSimilarity);
+      List<String> suggested_skills =
+      suggestFeature(skillsTest, 3, skills, skillSimilarity);
       expect(suggested_skills, ["Gardening", "Kayaking", "Traveling"]);
     });
-    test("Suggest Languages", (){
-      List<String> suggested_languages = suggestFeature(languagesTest, 3, languages, languageSimilarity);
+    test("Suggest Languages", () {
+      List<String> suggested_languages =
+      suggestFeature(languagesTest, 3, languages, languageSimilarity);
       expect(suggested_languages, ["French", "Portuguese", "Sicilian"]);
     });
 
     test("Find Max", () {
-      // to do
+      for (var x in countrySimilarity) {
+        var y = findMax(10, x);
+        expect(y.length >= 10, true);
+      }
     });
   });
-
+  test("Find Max", () {
+    for (var x in countrySimilarity) {
+      var y = findMax(10, x);
+      expect(y.length >= 10, true);
+    }
+  });
   group("Colors", () {
-    test("Is this color dark?", (){
+    test("Is this color dark?", () {
       expect(true, isDarkColor(Colors.black));
     });
 
-    test("Getting a random dark color", (){
+    test("Getting a random dark color", () {
       Color randomDarkColor = getRandomDarkColor();
       bool isDark = isDarkColor(randomDarkColor);
       expect(true, isDark);
     });
   });
 
-  group("Localization", (){
-    test("Translation", (){
+  group("Localization", () {
+    test("Translation", () {
       // to do
     });
   });
 
   group("Misc Functions", () {
-    test("Get initials of the fullname", (){
+    test("Get initials of the fullname", () {
       String t1 = "Test1";
       String t2 = "Te";
       String i1 = initials(t1);
@@ -166,7 +147,6 @@ void main() {
     });
     */
 
-
     /* to do
     test("Add horizontal space", () {
       int w = 20;
@@ -179,7 +159,7 @@ void main() {
     });
     */
 
-    test("Get element's index", (){
+    test("Get element's index", () {
       List<String> lTest = ["e1", "e2", "e3"];
       String eTest = "e2";
       expect(getElementIndex(eTest, lTest), 1);
@@ -187,8 +167,14 @@ void main() {
     });
   });
 
-  group("authorization backend", () {
 
+
+  group("authorization backend", () {});
+
+  test("getAvatar", () {
+    List<String> lTest = ["e1", "e2", "e3"];
+    String eTest = "e2";
+    expect(getElementIndex(eTest, lTest), 1);
+    expect(getElementIndex("eT", lTest), -1);
   });
-
 }

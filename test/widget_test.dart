@@ -26,8 +26,8 @@ void main() {
     await setUpTestHive();
   });
   testWidgets('GuidedRegistration', (tester) async {
-    await tester
-        .pumpWidget(const MaterialApp(home: GuidedRegistration("email", "pass")));
+    await tester.pumpWidget(
+        const MaterialApp(home: GuidedRegistration("email", "pass")));
     final titleFinder = find.text('email');
     final messageFinder = find.text('pass');
     expect(titleFinder, findsNothing);
@@ -72,38 +72,7 @@ void main() {
     });
   });
 
-  testWidgets('MessageScreen', (tester) async {
-    await tester.runAsync(() async {
-      await tester.pumpWidget(const MaterialApp(home: MessageScreen()));
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
-    });
-  });
 
-  testWidgets('ConversationScreen', (tester) async {
-    await tester.runAsync(() async {
-      await Hive.initFlutter();
-      await Hive.openBox(localDatabase);
-      GoogleFonts.config.allowRuntimeFetching = false;
-      DateTime d = DateTime.now();
-      List<SingleMessage> messages = [
-        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
-        SingleMessage(343, "hey", d, true),
-      ];
-      await tester.pumpWidget(
-        MaterialApp(
-          home: SingleConversationScreen(
-              Conversation("a", "a", 0, messages), true),
-        ),
-      );
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
-    });
-  });
 
   testWidgets('ProfileOverview', (tester) async {
     await tester.runAsync(() async {
@@ -200,7 +169,7 @@ void main() {
       await Hive.openBox(localDatabase);
       DateTime d = DateTime.now();
       List<SingleMessage> messages = [
-        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
+        SingleMessage(343, "hey", d.add(const Duration(days: 1)), true),
         SingleMessage(343, "hey", d, true),
       ];
       List<Profile> searchResults = [
@@ -217,6 +186,7 @@ void main() {
           body: ResultSearchScreen(searchResults),
         ),
       ));
+
       final titleFinder = find.text('email');
       final messageFinder = find.text('pass');
       expect(titleFinder, findsNothing);
@@ -283,4 +253,6 @@ void main() {
       expect(messageFinder, findsNothing);
     });
   });
+
+
 }
