@@ -7,7 +7,6 @@ import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/screens/home_screen.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
-import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/misc_backend.dart';
 import '../../utils/localization.dart';
@@ -59,13 +58,13 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
           return ResponsiveLayout(
             mobileBody: Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
-                child: savedSearchesList(context, index)),
+                child: savedSearchesList(context, savedProfileSearch, index)),
             tabletBody: Padding(
                 padding: const EdgeInsets.only(left: 200, right: 200, top: 10),
-                child: savedSearchesList(context, index)),
+                child: savedSearchesList(context, savedProfileSearch, index)),
             desktopBody: Padding(
                 padding: const EdgeInsets.only(left: 300, right: 300, top: 10),
-                child: savedSearchesList(context, index)),
+                child: savedSearchesList(context, savedProfileSearch, index)),
           );
         },
       );
@@ -116,7 +115,7 @@ deleteDatabase(searchName) async {
       .eq('name', searchName);
 }
 
-Container savedSearchesList(context, index) {
+Container savedSearchesList(context, savedSearch, index) {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),
@@ -127,7 +126,7 @@ Container savedSearchesList(context, index) {
         ListTile(
           key: Key("savedSearchScreenTile"),
           onTap: () {
-            activeProfileSearch = savedProfileSearch[index].search.copy();
+            activeProfileSearch = savedSearch[index].search.copy();
             //check state
             Navigator.pushReplacement(
               context,
@@ -160,8 +159,8 @@ Container savedSearchesList(context, index) {
                           AppLocale.yes.getString(context),
                         ),
                         onPressed: () {
-                          deleteDatabase(savedProfileSearch[index].name);
-                          savedProfileSearch.remove(savedProfileSearch[index]);
+                          deleteDatabase(savedSearch[index].name);
+                          savedSearch.remove(savedSearch[index]);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -177,7 +176,7 @@ Container savedSearchesList(context, index) {
             );
           },
           title: Text(
-            savedProfileSearch[index].name,
+            savedSearch[index].name,
             textAlign: TextAlign.center,
             style: GoogleFonts.bebasNeue(
               fontSize: 30,
@@ -188,7 +187,7 @@ Container savedSearchesList(context, index) {
           subtitle: Wrap(
             runSpacing: -10,
             spacing: 6,
-            children: singleTileCreator(savedProfileSearch[index]),
+            children: singleTileCreator(savedSearch[index]),
           ),
         ),
       ],

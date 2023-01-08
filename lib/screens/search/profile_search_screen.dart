@@ -332,23 +332,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             showSnackBar(
                                 AppLocale.newName.getString(context), context);
                           } else {
-                            savedProfileSearch.add(
-                              SavedProfileSearch(
-                                newName,
-                                activeProfileSearch.copy(),
-                              ),
-                            );
-                            databaseInsert('search', {
-                              'user': profile.email,
-                              'maxAge': activeProfileSearch.maxAge,
-                              'minAge': activeProfileSearch.minAge,
-                              'countries': activeProfileSearch.countries,
-                              'skills': activeProfileSearch.skills,
-                              'languages': activeProfileSearch.languages,
-                              'genders': activeProfileSearch.genders,
-                              'city': activeProfileSearch.city,
-                              'name': newName,
-                            });
+                            newMessage(newName);
                             Navigator.of(context).pop();
                           }
                         } else if (newName.isEmpty) {
@@ -377,6 +361,7 @@ class _SearchScreenState extends State<SearchScreen> {
     if (artificialIntelligenceEnabled) {
       res.addAll([
         SpeedDialChild(
+          key:Key("AI_tennis"),
           child: const Icon(Icons.sports_tennis),
           backgroundColor: rainbowColors[4],
           foregroundColor: Colors.white,
@@ -397,6 +382,8 @@ class _SearchScreenState extends State<SearchScreen> {
           },
         ),
         SpeedDialChild(
+          key:Key("AI_lang"),
+
           child: const Icon(Icons.abc),
           backgroundColor: rainbowColors[5],
           foregroundColor: Colors.white,
@@ -417,6 +404,8 @@ class _SearchScreenState extends State<SearchScreen> {
           },
         ),
         SpeedDialChild(
+          key:Key("AI_country"),
+
           child: const Icon(Icons.language),
           backgroundColor: rainbowColors[6],
           foregroundColor: Colors.white,
@@ -440,34 +429,24 @@ class _SearchScreenState extends State<SearchScreen> {
     }
     return res;
   }
+}
 
-  List<Widget> showSavedSearches() {
-    List<Widget> res = [];
-    for (int i = 0; i < savedProfileSearch.length; i++) {
-      res.add(ElevatedButton(
-        onPressed: () {
-          int min = activeProfileSearch.minAge ?? 18;
-          int max = activeProfileSearch.maxAge ?? 99;
-          setState(() {
-            activeProfileSearch = savedProfileSearch[i].search.copy();
-            _currentRangeValues = RangeValues(min.toDouble(), max.toDouble());
-          });
-          Navigator.of(context).pop();
-        },
-        style: ButtonStyle(
-          padding:
-              MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(15)),
-          backgroundColor:
-              MaterialStateProperty.all<Color>(rainbowColors[i % 7]),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
-            ),
-          ),
-        ),
-        child: Text(savedProfileSearch[i].name),
-      ));
-    }
-    return res;
-  }
+newMessage(newName) {
+  savedProfileSearch.add(
+    SavedProfileSearch(
+      newName,
+      activeProfileSearch.copy(),
+    ),
+  );
+  databaseInsert('search', {
+    'user': profile.email,
+    'maxAge': activeProfileSearch.maxAge,
+    'minAge': activeProfileSearch.minAge,
+    'countries': activeProfileSearch.countries,
+    'skills': activeProfileSearch.skills,
+    'languages': activeProfileSearch.languages,
+    'genders': activeProfileSearch.genders,
+    'city': activeProfileSearch.city,
+    'name': newName,
+  });
 }

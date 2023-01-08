@@ -76,31 +76,11 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
+        key: Key("register"),
         onPressed: () async {
-          if (selectedCountry.isNotEmpty &&
-              selectedGender.isNotEmpty &&
-              selectedCity.isNotEmpty &&
-              controllerFullName.text.isNotEmpty &&
-              selectedLanguages.isNotEmpty &&
-              controllerAge.text.isNotEmpty &&
-              int.parse(controllerAge.text) >= 18 &&
-              int.parse(controllerAge.text) <= 99) {
+          if (selectedCountry.isNotEmpty && selectedGender.isNotEmpty && selectedCity.isNotEmpty &&controllerFullName.text.isNotEmpty &&selectedLanguages.isNotEmpty &&controllerAge.text.isNotEmpty &&int.parse(controllerAge.text) >= 18 &&int.parse(controllerAge.text) <= 99) {
             await registration(widget.email, widget.password);
-            databaseInsert(
-              'profile',
-              {
-                'email': widget.email,
-                'country': selectedCountry,
-                'gender': selectedGender,
-                'city': selectedCity,
-                'name': controllerFullName.text,
-                'languages': selectedLanguages,
-                'skills': selectedSkills,
-                'age': int.parse(controllerAge.text),
-                'color': getRandomDarkColor().value,
-                'points': 0
-              },
-            );
+            databaseInsert( 'profile',{'email': widget.email,'country': selectedCountry,'gender': selectedGender,'city': selectedCity,'name': controllerFullName.text,'languages': selectedLanguages, 'skills': selectedSkills, 'age': int.parse(controllerAge.text),  'color': getRandomDarkColor().value,  'points': 0},);
             Profile registeredProfile = await findProfileByEmail(widget.email);
             nextScreen(registeredProfile);
           } else {

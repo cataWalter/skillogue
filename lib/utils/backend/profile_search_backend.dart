@@ -34,31 +34,35 @@ Future<List<Profile>> findUsers(String searcher, ProfileSearch curSearch,
   if (curSearch.minAge != null) {
     query = query.gte('age', curSearch.minAge);
   }
-  final List<dynamic> data = await query;
-  List<Profile> res = [];
-  for (var y in data) {
-    try {
-      res.add(parseProfile(parseLinkedMap(y)));
-    } catch (e) {
-      //showSnackBar(e.toString(), context);
-    }
-  }
-  List<Profile> newRes = [];
-  bool noConversationWithThisProfile;
-  for (Profile y in res) {
-    noConversationWithThisProfile = true;
-    for (Conversation c in conversations) {
-      if (c.destEmail == y.email) {
-        noConversationWithThisProfile = false;
-        break;
+  try {
+    final List<dynamic> data = await query;
+    List<Profile> res = [];
+    for (var y in data) {
+      try {
+        res.add(parseProfile(parseLinkedMap(y)));
+      } catch (e) {
+        //showSnackBar(e.toString(), context);
       }
     }
-    if (noConversationWithThisProfile) {
-      newRes.add(y);
+    List<Profile> newRes = [];
+    bool noConversationWithThisProfile;
+    for (Profile y in res) {
+      noConversationWithThisProfile = true;
+      for (Conversation c in conversations) {
+        if (c.destEmail == y.email) {
+          noConversationWithThisProfile = false;
+          break;
+        }
+      }
+      if (noConversationWithThisProfile) {
+        newRes.add(y);
+      }
     }
-  }
 
-  return newRes;
+    return newRes;
+  } catch (e) {
+    return [];
+  }
 }
 
 Future<List<SavedProfileSearch>> getSavedSearches(String searcher) async {

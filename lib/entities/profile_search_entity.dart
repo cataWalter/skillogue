@@ -53,24 +53,28 @@ suggestFeature(
   List<String> myList,
   List<List<double>> similarityMatrix,
 ) {
-  List<double> res1 = [];
-  double res2;
-  for (String s1 in myList) {
-    res2 = 0;
-    if (!mine.contains(s1)) {
-      for (String s2 in mine) {
-        res2 += similarityMatrix[getElementIndex(s1, myList)]
-            [getElementIndex(s2, myList)];
+  try {
+    List<double> res1 = [];
+    double res2;
+    for (String s1 in myList) {
+      res2 = 0;
+      if (!mine.contains(s1)) {
+        for (String s2 in mine) {
+          res2 += similarityMatrix[getElementIndex(s1, myList)]
+              [getElementIndex(s2, myList)];
+        }
       }
+      res1.add(res2);
     }
-    res1.add(res2);
+    List<int> newSkillIndexes = findMax(howMany, res1);
+    List<String> res = [];
+    for (int x in newSkillIndexes) {
+      res.add(myList[x]);
+    }
+    return res;
+  } catch (e) {
+    return [];
   }
-  List<int> newSkillIndexes = findMax(howMany, res1);
-  List<String> res = [];
-  for (int x in newSkillIndexes) {
-    res.add(myList[x]);
-  }
-  return res;
 }
 
 List<Widget> chippies(

@@ -12,9 +12,12 @@ import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
 import 'package:skillogue/screens/messages/single_conversation_screen.dart';
+import 'package:skillogue/screens/profile/profile_settings_screen.dart';
+import 'package:skillogue/screens/search/profile_search_screen.dart';
 import 'package:skillogue/screens/search/saved_search_screen.dart';
 import 'package:skillogue/utils/backend/authorization_backend.dart';
 import 'package:skillogue/utils/backend/message_backend.dart';
+import 'package:skillogue/utils/backend/misc_backend.dart';
 import 'package:skillogue/utils/backend/profile_backend.dart';
 import 'package:skillogue/utils/backend/profile_search_backend.dart';
 import 'package:skillogue/utils/colors.dart';
@@ -90,17 +93,16 @@ void main() {
     });
   });
 
-  group("Message entity", () {
+  test("Funcionality of Message", () {
     DateTime d = DateTime(1111, 10, 10, 10, 10, 10, 10, 10);
-    test("Funcionality of Message", () {
-      Message testMessage = Message(
-          598, "sender@mail.com", "receiver@mail.com", "test message", d);
-      expect(testMessage.text, "test message");
-      expect(testMessage.id, 598);
-      expect(testMessage.senderEmail, "sender@mail.com");
-      expect(testMessage.receiverEmail, "receiver@mail.com");
-      expect(testMessage.date, d);
-    });
+
+    Message testMessage =
+        Message(598, "sender@mail.com", "receiver@mail.com", "test message", d);
+    expect(testMessage.text, "test message");
+    expect(testMessage.id, 598);
+    expect(testMessage.senderEmail, "sender@mail.com");
+    expect(testMessage.receiverEmail, "receiver@mail.com");
+    expect(testMessage.date, d);
   });
 
   group("Profile entity and profile search entity", () {
@@ -172,32 +174,6 @@ void main() {
       DateTime d = DateTime.parse('1969-07-20 20:18:04Z');
       expect(stringToDatetime('1969-07-20 20:18:04Z'), d);
     });
-
-    /* to do
-    test("Add vertical space", () {
-      int h = 20;
-      SizedBox sTest = addVerticalSpace(h);
-      SizedBox s = SizedBox(
-        height: h.toDouble(),
-      );
-      expect(
-        sTest == s,
-        true
-      );
-    });
-    */
-
-    /* to do
-    test("Add horizontal space", () {
-      int w = 20;
-      expect(
-          addHorizontalSpace(w),
-          SizedBox(
-            width: w.toDouble(),
-          )
-      );
-    });
-    */
 
     test("Get element's index", () {
       List<String> lTest = ["e1", "e2", "e3"];
@@ -390,12 +366,11 @@ void main() {
     });
 
     group("Profile search backend", () {
-      SingleMessage sm11 =
-      SingleMessage(111, "sm11", DateTime.now().subtract(Duration(days: 2)), true);
-      SingleMessage sm12 =
-      SingleMessage(112, "sm12", DateTime.now().subtract(Duration(days: 3)), false);
+      SingleMessage sm11 = SingleMessage(
+          111, "sm11", DateTime.now().subtract(Duration(days: 2)), true);
+      SingleMessage sm12 = SingleMessage(
+          112, "sm12", DateTime.now().subtract(Duration(days: 3)), false);
       Conversation c1 = Conversation("test@mail.com", "test", 6, [sm11, sm12]);
-
 
       /*test("Find users", () async{
         List<Profile> usersTest =  await findUsers("test@mail.com", ProfileSearch(),
@@ -403,8 +378,9 @@ void main() {
         expect(usersTest, []);
       });*/
 
-      test("Get Saved Searches", () async{
-        List<SavedProfileSearch> savedtest = await getSavedSearches("test@mail.com");
+      test("Get Saved Searches", () async {
+        List<SavedProfileSearch> savedtest =
+            await getSavedSearches("test@mail.com");
         expect(savedtest, []);
       });
 
@@ -438,7 +414,8 @@ void main() {
         expect(sTest.maxAge, s.maxAge);
       });
 
-      test("Parse List", () => expect(parseList(["x", "y", "z"]), ["x", "y", "z"]));
+      test("Parse List",
+          () => expect(parseList(["x", "y", "z"]), ["x", "y", "z"]));
     });
   });
 
@@ -458,5 +435,31 @@ void main() {
   test("Is there a user with this email?", () async {
     deleteDatabase("test");
     expect(true, true);
+  });
+
+  test("Is there a user with this email?", () async {
+    newMessage("test");
+  });
+
+  test("Is there a user with this email?", () async {
+    parseLinkedMap({0.532: 'Mars', 11.209: 'Jupiter'});
+    parseLinkedMap({0.532: "", 11.209: 'Jupiter'});
+    parseLinkedMap({0.532: [], 11.209: 'Jupiter'});
+  });
+
+  test("Is there a user with this email?", () async {
+    updateDatabaseProfileSettings(
+        "Italy",
+        "Italy",
+        "Italy",
+        "Italy",
+        ["Italy"],
+        ["Italy"],
+        "30",
+        "Italy",
+        Profile("aa", "aa", "aa", "aa", "aa", 32, DateTime.now(), ["aa"],
+            ["aa"], 3),
+        const Color(0),
+        null);
   });
 }

@@ -81,6 +81,7 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
       child: Column(
         children: [
           ListTile(
+            key: Key("result"),
             leading: getAvatar(widget.profileSearchResults[index].name,
                 widget.profileSearchResults[index].points, 30, 1.5, 0, 10),
             onTap: () {
@@ -167,27 +168,8 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
               if (newTextMessage.isNotEmpty) {
                 newMessageController.clear();
                 DateTime curDate = DateTime.now();
-                databaseInsert('message', {
-                  'sender': profile.email,
-                  'receiver': destEmail,
-                  'text': newTextMessage,
-                  'date': curDate.toString(),
-                });
-                conversations.add(
-                  Conversation(
-                    destEmail,
-                    destName,
-                    destPoints,
-                    [
-                      SingleMessage(
-                        0,
-                        newTextMessage,
-                        curDate,
-                        true,
-                      )
-                    ],
-                  ),
-                );
+                databaseInsert('message', {'sender': profile.email, 'receiver': destEmail, 'text': newTextMessage, 'date': curDate.toString()});
+                conversations.add(Conversation(destEmail, destName, destPoints, [SingleMessage(0,newTextMessage,curDate,true,)]));
                 setState(() {
                   widget.profileSearchResults.removeAt(index);
                 });
