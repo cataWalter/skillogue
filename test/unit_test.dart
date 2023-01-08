@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -405,6 +407,38 @@ void main() {
         List<SavedProfileSearch> savedtest = await getSavedSearches("test@mail.com");
         expect(savedtest, []);
       });
+
+      test("Parse search", () {
+        var x = {
+          0: "",
+          1: "",
+          2: 99,
+          3: 0,
+          4: ["Italy"],
+          5: ["Museums"],
+          6: ["English"],
+          7: ["Female"],
+          8: "Milan"
+        };
+        ProfileSearch sTest = parseSearch(x);
+        ProfileSearch s = ProfileSearch();
+        s.skills = ["Museums"];
+        s.countries = ["Italy"];
+        s.languages = ["English"];
+        s.genders = ["Female"];
+        s.city = "Milan";
+        s.minAge = 0;
+        s.maxAge = 99;
+        expect(sTest.skills, s.skills);
+        expect(sTest.countries, s.countries);
+        expect(sTest.languages, s.languages);
+        expect(sTest.genders, s.genders);
+        expect(sTest.city, s.city);
+        expect(sTest.minAge, s.minAge);
+        expect(sTest.maxAge, s.maxAge);
+      });
+
+      test("Parse List", () => expect(parseList(["x", "y", "z"]), ["x", "y", "z"]));
     });
   });
 
