@@ -28,7 +28,7 @@ void main() {
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
 
-    test("sortConversations", () {
+    test("How to sort conversations", () {
       List<SingleMessage> messagesA = [
         SingleMessage(343, "hey1", now.subtract(Duration(days: 1)), true),
         SingleMessage(343, "hey1", now, true),
@@ -55,7 +55,7 @@ void main() {
       expect(false, x.data == "a...");
     });
 
-    test("sortMessages", () {
+    test("How to sort messages", () {
       List<SingleMessage> messages = [
         SingleMessage(343, "hey", now.add(Duration(days: 1)), true),
         SingleMessage(343, "hey", now, true),
@@ -67,23 +67,23 @@ void main() {
       );
     });
 
-    test("parseTime", () {
+    test("How to parse to String a DateTime value", () {
       String d_string = parseTime(d);
       expect('10:10', d_string);
     });
 
-    test("parseDate", () {
+    test("How to parse to String a Date", () {
       expect(parseDate(d), '10/10/1111');
       expect(parseDate(now), 'Today');
       expect(parseDate(yesterday), 'Yesterday');
     });
 
-    test("parseSmallNumbers", () {
+    test("How to parse SmallNumbers", () {
       expect(parseSmallNumbers(5), '05');
       expect(parseSmallNumbers(15), '15');
     });
 
-    test("parseDateGroup", () {
+    test("How parse DateGroup", () {
       expect(parseDateGroup(d), '10/10/1111');
       expect(parseDateGroup(now), parseTime(now));
       expect(parseDateGroup(yesterday), 'Yesterday');
@@ -92,7 +92,7 @@ void main() {
 
   group("Message entity", () {
     DateTime d = DateTime(1111, 10, 10, 10, 10, 10, 10, 10);
-    test("Message", () {
+    test("Funcionality of Message", () {
       Message testMessage = Message(
           598, "sender@mail.com", "receiver@mail.com", "test message", d);
       expect(testMessage.text, "test message");
@@ -107,17 +107,17 @@ void main() {
     List<String> skillsTest = ['Hiking', 'Nature', 'Climbing', 'Camping'];
     List<String> languagesTest = ["English", "Italian", "Spanish"];
 
-    test("Evaluate personality", () {
+    test("How the personality is Evaluate", () {
       String personality = evaluatePersonality(skillsTest);
       expect(personality, "Executive");
     });
 
-    test("Suggest Skills", () {
+    test("Suggest new Skills according to the user preferences", () {
       List<String> suggested_skills =
           suggestFeature(skillsTest, 3, skills, skillSimilarity);
       expect(suggested_skills, ["Gardening", "Kayaking", "Traveling"]);
     });
-    test("Suggest Languages", () {
+    test("Suggest Languages according to the user preferences", () {
       List<String> suggested_languages =
           suggestFeature(languagesTest, 3, languages, languageSimilarity);
       expect(suggested_languages, ["French", "Portuguese", "Sicilian"]);
