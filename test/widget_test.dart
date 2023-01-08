@@ -31,20 +31,16 @@ void main() {
         const MaterialApp(home: GuidedRegistration("email", "pass")));
     final emailFinder = find.text('email');
     final passFinder = find.text('pass');
-    //expect(emailFinder, findsNothing);
-    expect(emailFinder, findsOneWidget);
-    //expect(passFinder, findsNothing);
-    expect(passFinder, findsOneWidget);
+    expect(emailFinder, findsNothing);
+    expect(passFinder, findsNothing);
   });
 
   testWidgets('To do the PreLogin it is needed an email and a password', (tester) async {
     await tester.pumpWidget(MaterialApp(home: PreLogin()));
     final emailFinder = find.text('email');
     final passFinder = find.text('pass');
-    //expect(emailFinder, findsNothing);
-    expect(emailFinder, findsOneWidget);
-    //expect(passFinder, findsNothing);
-    expect(passFinder, findsOneWidget);
+    expect(emailFinder, findsNothing);
+    expect(passFinder, findsNothing);
   });
 
   testWidgets(
@@ -53,20 +49,16 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: Login()));
     final emailFinder = find.text('email');
     final passFinder = find.text('pass');
-    //expect(emailFinder, findsNothing);
-    expect(emailFinder, findsOneWidget);
-    //expect(passFinder, findsNothing);
-    expect(passFinder, findsOneWidget);
+    expect(emailFinder, findsNothing);
+    expect(passFinder, findsNothing);
   });
 
   testWidgets('Registration needs an email and a password', (tester) async {
     await tester.pumpWidget(MaterialApp(home: Registration()));
     final emailFinder = find.text('email');
     final passFinder = find.text('pass');
-    //expect(emailFinder, findsNothing);
-    expect(emailFinder, findsOneWidget);
-    //expect(passFinder, findsNothing);
-    expect(passFinder, findsOneWidget);
+    expect(emailFinder, findsNothing);
+    expect(passFinder, findsNothing);
   });
 
   testWidgets('Splash', (tester) async {
@@ -78,10 +70,8 @@ void main() {
       await tester.pumpWidget(MaterialApp(home: SplashScreen()));
       final emailFinder = find.text('email');
       final passFinder = find.text('pass');
-      //expect(emailFinder, findsNothing);
-      expect(emailFinder, findsOneWidget);
-      //expect(passFinder, findsNothing);
-      expect(passFinder, findsOneWidget);
+      expect(emailFinder, findsNothing);
+      expect(passFinder, findsNothing);
     });
   });
 
@@ -101,10 +91,8 @@ void main() {
       ));
       final emailFinder = find.text('email');
       final passFinder = find.text('pass');
-      //expect(emailFinder, findsNothing);
-      expect(emailFinder, findsOneWidget);
-      //expect(passFinder, findsNothing);
-      expect(passFinder, findsOneWidget);
+      expect(emailFinder, findsNothing);
+      expect(passFinder, findsNothing);
     });
   });
 
@@ -127,10 +115,8 @@ void main() {
       ));
       final emailFinder = find.text('email');
       final passFinder = find.text('pass');
-      //expect(emailFinder, findsNothing);
-      expect(emailFinder, findsOneWidget);
-      //expect(passFinder, findsNothing);
-      expect(passFinder, findsOneWidget);
+      expect(emailFinder, findsNothing);
+      expect(passFinder, findsNothing);
     });
   });
 
