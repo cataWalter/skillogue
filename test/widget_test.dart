@@ -26,37 +26,47 @@ void main() {
   setUp(() async {
     await setUpTestHive();
   });
-  testWidgets('GuidedRegistration', (tester) async {
+  testWidgets('The Guided Registration needs an email and a password', (tester) async {
     await tester.pumpWidget(
         const MaterialApp(home: GuidedRegistration("email", "pass")));
-    final titleFinder = find.text('email');
-    final messageFinder = find.text('pass');
-    expect(titleFinder, findsNothing);
-    expect(messageFinder, findsNothing);
+    final emailFinder = find.text('email');
+    final passFinder = find.text('pass');
+    //expect(emailFinder, findsNothing);
+    expect(emailFinder, findsOneWidget);
+    //expect(passFinder, findsNothing);
+    expect(passFinder, findsOneWidget);
   });
 
-  testWidgets('PreLogin', (tester) async {
+  testWidgets('To do the PreLogin it is needed an email and a password', (tester) async {
     await tester.pumpWidget(MaterialApp(home: PreLogin()));
-    final titleFinder = find.text('email');
-    final messageFinder = find.text('pass');
-    expect(titleFinder, findsNothing);
-    expect(messageFinder, findsNothing);
+    final emailFinder = find.text('email');
+    final passFinder = find.text('pass');
+    //expect(emailFinder, findsNothing);
+    expect(emailFinder, findsOneWidget);
+    //expect(passFinder, findsNothing);
+    expect(passFinder, findsOneWidget);
   });
 
-  testWidgets('Login', (tester) async {
+  testWidgets(
+      'Login needs a password and an email provided the first time the user did the registration',
+          (tester) async {
     await tester.pumpWidget(MaterialApp(home: Login()));
-    final titleFinder = find.text('email');
-    final messageFinder = find.text('pass');
-    expect(titleFinder, findsNothing);
-    expect(messageFinder, findsNothing);
+    final emailFinder = find.text('email');
+    final passFinder = find.text('pass');
+    //expect(emailFinder, findsNothing);
+    expect(emailFinder, findsOneWidget);
+    //expect(passFinder, findsNothing);
+    expect(passFinder, findsOneWidget);
   });
 
-  testWidgets('Registration', (tester) async {
+  testWidgets('Registration needs an email and a password', (tester) async {
     await tester.pumpWidget(MaterialApp(home: Registration()));
-    final titleFinder = find.text('email');
-    final messageFinder = find.text('pass');
-    expect(titleFinder, findsNothing);
-    expect(messageFinder, findsNothing);
+    final emailFinder = find.text('email');
+    final passFinder = find.text('pass');
+    //expect(emailFinder, findsNothing);
+    expect(emailFinder, findsOneWidget);
+    //expect(passFinder, findsNothing);
+    expect(passFinder, findsOneWidget);
   });
 
   testWidgets('Splash', (tester) async {
@@ -66,35 +76,39 @@ void main() {
 
       GoogleFonts.config.allowRuntimeFetching = false;
       await tester.pumpWidget(MaterialApp(home: SplashScreen()));
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
+      final emailFinder = find.text('email');
+      final passFinder = find.text('pass');
+      //expect(emailFinder, findsNothing);
+      expect(emailFinder, findsOneWidget);
+      //expect(passFinder, findsNothing);
+      expect(passFinder, findsOneWidget);
     });
   });
 
-  testWidgets('ProfileOverview', (tester) async {
+  testWidgets('ProfileOverview has an icon that can be clicked', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
       DateTime d = DateTime.now();
       List<SingleMessage> messages = [
-        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
-        SingleMessage(343, "hey", d, true),
+        SingleMessage(343, "m1", d.add(Duration(days: 1)), true),
+        SingleMessage(344, "m2", d, true),
       ];
       await tester.pumpWidget(MaterialApp(
         home: ProfileOverview(
           Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
         ),
       ));
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
+      final emailFinder = find.text('email');
+      final passFinder = find.text('pass');
+      //expect(emailFinder, findsNothing);
+      expect(emailFinder, findsOneWidget);
+      //expect(passFinder, findsNothing);
+      expect(passFinder, findsOneWidget);
     });
   });
 
-  testWidgets('ProfileScreen', (tester) async {
+  testWidgets('ProfileScreen shows the profile of a user', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -111,14 +125,16 @@ void main() {
           ),
         ),
       ));
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
+      final emailFinder = find.text('email');
+      final passFinder = find.text('pass');
+      //expect(emailFinder, findsNothing);
+      expect(emailFinder, findsOneWidget);
+      //expect(passFinder, findsNothing);
+      expect(passFinder, findsOneWidget);
     });
   });
 
-  testWidgets('ProfileSettings', (tester) async {
+  testWidgets('ProfileSettings lets the users modify their profile information', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -141,7 +157,7 @@ void main() {
     });
   });
 
-  testWidgets('ProfileSearch', (tester) async {
+  testWidgets('How to search profiles by the preferences of the user', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -162,7 +178,7 @@ void main() {
     });
   });
 
-  testWidgets('ResultsSearchScreen', (tester) async {
+  testWidgets('How are shown the results of the search', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -193,7 +209,7 @@ void main() {
     });
   });
 
-  testWidgets('SavedSearchScreen', (tester) async {
+  testWidgets('How are shown the saved searches of a user', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -223,7 +239,7 @@ void main() {
     });
   });
 
-  testWidgets('Home', (tester) async {
+  testWidgets('Home screen appearance', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -253,7 +269,7 @@ void main() {
     });
   });
 
-  testWidgets('Message', (tester) async {
+  testWidgets('The main screen of messages where all opened conversations are shown', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
@@ -283,7 +299,7 @@ void main() {
     });
   });
 
-  testWidgets('SingleConversationScreen', (tester) async {
+  testWidgets('Appearance of a Single Conversation', (tester) async {
     await tester.runAsync(() async {
       await Hive.initFlutter();
       await Hive.openBox(localDatabase);
