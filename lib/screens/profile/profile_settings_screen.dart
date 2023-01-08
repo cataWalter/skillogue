@@ -76,12 +76,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 width: 100.0,
                 height: 40.0,
                 child: FloatingActionButton.extended(
+                  key: Key("set"),
                   backgroundColor: Colors.grey[800],
                   elevation: 0,
-                  onPressed: () {
-                    updateLocalProfileSettings();
-                    updateDatabaseProfileSettings();
-                    profile = widget.profile;
+                  onPressed: () async {
+                    profile = await updateDatabaseProfileSettings( selectedCountry, selectedGender, selectedCity, controllerFullName.text, selectedLanguages, selectedSkills, controllerAge.text, widget.profile.email, widget.profile, selectedColor,_myBox);
+                    setState(() {});
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -252,6 +252,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       ),
       divider("Chat"),
       ListTile(
+        key: Key("color"),
+
         title: Text(AppLocale.setColor.getString(context)),
         subtitle: Text(ColorTools.nameThatColor(selectedColor)),
         trailing: ColorIndicator(
@@ -343,69 +345,58 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     ColorTools.createPrimarySwatch(guideErrorDark): 'Guide Error Dark',
     ColorTools.createPrimarySwatch(blueBlues): 'Blue blues',
   };
+}
 
-  void updateLocalProfileSettings() {
-    setState(() {
-      if (selectedCountry.isNotEmpty) {
-        widget.profile.country = selectedCountry;
-      }
-      if (selectedGender.isNotEmpty) {
-        widget.profile.gender = selectedGender;
-      }
-      if (controllerFullName.text.isNotEmpty) {
-        widget.profile.name = controllerFullName.text;
-      }
-      if (selectedLanguages.isNotEmpty) {
-        widget.profile.languages = selectedLanguages;
-      }
-      if (selectedSkills.isNotEmpty) {
-        widget.profile.skills = selectedSkills;
-      }
-
-      if (controllerAge.text.isNotEmpty) {
-        int newAge = int.parse(controllerAge.text);
-        if (newAge >= 18 && newAge <= 99) {
-          widget.profile.age = newAge;
-        }
-      }
-      if (selectedCity.isNotEmpty) {
-        widget.profile.city = selectedCity;
-      }
-      {
-        if (chatColor != selectedColor) {
-          chatColor = selectedColor;
-          _myBox.put(chatColorKey, chatColor.value);
-        }
-      }
-    });
+Future<Profile> updateDatabaseProfileSettings(
+    selectedCountry,
+    selectedGender,
+    selectedCity,
+    fullName,
+    selectedLanguages,
+    selectedSkills,
+    age,
+    email,
+    Profile profile,
+    selectedColor,
+    myBox) async {
+  var parameters = {};
+  if (selectedCountry.isNotEmpty) {
+    parameters.addAll({'country': selectedCountry});
+    profile.country = selectedCountry;
   }
-
-  void updateDatabaseProfileSettings() async {
-    var parameters = {};
-    if (selectedCountry.isNotEmpty) {
-      parameters.addAll({'country': selectedCountry});
-    }
-    if (selectedGender.isNotEmpty) {
-      parameters.addAll({'gender': selectedGender});
-    }
-    if (selectedCity.isNotEmpty) {
-      parameters.addAll({'city': selectedCity});
-    }
-    if (controllerFullName.text.isNotEmpty) {
-      parameters.addAll({'name': controllerFullName.text});
-    }
-    if (selectedLanguages.isNotEmpty) {
-      parameters.addAll({'languages': selectedLanguages});
-    }
-    if (selectedSkills.isNotEmpty) {
-      parameters.addAll({'skills': selectedSkills});
-    }
-    if (controllerAge.text.isNotEmpty) {
-      int newAge = int.parse(controllerAge.text);
-      if (newAge >= 18 && newAge <= 99) {
-        parameters.addAll({'age': newAge});
-      }
-    }
-    updateProfile(widget.profile.email, parameters);
+  if (selectedGender.isNotEmpty) {
+    parameters.addAll({'gender': selectedGender});
+    profile.gender = selectedGender;
   }
+  if (selectedCity.isNotEmpty) {
+    parameters.addAll({'city': selectedCity});
+    profile.city = selectedCity;
+  }
+  if (fullName.isNotEmpty) {
+    parameters.addAll({'name': fullName});
+    profile.name = fullName;
+  }
+  if (selectedLanguages.isNotEmpty) {
+    parameters.addAll({'languages': selectedLanguages});
+    profile.languages = selectedLanguages;
+  }
+  if (selectedSkills.isNotEmpty) {
+    parameters.addAll({'skills': selectedSkills});
+    profile.skills = selectedSkills;
+  }
+  if (age.isNotEmpty) {
+    int newAge = int.parse(age);
+    if (newAge >= 18 && newAge <= 99) {
+      parameters.addAll({'age': newAge});
+    }
+    profile.age = newAge;
+  }
+  if (chatColor != selectedColor) {
+    chatColor = selectedColor;
+    if (myBox != null) {
+      myBox.put(chatColorKey, chatColor.value);
+    }
+  }
+  updateProfile(email, parameters);
+  return profile;
 }

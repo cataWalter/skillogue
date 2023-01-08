@@ -1,18 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:skillogue/entities/conversation_entity.dart';
 import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/entities/profile_search_entity.dart';
 import 'package:skillogue/main.dart';
 import 'package:skillogue/screens/messages/message_screen.dart';
-import 'package:skillogue/screens/messages/single_conversation_screen.dart';
 import 'package:skillogue/screens/profile/profile_screen.dart';
 import 'package:skillogue/screens/profile/profile_settings_screen.dart';
 import 'package:skillogue/screens/search/profile_search_screen.dart';
@@ -35,7 +32,7 @@ Profile profile = Profile("email", "name", "country", "city", "gender", 99,
 ProfileSearch activeProfileSearch = ProfileSearch();
 //late EventSearch activeEventSearch;
 List<SavedProfileSearch> savedProfileSearch = [];
-bool artificialIntelligenceEnabled = false;
+bool artificialIntelligenceEnabled = true;
 Color chatColor = getRandomDarkColor();
 
 class Home extends StatefulWidget {
@@ -117,7 +114,7 @@ class _HomeState extends State<Home> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 6),
             child: GNav(
-              key: Key("ciao"),
+              key: Key("c"),
               haptic: true,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               rippleColor: Colors.grey[300]!,
@@ -169,7 +166,6 @@ class _HomeState extends State<Home> {
         hoverColor: hoverColor,
         iconActiveColor: iconActiveColor,
         key: Key("profileScreen"),
-
       ),
       GButton(
         icon: Icons.search,
@@ -189,6 +185,8 @@ class _HomeState extends State<Home> {
         textColor: redNotification ? Colors.red : textColor,
         hoverColor: hoverColor,
         iconActiveColor: redNotification ? Colors.red : iconActiveColor,
+        key: Key("messageScreen"),
+
       ),
     ];
   }
@@ -283,6 +281,8 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       PopupMenuItem(
+                        key: Key("pop1"),
+
                         value: 1,
                         child: Text(
                           AppLocale.contactUs.getString(context),
@@ -290,13 +290,14 @@ class _HomeState extends State<Home> {
                       ),
                       PopupMenuItem(
                         key: Key("pop2"),
-
                         value: 2,
                         child: Text(
                           AppLocale.acknowledgments.getString(context),
                         ),
                       ),
                       PopupMenuItem(
+                        key: Key("pop3"),
+
                         value: 3,
                         child: Text(
                           AppLocale.logout.getString(context),
@@ -370,11 +371,31 @@ class _HomeState extends State<Home> {
       ChannelFilter(event: '*', schema: '*'),
       (payload, [ref]) async {
         //print('Change received: ${payload.toString()}');
-        conversations = await addMessage(payload.entries.elementAt(4).value.entries.elementAt(3).value == profile.email, conversations, Message( payload.entries.elementAt(4).value.entries.elementAt(1).value, payload.entries.elementAt(4).value.entries.elementAt(3).value, payload.entries.elementAt(4).value.entries.elementAt(2).value,payload.entries.elementAt(4).value.entries.elementAt(4).value,DateTime.parse(payload.entries    .elementAt(4)    .value    .entries    .elementAt(0)    .value)));
+        conversations = await addMessage(
+            payload.entries.elementAt(4).value.entries.elementAt(3).value ==
+                profile.email,
+            conversations,
+            Message(
+                payload.entries.elementAt(4).value.entries.elementAt(1).value,
+                payload.entries.elementAt(4).value.entries.elementAt(3).value,
+                payload.entries.elementAt(4).value.entries.elementAt(2).value,
+                payload.entries.elementAt(4).value.entries.elementAt(4).value,
+                DateTime.parse(payload.entries
+                    .elementAt(4)
+                    .value
+                    .entries
+                    .elementAt(0)
+                    .value)));
         setState(() {});
-        if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=profile.email) {
-          Profile destProfile = await findProfileByEmail(payload.entries.elementAt(4).value.entries.elementAt(3).value);
-          newMessageNotification(    destProfile.email,    destProfile.name, destProfile.points, payload.entries.elementAt(4).value.entries.elementAt(4).value);
+        if (payload.entries.elementAt(4).value.entries.elementAt(3).value !=
+            profile.email) {
+          Profile destProfile = await findProfileByEmail(
+              payload.entries.elementAt(4).value.entries.elementAt(3).value);
+          newMessageNotification(
+              destProfile.email,
+              destProfile.name,
+              destProfile.points,
+              payload.entries.elementAt(4).value.entries.elementAt(4).value);
         }
       },
     ).subscribe();

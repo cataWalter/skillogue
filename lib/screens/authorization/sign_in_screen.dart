@@ -91,6 +91,7 @@ class _LoginState extends State<Login> {
         SizedBox(
           height: 50,
           child: TextField(
+            key: Key("email"),
             controller: controllerEmail,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.none,
@@ -113,6 +114,7 @@ class _LoginState extends State<Login> {
         SizedBox(
           height: 50,
           child: TextField(
+            key: Key("pass"),
             controller: controllerPassword,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.none,
@@ -135,7 +137,9 @@ class _LoginState extends State<Login> {
               filled: true,
               suffix: obscurePassword
                   ? TextButton(
-                      onPressed: () {
+                key: Key("show"),
+
+                onPressed: () {
                         setState(() {
                           obscurePassword = false;
                         });
@@ -143,7 +147,9 @@ class _LoginState extends State<Login> {
                       child: const Text("Show"),
                     )
                   : TextButton(
-                      onPressed: () {
+                key: Key("show"),
+
+                onPressed: () {
                         setState(() {
                           obscurePassword = true;
                         });
@@ -155,6 +161,7 @@ class _LoginState extends State<Login> {
         ),
         addVerticalSpace(60),
         TextButton(
+          key: Key("login"),
           child: Container(
             height: 80,
             width: 300,

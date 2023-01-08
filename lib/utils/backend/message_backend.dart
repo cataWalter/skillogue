@@ -99,24 +99,6 @@ Future<List<Conversation>> addMessage(
   return conversations;
 }
 
-parsePayload(payload, String email, List<Conversation> conversations) async {
-  String eventType = payload.entries.elementAt(3).value;
-  if (eventType == "INSERT") {
-    conversations = await addMessage(
-      payload.entries.elementAt(4).value.entries.elementAt(3).value == email,
-      conversations,
-      Message(
-        payload.entries.elementAt(4).value.entries.elementAt(1).value,
-        payload.entries.elementAt(4).value.entries.elementAt(3).value,
-        payload.entries.elementAt(4).value.entries.elementAt(2).value,
-        payload.entries.elementAt(4).value.entries.elementAt(4).value,
-        DateTime.parse(
-            payload.entries.elementAt(4).value.entries.elementAt(0).value),
-      ),
-    );
-  }
-}
-
 Future<List<Conversation>> getNewMessages(
     String email, List<Conversation> newConversations) async {
   try {

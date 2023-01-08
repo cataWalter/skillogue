@@ -41,7 +41,7 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  registrationList(){
+  registrationList() {
     return listViewCreator(
       [
         Padding(
@@ -56,6 +56,7 @@ class _RegistrationState extends State<Registration> {
         SizedBox(
           height: 50,
           child: TextField(
+            key: Key("email"),
             controller: controllerEmail,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.none,
@@ -69,8 +70,8 @@ class _RegistrationState extends State<Registration> {
                   ? Colors.black
                   : const Color.fromRGBO(235, 235, 235, 1),
               hintText: AppLocale.email.getString(context),
-              hintStyle: TextStyle(
-                  fontSize: 16, color: Theme.of(context).hintColor),
+              hintStyle:
+                  TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
               filled: true,
             ),
           ),
@@ -78,6 +79,7 @@ class _RegistrationState extends State<Registration> {
         SizedBox(
           height: 50,
           child: TextField(
+            key: Key("pass"),
             controller: controllerPassword,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.none,
@@ -92,34 +94,37 @@ class _RegistrationState extends State<Registration> {
                   ? Colors.black
                   : const Color.fromRGBO(235, 235, 235, 1),
               labelText: 'Password',
-              labelStyle: TextStyle(
-                  fontSize: 16, color: Theme.of(context).hintColor),
+              labelStyle:
+                  TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
               hintText: 'Password',
-              hintStyle: TextStyle(
-                  fontSize: 16, color: Theme.of(context).hintColor),
+              hintStyle:
+                  TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
               filled: true,
               suffix: obscurePassword
                   ? TextButton(
-                onPressed: () {
-                  setState(() {
-                    obscurePassword = false;
-                  });
-                },
-                child: const Text("Show"),
-              )
+                      key: Key("show"),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = false;
+                        });
+                      },
+                      child: const Text("Show"),
+                    )
                   : TextButton(
-                onPressed: () {
-                  setState(() {
-                    obscurePassword = true;
-                  });
-                },
-                child: const Text("Hide"),
-              ),
+                      key: Key("show"),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = true;
+                        });
+                      },
+                      child: const Text("Hide"),
+                    ),
             ),
           ),
         ),
         addVerticalSpace(60),
         TextButton(
+          key: Key("login"),
           onPressed: doUserRegistration,
           child: Container(
             height: 80,
