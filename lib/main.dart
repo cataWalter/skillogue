@@ -68,8 +68,7 @@ class _MyAppState extends State<MyApp> {
         if (darkModeEnabled) {
           themeManager.toggleDark();
         }
-      }
-      catch (e) {}
+      } catch (e) {}
     }
     return MaterialApp(
       home: const SplashScreen(),
