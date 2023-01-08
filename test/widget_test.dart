@@ -636,4 +636,11 @@ void main() {
     ))));
     await tester.pumpAndSettle();*/
   });
+
+  testWidgets('Saved Search Screen: saved searches list', (WidgetTester tester) async {
+    final BuildContext context = tester.element(find.byType(Container));
+    await tester
+        .pumpWidget(MaterialApp(home: Material(child: savedSearchesList(context, 1))));
+    print((savedSearchesList(context, 1).decoration as BoxDecoration).color);
+  });
 }
