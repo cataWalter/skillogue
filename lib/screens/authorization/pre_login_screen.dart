@@ -29,6 +29,8 @@ class _PreLoginState extends State<PreLogin> {
                   'assets/images/logo2.png',
                 ),
                 TextButton(
+                  key: Key("login"),
+
                   child: Container(
                     height: 80,
                     width: 300,

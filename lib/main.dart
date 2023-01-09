@@ -4,6 +4,7 @@ import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:skillogue/screens/authorization/splash_screen.dart';
+import 'package:skillogue/utils/backend/misc_backend.dart';
 import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/constants.dart';
 import 'package:skillogue/utils/localization.dart';
