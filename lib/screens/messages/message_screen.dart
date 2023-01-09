@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,13 +72,15 @@ class _MessageScreenState extends State<MessageScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                AppLocale.cold.getString(context),
-                style: GoogleFonts.bebasNeue(
-                    fontSize: 20,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black),
+              Center(
+                child: Text(
+                  AppLocale.cold.getString(context),
+                  style: GoogleFonts.bebasNeue(
+                      fontSize: 20,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black),
+                ),
               ),
             ],
           ),
@@ -87,14 +88,16 @@ class _MessageScreenState extends State<MessageScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: Text(
-                  AppLocale.newFriends.getString(context),
-                  style: GoogleFonts.bebasNeue(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black),
+                child: Center(
+                  child: Text(
+                    AppLocale.newFriends.getString(context),
+                    style: GoogleFonts.bebasNeue(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black),
+                  ),
                 ),
               ),
             ],
@@ -227,7 +230,6 @@ tabletChat(curConversation, test) {
 Widget mobileChatCard(context, Conversation curConversation) {
   return InkWell(
     key: Key("block"),
-
     onTap: () {
       profile.blockedBy.contains(curConversation.destEmail)
           ? getBlurDialogImage(

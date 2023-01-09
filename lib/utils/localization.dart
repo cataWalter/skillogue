@@ -176,7 +176,7 @@ mixin AppLocale {
     blocked:
         " blocked you.  We are sorry for the inconvenience but no worries, luckily the world is big! 🙊 ",
     sincere: "We want to be sincere with you. ",
-    fuck: "Fuck ",
+    fuck: "F**k ",
     error: "Error!",
     suggestionTitle: "Help us",
     whatSuggestion: "What's your suggestion?",
@@ -192,6 +192,9 @@ mixin AppLocale {
   };
 
   static const Map<String, dynamic> it = {
+    report: "Segnala",
+    artificialIntelligenceEnable: "Attiva l'intelligenza artificiale",
+    artificialIntelligenceDisabled: "Disattiva l'intelligenza artificiale",
     signIn: "Login",
     signUp: "Registrazione",
     username: "Username",
@@ -274,6 +277,7 @@ mixin AppLocale {
     thanks: "Grazie! 🥰",
     thanksAcknowledgments:
         "Grazie a tutti quelli che hanno la pazienza di darmi le loro opinioni!",
+    localizatorQuestion: "Qual è la lingua dell'app ?",
   };
 
   static const Map<String, dynamic> scn = {

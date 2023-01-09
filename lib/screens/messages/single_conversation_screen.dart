@@ -6,7 +6,6 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:skillogue/entities/conversation_entity.dart';
 import 'package:skillogue/entities/profile_entity.dart';
 import 'package:skillogue/screens/profile/profile_overview.dart';
-import 'package:skillogue/utils/colors.dart';
 import 'package:skillogue/utils/misc_functions.dart';
 
 import '../../utils/backend/misc_backend.dart';
@@ -109,7 +108,10 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
               switch (item) {
                 case 0:
                   {
-                    blocker(widget.myConversation.destEmail, profile.blocked.contains(widget.myConversation.destEmail));
+                    blocker(
+                        widget.myConversation.destEmail,
+                        profile.blocked
+                            .contains(widget.myConversation.destEmail));
                     setState(() {});
                   }
                   break;
@@ -138,7 +140,7 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
                                         Brightness.dark
                                     ? const Color.fromRGBO(30, 30, 30, 1)
                                     : const Color.fromRGBO(235, 235, 235, 1),
-                                hintText: "",
+                                hintText: "What happened?",
                                 hintStyle: TextStyle(
                                     fontSize: 16,
                                     color: Theme.of(context).hintColor),

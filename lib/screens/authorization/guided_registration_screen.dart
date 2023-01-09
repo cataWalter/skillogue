@@ -61,16 +61,15 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: true,
         elevation: 0,
-        title: Center(
-          child: Text(
-            AppLocale.lookGoodProfile.getString(context),
-            style: GoogleFonts.bebasNeue(
-              fontSize: 20,
-              fontWeight: FontWeight.w300,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
+        centerTitle: true,
+        title: Text(
+          AppLocale.lookGoodProfile.getString(context),
+          style: GoogleFonts.bebasNeue(
+            fontSize: 20,
+            fontWeight: FontWeight.w300,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
         ),
       ),
@@ -78,9 +77,30 @@ class _GuidedRegistrationState extends State<GuidedRegistration> {
       floatingActionButton: FloatingActionButton.extended(
         key: Key("register"),
         onPressed: () async {
-          if (selectedCountry.isNotEmpty && selectedGender.isNotEmpty && selectedCity.isNotEmpty &&controllerFullName.text.isNotEmpty &&selectedLanguages.isNotEmpty &&controllerAge.text.isNotEmpty &&int.parse(controllerAge.text) >= 18 &&int.parse(controllerAge.text) <= 99) {
+          if (selectedCountry.isNotEmpty &&
+              selectedGender.isNotEmpty &&
+              selectedCity.isNotEmpty &&
+              controllerFullName.text.isNotEmpty &&
+              selectedLanguages.isNotEmpty &&
+              controllerAge.text.isNotEmpty &&
+              int.parse(controllerAge.text) >= 18 &&
+              int.parse(controllerAge.text) <= 99) {
             await registration(widget.email, widget.password);
-            databaseInsert( 'profile',{'email': widget.email,'country': selectedCountry,'gender': selectedGender,'city': selectedCity,'name': controllerFullName.text,'languages': selectedLanguages, 'skills': selectedSkills, 'age': int.parse(controllerAge.text),  'color': getRandomDarkColor().value,  'points': 0},);
+            databaseInsert(
+              'profile',
+              {
+                'email': widget.email,
+                'country': selectedCountry,
+                'gender': selectedGender,
+                'city': selectedCity,
+                'name': controllerFullName.text,
+                'languages': selectedLanguages,
+                'skills': selectedSkills,
+                'age': int.parse(controllerAge.text),
+                'points': 0
+              },
+            );
+            await Future.delayed(const Duration(seconds: 1));
             Profile registeredProfile = await findProfileByEmail(widget.email);
             nextScreen(registeredProfile);
           } else {
