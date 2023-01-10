@@ -72,34 +72,26 @@ class _SavedSearchScreenState extends State<SavedSearchScreen> {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppLocale.cold.getString(context),
-                style: GoogleFonts.bebasNeue(
-                    fontSize: 20,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black),
-              ),
-            ],
+          Center(
+            child: Text(
+              AppLocale.cold.getString(context),
+              style: GoogleFonts.bebasNeue(
+                  fontSize: 20,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black),
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text(
-                  AppLocale.saveSomeSearches.getString(context),
-                  style: GoogleFonts.bebasNeue(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black),
-                ),
-              ),
-            ],
+          Center(
+            child: Text(
+              AppLocale.saveSomeSearches.getString(context),
+              style: GoogleFonts.bebasNeue(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black),
+            ),
           ),
         ],
       );

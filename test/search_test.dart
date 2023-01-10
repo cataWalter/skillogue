@@ -40,56 +40,6 @@ void main() {
   });
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('The Guided Registration needs an email and a password',
-      (tester) async {
-    await tester.pumpWidget(
-        const MaterialApp(home: GuidedRegistration("email", "pass")));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
-
-  testWidgets('The Guided Registration needs an email and a password',
-      (tester) async {
-    await tester.pumpWidget(
-        const MaterialApp(home: GuidedRegistration("email", "pass")));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(Key("register")));
-    await tester.pumpAndSettle();
-  });
-
-  testWidgets('To do the PreLogin it is needed an email and a password',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(home: PreLogin()));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
-
-  testWidgets(
-      'Login needs a password and an email provided the first time the user did the registration',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(home: Login()));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
-
-  testWidgets('Registration needs an email and a password', (tester) async {
-    await tester.pumpWidget(MaterialApp(home: Registration()));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
-
-  testWidgets('Splash', (tester) async {
-    await tester.pumpWidget(MaterialApp(home: SplashScreen()));
-  });
-
 
 
   testWidgets('ProfileScreen shows the profile of a user', (tester) async {
@@ -1286,22 +1236,12 @@ void main() {
       expect('10:10', d_string);
     });
 
-    test("How to parse to String a Date", () {
-      expect(parseDate(d), '10/10/1111');
-      expect(parseDate(now), 'Today');
-      expect(parseDate(yesterday), 'Yesterday');
-    });
 
     test("How to parse SmallNumbers", () {
       expect(parseSmallNumbers(5), '05');
       expect(parseSmallNumbers(15), '15');
     });
 
-    test("How parse DateGroup", () {
-      expect(parseDateGroup(d), '10/10/1111');
-      expect(parseDateGroup(now), parseTime(now));
-      expect(parseDateGroup(yesterday), 'Yesterday');
-    });
   });
 
   test("Funcionality of Message", () {

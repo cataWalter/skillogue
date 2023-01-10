@@ -44,6 +44,27 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: Colors.blue,
               ),
             ),
+            /*Text(
+              "By",
+              style: GoogleFonts.bebasNeue(
+                fontSize: 80,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            Text(
+              "María Zamora Lorence",
+              style: GoogleFonts.bebasNeue(
+                fontSize: 80,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            Text(
+              "Walter Catalfamo",
+              style: GoogleFonts.bebasNeue(
+                fontSize: 80,
+                fontWeight: FontWeight.w300,
+              ),
+            ),*/
           ],
         ),
       ),
