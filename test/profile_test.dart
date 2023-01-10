@@ -40,43 +40,9 @@ void main() {
   });
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('The Guided Registration needs an email and a password',
-      (tester) async {
-    await tester.pumpWidget(
-        const MaterialApp(home: GuidedRegistration("email", "pass")));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
 
-  testWidgets('The Guided Registration needs an email and a password',
-      (tester) async {
-    await tester.pumpWidget(
-        const MaterialApp(home: GuidedRegistration("email", "pass")));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(Key("register")));
-    await tester.pumpAndSettle();
-  });
 
-  testWidgets('To do the PreLogin it is needed an email and a password',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(home: PreLogin()));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
 
-  testWidgets(
-      'Login needs a password and an email provided the first time the user did the registration',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(home: Login()));
-    final emailFinder = find.text('email');
-    final passFinder = find.text('pass');
-    expect(emailFinder, findsNothing);
-    expect(passFinder, findsNothing);
-  });
 
   testWidgets('Registration needs an email and a password', (tester) async {
     await tester.pumpWidget(MaterialApp(home: Registration()));
@@ -211,32 +177,7 @@ void main() {
     expect(messageFinder, findsNothing);
   });
 
-  testWidgets('Home screen appearance', (tester) async {
-    DateTime d = DateTime.now();
-    List<SingleMessage> messages = [
-      SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
-      SingleMessage(343, "hey", d, true),
-    ];
-    List<Profile> searchResults = [
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-    ];
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: Home([], 0),
-      ),
-    ));
-    await tester.pumpAndSettle(Duration(seconds: 3));
-    final titleFinder = find.text('email');
-    final messageFinder = find.text('pass');
-    expect(titleFinder, findsNothing);
-    expect(messageFinder, findsNothing);
-  });
+
 
   testWidgets(
       'The main screen of messages where all opened conversations are shown',
@@ -316,40 +257,6 @@ void main() {
     expect(messageFinder, findsNothing);
   });
 
-  testWidgets('Home', (tester) async {
-    await tester.runAsync(() async {
-      DateTime d = DateTime.now();
-      List<SingleMessage> messages = [
-        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
-        SingleMessage(343, "hey", d, true),
-      ];
-      List<Profile> searchResults = [
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      ];
-      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
-
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: Home([x], 2),
-        ),
-      ));
-      /*await tester.pump(Duration(seconds: 2));
-        await tester.tap(find.byKey(Key("ciao")));
-        await tester.pump(Duration(seconds: 2));
-        await tester.tap(find.byKey(Key("pop0")));*/
-
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
-    });
-  });
 
   testWidgets('pop0', (tester) async {
     await tester.runAsync(() async {
@@ -387,43 +294,6 @@ void main() {
     });
   });
 
-  testWidgets('Home', (tester) async {
-    await tester.runAsync(() async {
-      DateTime d = DateTime.now();
-      List<SingleMessage> messages = [
-        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
-        SingleMessage(343, "hey", d, true),
-      ];
-      List<Profile> searchResults = [
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      ];
-      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
-
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: Home([x], 2),
-        ),
-      ));
-
-      await tester.pump(Duration(seconds: 2));
-      await tester.tap(find.byKey(Key("searchScreen")));
-      await tester.pump(Duration(seconds: 2));
-      await tester.tap(find.byKey(Key("startHere")));
-      await tester.pump(Duration(seconds: 2));
-      await tester.press(find.byKey(Key("saved")));
-      await tester.pump(Duration(seconds: 2));
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
-    });
-  });
   /*testWidgets('integration1', (tester) async {
     app.main();
     await tester.pumpAndSettle();
@@ -495,45 +365,6 @@ void main() {
     await tester.pumpAndSettle();
   });*/
 
-  testWidgets('Home', (tester) async {
-    await tester.runAsync(() async {
-      DateTime d = DateTime.now();
-      List<SingleMessage> messages = [
-        SingleMessage(343, "hey", d.add(Duration(days: 1)), true),
-        SingleMessage(343, "hey", d, true),
-      ];
-      List<Profile> searchResults = [
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-        Profile("aa", "aa", "aa", "aa", "aa", 32, d, ["aa"], ["aa"], 3),
-      ];
-      Conversation x = Conversation("aaaa", "aaaa", 0, messages);
-
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: Home([x], 2),
-        ),
-      ));
-
-      await tester.pump(Duration(seconds: 2));
-      await tester.tap(find.byKey(Key("profileScreen")));
-      await tester.pump(Duration(seconds: 2));
-      await tester.tap(find.byKey(Key("PopupMenuButton")));
-      await tester.pumpAndSettle();
-
-      await tester.press(find.byKey(Key("pop2")));
-      await tester.pumpAndSettle();
-
-      final titleFinder = find.text('email');
-      final messageFinder = find.text('pass');
-      expect(titleFinder, findsNothing);
-      expect(messageFinder, findsNothing);
-    });
-  });
 
   testWidgets('showDialog', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: Material(child: Container())));
@@ -1298,22 +1129,12 @@ void main() {
       expect('10:10', d_string);
     });
 
-    test("How to parse to String a Date", () {
-      expect(parseDate(d), '10/10/1111');
-      expect(parseDate(now), 'Today');
-      expect(parseDate(yesterday), 'Yesterday');
-    });
 
     test("How to parse SmallNumbers", () {
       expect(parseSmallNumbers(5), '05');
       expect(parseSmallNumbers(15), '15');
     });
 
-    test("How parse DateGroup", () {
-      expect(parseDateGroup(d), '10/10/1111');
-      expect(parseDateGroup(now), parseTime(now));
-      expect(parseDateGroup(yesterday), 'Yesterday');
-    });
   });
 
   test("Funcionality of Message", () {

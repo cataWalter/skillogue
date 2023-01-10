@@ -84,12 +84,14 @@ class _SingleConversationScreenState extends State<SingleConversationScreen> {
               getAvatar(widget.myConversation.destName,
                   widget.myConversation.destPoints, 20, 2, 1.2, 20),
               addHorizontalSpace(10),
-              Text(
-                widget.myConversation.destName,
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
+              Expanded(
+                child: Text(
+                  widget.myConversation.destName,
+                  style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
                 ),
               ),
             ],
